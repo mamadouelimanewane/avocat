@@ -1,0 +1,428 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  role      String   @default("AVOCAT") // ADMIN, AVOCAT, COLLABORATEUR, SECRETAIRE
+  password  String?  // In real app, this should be hashed
+  hourlyRate Float?  @default(200.0)
+  signatureUrl String?
+  active    Boolean  @default(true)
+  avatarUrl String?
+  permissions String? @default("[]") // JSON Array of granular permissions
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  dossiers  Dossier[]
+  events    Event[]
+  tasks     Task[]
+  documentVersions DocumentVersion[]
+}
+
+model Client {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String   @default("PARTICULIER") // PARTICULIER, ENTREPRISE
+  status    String   @default("CLIENT")      // PROSPECT, CLIENT, ARCHIVE
+  name      String   // Nom ou Raison sociale
+  email     String?
+  phone     String?
+  address   String?
+  city      String?
+  country   String?  @default("Senegal") // Default to Senegal or User's country
+  
+  dossiers  Dossier[]
+  factures  Facture[]
+  communications CommunicationLog[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Dossier {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  reference   String   @unique // Internal ref
+  title       String
+  description String?
+  status      String   @default("OUVERT") // OUVERT, CLOTURE, ARCHIVE, EN_ATTENTE
+  jurisdiction String? // Tribunal de Commerce, Tribunal de Grande Instance, etc.
+  
+  clientId    String   @db.ObjectId
+  client      Client   @relation(fields: [clientId], references: [id])
+  
+  assignedToId String? @db.ObjectId
+  assignedTo   User?    @relation(fields: [assignedToId], references: [id])
+
+  columnId     String?  @db.ObjectId
+  column       KanbanColumn? @relation(fields: [columnId], references: [id])
+  
+  events      Event[]
+  documents   Document[]
+  factures    Facture[]
+  tasks       Task[]
+  timeEntries TimeEntry[]
+  expenses    Expense[]
+  carpaTransactions CarpaTransaction[]
+  meetings    Meeting[]
+  communications CommunicationLog[]
+  
+  opposingParty String? // Nom de la partie adverse
+  opposingCounsel String? // Avocat adverse
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  type        String   @default("RENDEZ_VOUS") // RENDEZ_VOUS, AUDIENCE, ECHEANCE
+  location    String?
+  
+  dossierId   String?  @db.ObjectId
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+  
+  userId      String?  @db.ObjectId
+  user        User?    @relation(fields: [userId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Document {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  type        String?  // PDF, DOCX, etc.
+  category    String?  // ACTE, PREUVE, CORRESPONDANCE
+  tags        String?  // JSON string for tags
+  status      String   @default("DRAFT") // DRAFT, REVIEW, SIGNED, ARCHIVED
+  ocrStatus   String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  ocrContent  String?  // For full-text search simulation
+  
+  dossierId   String   @db.ObjectId
+  dossier     Dossier  @relation(fields: [dossierId], references: [id])
+  
+  folder      String   @default("/") 
+  
+  // Archiving
+  archiveBoxId String?  @db.ObjectId
+  archiveBox   ArchiveBox? @relation(fields: [archiveBoxId], references: [id])
+  archivedAt   DateTime?
+  retention    Int?      // Years to keep
+  
+  versions    DocumentVersion[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DocumentVersion {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  version     Int
+  path        String   // Path to storage
+  size        Int      // Bytes
+  comment     String?  // "Initial version", "Correction coquilles"
+  
+  uploadedById String? @db.ObjectId
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id])
+  
+  documentId  String   @db.ObjectId
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+}
+
+model ArchiveBox {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique // e.g. "BOX-2024-A01"
+  location    String   // e.g. "Salle Archives 2, Rayon 4"
+  status      String   @default("OPEN") // OPEN, FULL, DESTROYED
+  
+  description String?
+  retentionDate DateTime? // Date de destruction prévue
+  
+  documents   Document[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model KanbanColumn {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  order       Int
+  color       String?  // hex code
+  dossiers    Dossier[]
+}
+
+model Template {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  category    String?  // CONTRAT, LETTRE, ASSIGNATION
+  content     String   // HTML content for rich text editor
+  variables   String?  // JSON string ["nom_client", "date", "adresse"]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Facture {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  number      String   @unique
+  type        String   @default("FACTURE") // FACTURE, PROVISION, AVOIR
+  status      String   @default("BROUILLON") // BROUILLON, EMISE, PAYEE, ANNULEE, PARTIELLE
+  issueDate   DateTime @default(now())
+  dueDate     DateTime?
+  amountHT    Float
+  amountTVA   Float
+  amountTTC   Float
+  currency    String   @default("XOF") // FCFA by default
+
+  
+  clientId    String   @db.ObjectId
+  client      Client   @relation(fields: [clientId], references: [id])
+  
+  dossierId   String?  @db.ObjectId
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+  
+  items       InvoiceItem[]
+  payments    Payment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model InvoiceItem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  quantity    Float
+  unitPrice   Float
+  totalPrice  Float
+  
+  factureId   String   @db.ObjectId
+  facture     Facture  @relation(fields: [factureId], references: [id])
+}
+
+model Payment {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  amount      Float
+  date        DateTime @default(now())
+  method      String   // VIREMENT, CHEQUE, ESPECES, MOBILE_MONEY
+  reference   String?
+  
+  factureId   String   @db.ObjectId
+  facture     Facture  @relation(fields: [factureId], references: [id])
+}
+
+model Task {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  completed   Boolean  @default(false)
+  dueDate     DateTime?
+  priority    String   @default("NORMAL") // BASSE, NORMAL, HAUTE, URGENT
+  
+  dossierId   String?  @db.ObjectId
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+  
+  assignedToId String? @db.ObjectId
+  assignedTo   User?    @relation(fields: [assignedToId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TimeEntry {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  description String?
+  date        DateTime @default(now())
+  duration    Int      // In minutes
+  rate        Float?   // Hourly rate
+  billable    Boolean  @default(true)
+  
+  dossierId   String   @db.ObjectId
+  dossier     Dossier  @relation(fields: [dossierId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Expense {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  amount      Float
+  category    String   // DEPLACEMENT, REPAS, GREFFE, HUISSIER
+  date        DateTime @default(now())
+  status      String   @default("TO_BILL") // TO_BILL, BILLED, PAID
+  receiptUrl  String?  // Path to uploaded receipt
+  
+  dossierId   String   @db.ObjectId
+  dossier     Dossier  @relation(fields: [dossierId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CarpaTransaction {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  reference   String   @unique
+  date        DateTime @default(now())
+  amount      Float    // Positive for deposit, Negative for withdrawal
+  type        String   // DEPOT, RETRAIT, VIREMENT
+  description String
+  beneficiary String?
+  
+  dossierId   String   @db.ObjectId
+  dossier     Dossier  @relation(fields: [dossierId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Meeting {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  startTime   DateTime
+  duration    Int      // Minutes
+  platform    String   @default("ZOOM") // ZOOM, TEAMS, GOOGLE_MEET
+  meetingUrl  String?
+  
+  dossierId   String?  @db.ObjectId
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+  
+  participants String? // JSON string: ["email1", "email2"]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CommunicationLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  type        String   // WHATSAPP, EMAIL, CALL, SMS
+  direction   String   // INBOUND, OUTBOUND
+  content     String?
+  date        DateTime @default(now())
+  
+  clientId    String?  @db.ObjectId
+  client      Client?  @relation(fields: [clientId], references: [id])
+  
+  dossierId   String?  @db.ObjectId
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CabinetSettings {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @default("Cabinet Avocats Associés")
+  address     String?
+  phone       String?
+  email       String?
+  logoUrl     String?
+  
+  defaultHourlyRate Float @default(200.0)
+  tvaRate           Float @default(18.0) // 18% Senegal
+  
+
+  updatedAt DateTime @updatedAt
+  
+  // Advanced Tax Settings
+  taxConfig   String? @default("{}") // JSON: { "tva": 18, "brs": 5, "vrs": 5, "css": 7, "ipm": 6 }
+  
+  // Legal Entity Details
+  legalForm     String? @default("INDIVIDUEL") // SCP, SEL, SELARL, SAS, SUARL
+  tradeRegister String? // RCCM
+  ninea         String? // NINEA (Senegal Fiscal ID)
+  capital       String? // e.g. "1.000.000 FCFA"
+}
+
+// --- SYSCOHADA General Accounting ---
+
+model Account {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique
+  name        String
+  type        String   // ACTIF, PASSIF, CHARGE, PRODUIT
+  balance     Float    @default(0.0)
+  
+  lines       TransactionLine[]
+}
+
+model Transaction {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  date        DateTime @default(now())
+  description String
+  reference   String?  // Piece comptable
+  status      String   @default("DRAFT") // DRAFT, VALIDATED
+  
+  lines       TransactionLine[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TransactionLine {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  debit         Float    @default(0)
+  credit        Float    @default(0)
+  
+  transactionId String   @db.ObjectId
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  
+  accountId     String   @db.ObjectId
+  account       Account     @relation(fields: [accountId], references: [id])
+}
+
+
+
+
+model Jurisprudence {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  type        String   @default("JURISPRUDENCE") // JURISPRUDENCE, LOI, ARRETE, ACTE_UNIFORME
+  court       String   // CCJA, COUR_SUPREME, TRIBUNAL_COMMERCE
+  date        DateTime
+  reference   String?  // N° Arrêt
+  summary     String?
+  content     String?  // Full text or simulated content
+  
+  category    String?  // COMMERCIAL, SOCIAL, PENAL, FONCIER
+  keywords    String?  // JSON array
+  
+  fileUrl     String?  // Link to PDF
+  sourceUrl   String?  // Link to original source
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DirectoryContact {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  category    String   // HUISSIER, NOTAIRE, EXPERT, CONFRERE, GREFFE, JURIDICTION
+  speciality  String?  // e.g. "Droit Maritime", "Expert Immobilier"
+  
+  phone       String?
+  email       String?
+  address     String?
+  city        String?
+  
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

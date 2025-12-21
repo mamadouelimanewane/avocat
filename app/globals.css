@@ -1,26 +1,183 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer base {
+    :root {
+        /* Notary Palette - Deep Navy & Gold */
+        --background: 210 40% 98%;
+        /* Soft off-white */
+        --foreground: 222 47% 11%;
+        /* Deep Navy Text */
+
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 47% 11%;
+
+        --primary: 222 47% 11%;
+        /* Deep Navy Brand Color */
+        --primary-foreground: 210 40% 98%;
+
+        --secondary: 45 93% 47%;
+        /* Gold Accent */
+        --secondary-foreground: 222 47% 11%;
+
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215 16% 47%;
+
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222 47% 11%;
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 214 32% 91%;
+        --input: 214 32% 91%;
+        --ring: 222 47% 11%;
+
+        --radius: 0.5rem;
+
+        /* Charts adjusted to match */
+        --chart-1: 222 47% 11%;
+        /* Navy */
+        --chart-2: 45 93% 47%;
+        /* Gold */
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+    }
+
+    .dark {
+        --background: 222 47% 11%;
+        /* Dark Navy Background */
+        --foreground: 210 40% 98%;
+
+        --card: 217 33% 17%;
+        --card-foreground: 210 40% 98%;
+
+        --popover: 222 47% 11%;
+        --popover-foreground: 210 40% 98%;
+
+        --primary: 45 93% 47%;
+        /* Gold becomes primary in Dark Mode for contrast */
+        --primary-foreground: 222 47% 11%;
+
+        --secondary: 217 33% 17%;
+        --secondary-foreground: 210 40% 98%;
+
+        --muted: 217 33% 17%;
+        --muted-foreground: 215 20% 65%;
+
+        --accent: 217 33% 17%;
+        --accent-foreground: 210 40% 98%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 217 33% 20%;
+        --input: 217 33% 20%;
+        --ring: 45 93% 47%;
+
+        --chart-1: 45 93% 47%;
+        --chart-2: 210 40% 98%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+    }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+    }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Default Theme (Zinc/Slate is base) - already defined in :root */
+
+/* Theme: Navy Premium (Already partially default, but ensuring consistency) */
+[data-theme='navy'] {
+    --primary: 222 47% 11%;
+    --primary-foreground: 210 40% 98%;
+    /* Keep gold accent */
+    --ring: 222 47% 11%;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.dark[data-theme='navy'] {
+    --primary: 45 93% 47%;
+    --primary-foreground: 222 47% 11%;
+}
+
+/* Theme: Bordeaux Élégance (Rose) */
+[data-theme='rose'] {
+    --primary: 343 89% 46%;
+    /* ~Rose 600 */
+    --primary-foreground: 0 0% 100%;
+    --ring: 343 89% 46%;
+    /* Accent shifts to a lighter rose or complementary */
+    --secondary: 343 89% 90%;
+    --secondary-foreground: 343 89% 46%;
+}
+
+.dark[data-theme='rose'] {
+    --primary: 343 89% 60%;
+    /* Lighter in dark mode */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 343 89% 20%;
+    --secondary-foreground: 0 0% 100%;
+}
+
+/* Theme: Vert Nature (Green for eco/growth vibe) */
+[data-theme='green'] {
+    --primary: 142 71% 29%;
+    /* ~Green 700 */
+    --primary-foreground: 0 0% 100%;
+    --ring: 142 71% 29%;
+
+    --secondary: 142 71% 95%;
+    --secondary-foreground: 142 71% 29%;
+}
+
+.dark[data-theme='green'] {
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 142 71% 20%;
+    --secondary-foreground: 0 0% 100%;
+}
+
+/* Custom Scrollbar for a cleaner look */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+}
+
+
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
 }

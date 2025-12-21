@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#0f172a"/>
+  <!-- Scale Icon -->
+  <g transform="translate(6, 5)">
+    <!-- Center Pole -->
+    <line x1="10" y1="4" x2="10" y2="20" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+    <!-- Top Beam -->
+    <line x1="2" y1="4" x2="18" y2="4" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+    <!-- Left Pan -->
+    <path d="M2 4 L0 12 L4 12 L2 4" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Right Pan -->
+    <path d="M18 4 L16 12 L20 12 L18 4" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Base -->
+    <line x1="6" y1="20" x2="14" y2="20" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

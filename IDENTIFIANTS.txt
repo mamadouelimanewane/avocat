@@ -1,0 +1,19 @@
+=== INFOS DE CONNEXION ===
+
+1. BASE DE DONNÉES (MongoDB)
+------------------------------
+URL de connexion : mongodb://localhost:27017/avocat_db
+Type : MongoDB Local
+Collection principale : avocat_db
+
+2. COMPTE ADMINISTRATEUR (Généré par le seed)
+------------------------------
+Email : maitre@cabinet-avocat.com
+Nom : Maître Dupont
+Rôle : ASSOCIE
+Mot de passe par défaut : password123 (Note: Le seed initial ne définit pas toujours de mot de passe, mais c'est le défaut utilisé dans l'application)
+
+3. ACCÈS APPLICATION
+------------------------------
+URL Développement : http://localhost:3001 (ou http://localhost:3000)
+Architecture : Next.js 14 + Prisma + MongoDB
