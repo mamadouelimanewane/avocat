@@ -35,8 +35,8 @@ export function AIDrafter({ mode }: AIDrafterProps) {
             // In a real app, we would pass 'fullPrompt' to the server action
             const response = await generateAIResponse(fullPrompt, mode === 'DRAFTING' ? 'DRAFTING' : 'RESEARCH') // Reuse existing generic action types or update action
 
-            if (response.success && response.data) {
-                setGeneratedText(response.data)
+            if (response.success && response.text) {
+                setGeneratedText(response.text)
             } else {
                 // Fallback simulation if action returns empty/error (or if we haven't updated action to handle 'DRAFTING' specifically yet)
                 if (mode === 'PLEADING') {
