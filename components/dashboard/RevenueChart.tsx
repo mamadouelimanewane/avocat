@@ -34,7 +34,7 @@ export function RevenueChart({ data }: { data: any[] }) {
                 <Tooltip
                     cursor={{ fill: '#f1f5f9' }}
                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    formatter={(value: number) => [`${value.toLocaleString('fr-FR')} FCFA`, 'Montant']}
+                    formatter={(value: any) => [`${(value || 0).toLocaleString('fr-FR')} FCFA`, 'Montant']}
                     labelFormatter={(label) => `Mois: ${label}`}
                 />
                 <Bar
