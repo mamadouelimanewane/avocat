@@ -143,7 +143,7 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                 setIsGenerating(false);
                 setDocuments(prev => [{
                     id: Math.random(),
-                    name: `Brouillon IA - ${prompt.substring(0, 15)}....docx`,
+                    name: `Brouillon IA - ${userDesc.substring(0, 15)}....docx`,
                     version: 1,
                     type: 'ACTE',
                     size: '15 KB',
