@@ -37,7 +37,7 @@ export default function AccountingPage() {
 
     // New Transaction State
     const [desc, setDesc] = useState("")
-    const [date, setDate] = new Date().toISOString().split('T')[0])
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0])
     const [selectedJournal, setSelectedJournal] = useState("")
     const [line1, setLine1] = useState({ accountId: "", debit: 0, credit: 0 })
     const [line2, setLine2] = useState({ accountId: "", debit: 0, credit: 0 })
@@ -392,4 +392,4 @@ export default function AccountingPage() {
         </div>
     )
 }
-```
+
