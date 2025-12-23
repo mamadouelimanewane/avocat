@@ -4,7 +4,7 @@ import { calculateResultat } from "@/lib/syscohada-mapper"
 import { format } from "date-fns"
 
 export default async function CompteResultatPrint() {
-    constaccounts = await getAccounts()
+    const accounts = await getAccounts()
 
     // Separate logic for balance polarity
     // In our DB: Debit is positive on Assets/Expenses. Credit is positive on Liab/Equity? 
@@ -44,7 +44,7 @@ export default async function CompteResultatPrint() {
                         `}>
                             <td className="py-2 px-4 uppercase">{row.label}</td>
                             <td className="py-2 px-4 text-right font-mono">
-                                {row.value.toLocaleString('fr-FR', { minimumFractionDigits: 0 })}
+                                {(row.value || 0).toLocaleString('fr-FR', { minimumFractionDigits: 0 })}
                             </td>
                         </tr>
                     ))}
