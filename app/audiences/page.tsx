@@ -3,10 +3,10 @@ import { PrismaClient } from '@prisma/client'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Gavel, MapPin, Calendar, Clock, CheckCircle2, AlertCircle } from "lucide-react"
+import { AddAudienceDialog } from "@/components/audiences/AddAudienceDialog"
 
 const prisma = new PrismaClient()
 
@@ -16,6 +16,12 @@ export default async function AudiencesPage() {
         where: { type: 'AUDIENCE' },
         include: { dossier: { include: { client: true } } },
         orderBy: { startDate: 'asc' }
+    })
+
+    // Fetch Dossiers for the Dialog
+    const dossiersList = await prisma.dossier.findMany({
+        select: { id: true, title: true, reference: true },
+        orderBy: { updatedAt: 'desc' }
     })
 
     // Group by Date for "Rôle" view
@@ -31,9 +37,7 @@ export default async function AudiencesPage() {
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline"><Calendar className="mr-2 h-4 w-4" /> Imprimer le Rôle</Button>
-                    <Button className="bg-amber-600 hover:bg-amber-700 text-white">
-                        <Gavel className="mr-2 h-4 w-4" /> Nouvelle Audience
-                    </Button>
+                    <AddAudienceDialog dossiers={dossiersList} />
                 </div>
             </div>
 

@@ -41,7 +41,7 @@ const navigation = [
     { name: 'Recouvrement Massif', href: '/recouvrement', icon: BadgePercent },
     { name: 'Comptabilité', href: '/comptabilite', icon: Calculator }, // Reordered for better flow
     { name: 'GED / Documents', href: '/documents', icon: Files }, // Renamed from Outils/Files implies GED usually, but explicit is better
-    { name: 'Bibliothèque', href: '/jurisprudence', icon: Gavel }, // Consolidating legal resources
+    { name: 'Recherche Juridique', href: '/recherche', icon: Gavel }, // Consolidating legal resources
     { name: 'Archives', href: '/archives', icon: Archive }, // Added as requested
     { name: 'Assistant IA', href: '/analyse', icon: BrainCircuit },
     { name: 'Annuaire Pro', href: '/annuaire', icon: Contact },

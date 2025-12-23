@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import DocumentsTab from '@/components/dossier/DocumentsTab'
 import FinanceTab from '@/components/dossier/FinanceTab'
 import ExpensesTab from '@/components/dossier/ExpensesTab'
+import DossierOverview from '@/components/dossier/DossierOverview'
 
 const prisma = new PrismaClient()
 
@@ -77,10 +78,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
 
                     <div className="mt-6">
                         <TabsContent value="overview">
-                            {/* Replaced placeholder with ExpensesTab for this demo purpose, or simply adding a new tab */}
-                            <div className="p-4 bg-white border border-slate-200 rounded-lg h-64 flex items-center justify-center text-slate-400">
-                                Vue d'ensemble en construction...
-                            </div>
+                            <DossierOverview dossier={dossier} />
                         </TabsContent>
 
                         <TabsContent value="expenses">

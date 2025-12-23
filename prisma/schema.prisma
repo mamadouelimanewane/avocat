@@ -29,6 +29,22 @@ model User {
   events    Event[]
   tasks     Task[]
   documentVersions DocumentVersion[]
+  leaveRequests LeaveRequest[]
+}
+
+model LeaveRequest {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  type        String   @default("CONGE_PAYE") // CONGE_PAYE, MALADIE, RECUP, SANS_SOLDE
+  startDate   DateTime
+  endDate     DateTime
+  reason      String?
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Client {
@@ -41,6 +57,8 @@ model Client {
   address   String?
   city      String?
   country   String?  @default("Senegal") // Default to Senegal or User's country
+  
+  accountingCode String? // Code auxiliaire (e.g., 41100001) for Accounting Link
   
   dossiers  Dossier[]
   factures  Facture[]
@@ -57,6 +75,14 @@ model Dossier {
   description String?
   status      String   @default("OUVERT") // OUVERT, CLOTURE, ARCHIVE, EN_ATTENTE
   jurisdiction String? // Tribunal de Commerce, Tribunal de Grande Instance, etc.
+  
+  // Litigation Specifics
+  opposingParty     String? // Partie Adverse
+  opposingCounsel   String? // Avocat adverse
+  judge             String? // Juge / Chambre
+  procedureType     String? @default("CIVIL") // CIVIL, PENAL, COMMERCIAL, SOCIAL, ADMINISTRATIF
+  nextHearingDate   DateTime?
+  stage             String? @default("SAISINE") // SAISINE, MISE_EN_ETAT, PLAIDOIRIE, DELIBERE, EXECUTION
   
   clientId    String   @db.ObjectId
   client      Client   @relation(fields: [clientId], references: [id])
@@ -265,6 +291,8 @@ model Expense {
   description String
   amount      Float
   category    String   // DEPLACEMENT, REPAS, GREFFE, HUISSIER
+  type        String   @default("FRAIS") // FRAIS, DEBOURS
+  billable    Boolean  @default(true)
   date        DateTime @default(now())
   status      String   @default("TO_BILL") // TO_BILL, BILLED, PAID
   receiptUrl  String?  // Path to uploaded receipt
@@ -369,6 +397,12 @@ model Transaction {
   reference   String?  // Piece comptable
   status      String   @default("DRAFT") // DRAFT, VALIDATED
   
+  journalId   String?   @db.ObjectId
+  journal     Journal?  @relation(fields: [journalId], references: [id])
+  
+  fiscalYearId String?   @db.ObjectId
+  fiscalYear   FiscalYear? @relation(fields: [fiscalYearId], references: [id])
+  
   lines       TransactionLine[]
   
   createdAt   DateTime @default(now())
@@ -381,10 +415,33 @@ model TransactionLine {
   credit        Float    @default(0)
   
   transactionId String   @db.ObjectId
-  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
   
   accountId     String   @db.ObjectId
   account       Account     @relation(fields: [accountId], references: [id])
+}
+
+model FiscalYear {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique // e.g. "2024"
+  startDate DateTime
+  endDate   DateTime
+  status    String   @default("OPEN") // OPEN, CLOSED
+  isCurrent Boolean  @default(false)
+
+  transactions Transaction[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Journal {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  code      String   @unique // VE, AC, BQ, CA, OD
+  name      String
+  type      String   // VENTE, ACHAT, TRESORERIE, GENERAL
+
+  transactions Transaction[]
 }
 
 

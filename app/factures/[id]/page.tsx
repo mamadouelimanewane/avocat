@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table"
 import { formatCurrency, formatDate } from '@/lib/utils'
 import ClientDownloadButton from '@/components/documents/ClientDownloadButton'
+import { InvoiceActions } from '@/components/factures/InvoiceActions'
 import { getCabinetSettings } from '@/app/actions'
 
 const prisma = new PrismaClient()
@@ -58,8 +59,9 @@ export default async function FactureDetailPage({ params }: { params: { id: stri
                 </div>
 
                 <div className="flex gap-2">
+                    <InvoiceActions facture={facture} />
                     <Button variant="outline" size="sm">
-                        <Send className="mr-2 h-4 w-4" /> Envoyer par Email
+                        <Send className="mr-2 h-4 w-4" /> Envoyer
                     </Button>
                     <ClientDownloadButton facture={facture} settings={settings} />
                 </div>

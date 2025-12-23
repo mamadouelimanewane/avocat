@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from 'react'
-import { Plus, Receipt, Trash2 } from 'lucide-react'
+import { Plus, Receipt, Trash2, Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -31,9 +31,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { createExpense } from '@/app/actions'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface Expense {
     id: string
@@ -42,12 +44,15 @@ interface Expense {
     category: string
     date: Date
     status: string
+    type?: string
+    billable?: boolean
 }
 
 export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: string, expenses?: Expense[] }) {
     const [localExpenses, setLocalExpenses] = useState<Expense[]>(expenses)
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [isBillable, setIsBillable] = useState(true)
 
     async function handleSubmit(formData: FormData) {
         setLoading(true)
@@ -56,6 +61,8 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
             description: formData.get('description') as string,
             amount: parseFloat(formData.get('amount') as string),
             category: formData.get('category') as string,
+            type: formData.get('type') as string,
+            billable: isBillable,
             date: new Date()
         }
 
@@ -71,13 +78,15 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
     }
 
     const totalExpenses = localExpenses.reduce((sum, e) => sum + e.amount, 0)
+    const debours = localExpenses.filter(e => e.type === 'DEBOURS').reduce((sum, e) => sum + e.amount, 0)
+    const fraisCabinet = localExpenses.filter(e => e.type === 'FRAIS').reduce((sum, e) => sum + e.amount, 0)
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-medium">Frais & Dépens</h3>
-                    <p className="text-sm text-slate-500">Gérez les frais engagés pour ce dossier (Déplacements, Greffe, Timbres...)</p>
+                    <p className="text-sm text-slate-500">Gérez les débours (pour le client) et les frais de fonctionnement.</p>
                 </div>
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
@@ -88,45 +97,63 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Ajouter un frais</DialogTitle>
+                            <DialogTitle>Enregistrer une dépense</DialogTitle>
                             <DialogDescription>
-                                Saisissez les détails de la dépense à refacturer au client.
+                                Distinguez les frais refacturables (débours) des frais internes.
                             </DialogDescription>
                         </DialogHeader>
                         <form action={handleSubmit}>
                             <div className="grid gap-4 py-4">
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="description" className="text-right">
-                                        Description
-                                    </Label>
-                                    <Input id="description" name="description" placeholder="Ex: Timbre fiscal" className="col-span-3" required />
+                                    <Label htmlFor="type" className="text-right">Type</Label>
+                                    <Select name="type" defaultValue="DEBOURS">
+                                        <SelectTrigger className="col-span-3">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="DEBOURS">Débours (Avance Client)</SelectItem>
+                                            <SelectItem value="FRAIS">Frais Cabinet (Interne)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="description" className="text-right">Description</Label>
+                                    <Input id="description" name="description" placeholder="Ex: Enregistrement Acte" className="col-span-3" required />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="amount" className="text-right">
-                                        Montant
-                                    </Label>
+                                    <Label htmlFor="amount" className="text-right">Montant</Label>
                                     <Input id="amount" name="amount" type="number" placeholder="0" className="col-span-3" required />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="category" className="text-right">
-                                        Catégorie
-                                    </Label>
+                                    <Label htmlFor="category" className="text-right">Catégorie</Label>
                                     <Select name="category" defaultValue="FRAIS_JUSTICE">
                                         <SelectTrigger className="col-span-3">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="DEPLACEMENT">Déplacement / Transport</SelectItem>
-                                            <SelectItem value="FRAIS_JUSTICE">Frais de Justice / Greffe</SelectItem>
+                                            <SelectItem value="FRAIS_JUSTICE">Frais de Justice (Greffe, Enregistrement)</SelectItem>
+                                            <SelectItem value="HUISSIER">Huissier / Commissaire</SelectItem>
                                             <SelectItem value="TIMBRES">Timbres Fiscaux</SelectItem>
+                                            <SelectItem value="REPAS">Repas / Hébergement</SelectItem>
                                             <SelectItem value="DIVERS">Divers</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label className="text-right">Facturable ?</Label>
+                                    <div className="flex items-center space-x-2 col-span-3">
+                                        <Checkbox id="billable" checked={isBillable} onCheckedChange={(c) => setIsBillable(!!c)} />
+                                        <label htmlFor="billable" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                            Oui, refacturer au client
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                             <DialogFooter>
                                 <Button type="submit" disabled={loading}>
-                                    {loading ? 'Ajout...' : 'Enregistrer le frais'}
+                                    {loading ? 'Ajout...' : 'Enregistrer'}
                                 </Button>
                             </DialogFooter>
                         </form>
@@ -134,14 +161,23 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
                 </Dialog>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-4 hidden">
-                {/* Summary Card - Hidden for now to keep it clean, maybe used later */}
+            <div className="grid gap-6 md:grid-cols-3">
                 <Card>
-                    <CardHeader className="py-4">
-                        <CardTitle className="text-sm font-medium text-slate-500">Total Frais</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{formatCurrency(totalExpenses)}</div>
+                    <CardContent className="p-4 flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-slate-500">Total Débours</p>
+                            <p className="text-2xl font-bold text-slate-900">{formatCurrency(debours)}</p>
+                        </div>
+                        <Receipt className="h-8 w-8 text-indigo-200" />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-4 flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-slate-500">Frais Cabinet</p>
+                            <p className="text-2xl font-bold text-slate-900">{formatCurrency(fraisCabinet)}</p>
+                        </div>
+                        <Receipt className="h-8 w-8 text-amber-200" />
                     </CardContent>
                 </Card>
             </div>
@@ -151,6 +187,7 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
                     <TableHeader>
                         <TableRow>
                             <TableHead>Date</TableHead>
+                            <TableHead>Type</TableHead>
                             <TableHead>Description</TableHead>
                             <TableHead>Catégorie</TableHead>
                             <TableHead>Montant</TableHead>
@@ -161,22 +198,34 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
                     <TableBody>
                         {localExpenses.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-24 text-center text-slate-500">
+                                <TableCell colSpan={7} className="h-24 text-center text-slate-500">
                                     Aucun frais enregistré pour ce dossier.
                                 </TableCell>
                             </TableRow>
                         ) : localExpenses.map((expense) => (
                             <TableRow key={expense.id}>
-                                <TableCell>{formatDate(expense.date)}</TableCell>
-                                <TableCell className="font-medium">{expense.description}</TableCell>
+                                <TableCell className="whitespace-nowrap">{formatDate(expense.date)}</TableCell>
                                 <TableCell>
-                                    <Badge variant="outline" className="text-xs">{expense.category}</Badge>
+                                    {expense.type === 'DEBOURS' ? (
+                                        <Badge variant="secondary" className="bg-indigo-100 text-indigo-800 border-indigo-200">Débours</Badge>
+                                    ) : (
+                                        <Badge variant="outline">Frais</Badge>
+                                    )}
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    {expense.description}
+                                    {!expense.billable && (
+                                        <span className="ml-2 text-xs text-slate-400 italic">(Non facturable)</span>
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-xs text-slate-500 uppercase">{expense.category}</span>
                                 </TableCell>
                                 <TableCell className="font-semibold text-slate-900">
                                     {formatCurrency(expense.amount)}
                                 </TableCell>
                                 <TableCell>
-                                    <Badge variant={expense.status === 'BILLED' ? 'secondary' : 'warning'}>
+                                    <Badge variant={expense.status === 'BILLED' ? 'success' : 'default'} className={expense.status === 'TO_BILL' ? 'bg-amber-100 text-amber-800 border-amber-200' : ''}>
                                         {expense.status === 'BILLED' ? 'Facturé' : 'À Facturer'}
                                     </Badge>
                                 </TableCell>
@@ -187,13 +236,6 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
                                 </TableCell>
                             </TableRow>
                         ))}
-                        {localExpenses.length > 0 && (
-                            <TableRow className="bg-slate-50 font-medium">
-                                <TableCell colSpan={3} className="text-right">Total :</TableCell>
-                                <TableCell className="text-slate-900">{formatCurrency(totalExpenses)}</TableCell>
-                                <TableCell colSpan={2}></TableCell>
-                            </TableRow>
-                        )}
                     </TableBody>
                 </Table>
             </div>

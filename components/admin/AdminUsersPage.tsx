@@ -116,7 +116,9 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                                             <SelectItem value="ADMIN">Administrateur</SelectItem>
                                             <SelectItem value="AVOCAT">Avocat</SelectItem>
                                             <SelectItem value="SECRETAIRE">Secrétaire</SelectItem>
-                                            <SelectItem value="COLLABORATEUR">Collaborateur</SelectItem>
+                                            <SelectItem value="COLLABORATEUR">Collaborateur (Avocat)</SelectItem>
+                                            <SelectItem value="STAGIAIRE">Stagiaire</SelectItem>
+                                            <SelectItem value="JURISTE">Juriste</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>

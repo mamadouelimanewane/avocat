@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
     FileText,
     Upload,
@@ -14,7 +14,10 @@ import {
     Cloud,
     Mail,
     PenTool,
-    BrainCircuit
+    BrainCircuit,
+    Download,
+    Eye,
+    Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,6 +40,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { createDocumentFromTemplate } from '@/app/actions';
 import { Label } from '@/components/ui/label';
 
@@ -58,6 +69,7 @@ interface Template {
 export default function DocumentsTab({ dossierId, templates = [] }: { dossierId: string, templates?: Template[] }) {
     const [documents, setDocuments] = useState(initialDocuments);
     const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Generator State
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
@@ -80,20 +92,30 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
         setIsDragging(false);
 
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            const newDocs = Array.from(e.dataTransfer.files).map((file, index) => ({
-                id: Math.random(),
-                name: file.name,
-                version: 1,
-                type: 'AUTRE',
-                size: (file.size / 1024).toFixed(1) + ' KB',
-                updated: "À l'instant",
-                author: 'Moi',
-                status: 'DRAFT'
-            }));
-
-            setDocuments(prev => [...newDocs, ...prev]);
+            handleFiles(e.dataTransfer.files);
         }
     };
+
+    const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            handleFiles(e.target.files);
+        }
+    }
+
+    const handleFiles = (files: FileList) => {
+        const newDocs = Array.from(files).map((file) => ({
+            id: Math.random(),
+            name: file.name,
+            version: 1,
+            type: 'AUTRE',
+            size: (file.size / 1024).toFixed(1) + ' KB',
+            updated: "À l'instant",
+            author: 'Moi',
+            status: 'DRAFT'
+        }));
+        setDocuments(prev => [...newDocs, ...prev]);
+        alert(`${newDocs.length} fichier(s) importé(s) avec succès !`);
+    }
 
     const onSelectTemplate = (id: string) => {
         setSelectedTemplateId(id);
@@ -102,7 +124,6 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
             try {
                 const vars = JSON.parse(t.variables);
                 setVariables(vars); // string[]
-                // Initialize values
                 const init: Record<string, string> = {};
                 vars.forEach((v: string) => init[v] = "");
                 setVariableValues(init);
@@ -115,7 +136,24 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
     }
 
     const handleAIGenerate = async () => {
-        alert("L'Assistant IA analyse le dossier et génère une ébauche basée sur les modèles OHADA...")
+        const prompt = prompt("Décrivez le document que vous souhaitez que l'IA rédige pour vous :");
+        if (prompt) {
+            setIsGenerating(true);
+            setTimeout(() => {
+                setIsGenerating(false);
+                setDocuments(prev => [{
+                    id: Math.random(),
+                    name: `Brouillon IA - ${prompt.substring(0, 15)}....docx`,
+                    version: 1,
+                    type: 'ACTE',
+                    size: '15 KB',
+                    updated: "À l'instant",
+                    author: 'LexAI',
+                    status: 'DRAFT'
+                }, ...prev]);
+                alert("Document généré par l'IA et ajouté au dossier.");
+            }, 2000);
+        }
     }
 
     const handleGenerate = async () => {
@@ -124,7 +162,6 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
         setIsGenerating(false);
         if (res.success) {
             setIsDialogOpen(false);
-            // In a real app, we would re-fetch documents. For now, let's mock the addition
             const t = templates.find(t => t.id === selectedTemplateId);
             setDocuments([{
                 id: Math.random(),
@@ -136,6 +173,34 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                 author: 'Moi',
                 status: 'DRAFT'
             }, ...documents]);
+            alert("Document généré avec succès !");
+        }
+    }
+
+    // Actions Handlers
+    const handleOCR = () => {
+        alert("Scan OCR lancé sur tous les nouveaux documents. Indexation en cours...");
+    }
+
+    const handleOpenFile = (fileName: string) => {
+        alert(`Ouverture du fichier : ${fileName}\n(Simulation de la visionneuse PDF/Word)`);
+    }
+
+    const handleStamp = () => {
+        alert("Tamponnage numérique (Bates Stamping) appliqué aux documents sélectionnés.");
+    }
+
+    const handleCompare = () => {
+        alert("Comparaison des versions lancée. Différences mises en évidence.");
+    }
+
+    const handleSign = () => {
+        alert("Redirection vers la plateforme de signature électronique (Yousign/DocuSign).");
+    }
+
+    const handleDelete = (id: number) => {
+        if (confirm("Confirmer la suppression de ce document ?")) {
+            setDocuments(prev => prev.filter(d => d.id !== id));
         }
     }
 
@@ -144,7 +209,14 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
             {/* Toolbar */}
             <div className="flex flex-wrap gap-2 items-center justify-between bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
                 <div className="flex gap-2">
-                    <Button variant="default" className="bg-slate-900 text-white">
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        multiple
+                        onChange={handleFileInput}
+                    />
+                    <Button variant="default" className="bg-slate-900 text-white" onClick={() => fileInputRef.current?.click()}>
                         <Upload className="mr-2 h-4 w-4" /> Importer
                     </Button>
                     <Button variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100" onClick={handleAIGenerate}>
@@ -206,7 +278,7 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                         </DialogContent>
                     </Dialog>
 
-                    <Button variant="outline" className="text-slate-700 border-slate-300">
+                    <Button variant="outline" className="text-slate-700 border-slate-300" onClick={handleOCR}>
                         <ScanLine className="mr-2 h-4 w-4" /> Scan OCR
                     </Button>
                 </div>
@@ -234,7 +306,7 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                     onDrop={handleDrop}
                 >
                     {/* Header of Content Area */}
-                    <div className="p-4 border-b border-slate-100 flex justify-between items-center">
+                    <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
                         <div className="flex items-center text-sm text-slate-500 gap-2">
                             <span className="flex items-center gap-1 font-semibold text-slate-700"><FolderOpenIcon /> Dossier</span>
                         </div>
@@ -262,7 +334,7 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                                         <TableCell>
                                             <FileIcon type={doc.type} />
                                         </TableCell>
-                                        <TableCell className="font-medium text-slate-900">
+                                        <TableCell className="font-medium text-slate-900 cursor-pointer hover:underline" onClick={() => handleOpenFile(doc.name)}>
                                             {doc.name}
                                             <div className="text-xs text-slate-400 font-normal">Modifié {doc.updated} par {doc.author}</div>
                                         </TableCell>
@@ -271,16 +343,32 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-1 text-xs font-mono bg-slate-100 px-2 py-1 rounded w-fit">
-                                                v{doc.version}.0 <History className="h-3 w-3 text-slate-400 ml-1 cursor-pointer hover:text-slate-900" />
+                                                v{doc.version}.0 <History className="h-3 w-3 text-slate-400 ml-1 cursor-pointer hover:text-slate-900" onClick={() => alert("Historique des versions...")} />
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <StatusBadge status={doc.status} />
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex justify-end gap-1">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900"><ShieldCheck className="h-4 w-4" /></Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900"><MoreVertical className="h-4 w-4" /></Button>
+                                            <div className="flex justify-end gap-1">
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900" onClick={handleStamp} title="Tamponner">
+                                                    <ShieldCheck className="h-4 w-4" />
+                                                </Button>
+
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900">
+                                                            <MoreVertical className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                        <DropdownMenuItem onClick={() => handleOpenFile(doc.name)}><Eye className="mr-2 h-4 w-4" /> Ouvrir</DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => alert("Téléchargement lancé...")}><Download className="mr-2 h-4 w-4" /> Télécharger</DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(doc.id)}><Trash2 className="mr-2 h-4 w-4" /> Supprimer</DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </div>
                                         </TableCell>
                                     </TableRow>
@@ -289,10 +377,16 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                         </Table>
 
                         {/* Empty State / Drop Prompt */}
-                        {documents.length < 10 && (
-                            <div className="h-32 flex flex-col items-center justify-center text-slate-400 border-t border-slate-100 mt-4 border-dashed">
+                        {documents.length === 0 && (
+                            <div className="h-32 flex flex-col items-center justify-center text-slate-400 border-t border-slate-100 mt-4 border-dashed" onClick={() => fileInputRef.current?.click()}>
                                 <Mail className="h-8 w-8 mb-2 text-slate-300" />
-                                <p className="text-sm">Glissez des emails Outlook ou des fichiers ici</p>
+                                <p className="text-sm">Glissez des fichiers ici ou cliquez pour importer</p>
+                            </div>
+                        )}
+                        {documents.length > 0 && documents.length < 10 && (
+                            <div className="py-8 flex flex-col items-center justify-center text-slate-400 border-t border-slate-100 mt-4 border-dashed border-2 rounded-lg bg-slate-50/30 cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => fileInputRef.current?.click()}>
+                                <Upload className="h-6 w-6 mb-2 text-slate-300" />
+                                <p className="text-xs">Glissez d'autres fichiers ici pour ajouter</p>
                             </div>
                         )}
                     </div>
@@ -303,13 +397,13 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                     <Card>
                         <CardContent className="p-4 space-y-4">
                             <h3 className="font-semibold text-sm text-slate-900">Actions Rapides</h3>
-                            <Button className="w-full justify-start text-xs bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200" variant="ghost">
+                            <Button className="w-full justify-start text-xs bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200" variant="ghost" onClick={handleStamp}>
                                 <ShieldCheck className="mr-2 h-4 w-4" /> Tamponner (Bates)
                             </Button>
-                            <Button className="w-full justify-start text-xs" variant="outline">
+                            <Button className="w-full justify-start text-xs" variant="outline" onClick={handleCompare}>
                                 <Maximize2 className="mr-2 h-4 w-4" /> Comparer Versions
                             </Button>
-                            <Button className="w-full justify-start text-xs text-blue-700 bg-blue-50 border-blue-200" variant="ghost">
+                            <Button className="w-full justify-start text-xs text-blue-700 bg-blue-50 border-blue-200" variant="ghost" onClick={handleSign}>
                                 <PenTool className="mr-2 h-4 w-4" /> Signature (Yousign)
                             </Button>
                         </CardContent>
@@ -320,8 +414,8 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                             <h3 className="font-semibold text-sm text-slate-900 mb-2">Statistiques GED</h3>
                             <div className="text-xs space-y-2 text-slate-600">
                                 <div className="flex justify-between"><span>Espace utilisé</span> <span className="font-medium">450 MB</span></div>
-                                <div className="flex justify-between"><span>Fichiers</span> <span className="font-medium">124</span></div>
-                                <div className="flex justify-between"><span>Versions</span> <span className="font-medium">32</span></div>
+                                <div className="flex justify-between"><span>Fichiers</span> <span className="font-medium text-indigo-600">{documents.length}</span></div>
+                                <div className="flex justify-between"><span>Dernier ajout</span> <span className="font-medium">Aujourd'hui</span></div>
                             </div>
                         </CardContent>
                     </Card>
