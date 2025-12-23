@@ -103,9 +103,7 @@ model Dossier {
   meetings    Meeting[]
   communications CommunicationLog[]
   
-  opposingParty String? // Nom de la partie adverse
-  opposingCounsel String? // Avocat adverse
-  
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
