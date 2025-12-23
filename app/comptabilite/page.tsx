@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save } from "lucide-react"
+import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save, FileText, Users, Search, Printer } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -26,7 +26,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals } from "@/app/actions"
+import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals, createAccount } from "@/app/actions"
 import Link from "next/link"
 
 export default function AccountingPage() {

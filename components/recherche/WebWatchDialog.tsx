@@ -3,7 +3,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Globe, RefreshCw, Check, Sparkles } from "lucide-react"
+import { Globe, RefreshCw, Check, Sparkles, Plus } from "lucide-react"
 import { triggerWebWatch, createJurisprudence } from "@/app/actions"
 import {
     Dialog,

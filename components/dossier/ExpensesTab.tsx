@@ -35,7 +35,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { createExpense } from '@/app/actions'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+
 
 interface Expense {
     id: string

@@ -14,10 +14,14 @@ export default async function EditTemplatePage({ params }: { params: { id: strin
         notFound()
     }
 
-    // Convert variables string back if needed, but the component handles string/array parsing?
-    // Model has variables as String (JSON). Interface expects string.
+    // Ensure types match (category can be null in DB but Editor expects string)
+    const tplData = {
+        ...template,
+        category: template.category || '',
+        variables: template.variables || ''
+    }
 
     return (
-        <TemplateEditor initialData={template} />
+        <TemplateEditor initialData={tplData} />
     )
 }

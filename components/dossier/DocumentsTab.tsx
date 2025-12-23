@@ -136,8 +136,8 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
     }
 
     const handleAIGenerate = async () => {
-        const prompt = prompt("Décrivez le document que vous souhaitez que l'IA rédige pour vous :");
-        if (prompt) {
+        const userDesc = prompt("Décrivez le document que vous souhaitez que l'IA rédige pour vous :");
+        if (userDesc) {
             setIsGenerating(true);
             setTimeout(() => {
                 setIsGenerating(false);
