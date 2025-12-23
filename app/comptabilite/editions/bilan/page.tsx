@@ -43,7 +43,7 @@ export default async function BilanPrint() {
                                     <td className="py-1 px-2">{row.label}</td>
                                     {!row.isTitle && (
                                         <td className="py-1 px-2 text-right font-mono">
-                                            {row.value.toLocaleString('fr-FR', { minimumFractionDigits: 0 })}
+                                            {(row.value || 0).toLocaleString('fr-FR', { minimumFractionDigits: 0 })}
                                         </td>
                                     )}
                                 </tr>
@@ -66,7 +66,7 @@ export default async function BilanPrint() {
                                     <td className="py-1 px-2">{row.label}</td>
                                     {!row.isTitle && (
                                         <td className="py-1 px-2 text-right font-mono">
-                                            {row.value.toLocaleString('fr-FR', { minimumFractionDigits: 0 })}
+                                            {(row.value || 0).toLocaleString('fr-FR', { minimumFractionDigits: 0 })}
                                         </td>
                                     )}
                                 </tr>
