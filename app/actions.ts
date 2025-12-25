@@ -1906,7 +1906,7 @@ export async function launchResearchMission(query: string) {
             try {
                 const scanRes = await scanHubPage(url)
                 if (scanRes.success && scanRes.links) {
-                    allLinks = [...allLinks, ...scanRes.links.map(l => ({ ...l, source: url }))]
+                    allLinks = [...allLinks, ...scanRes.links.map((l: any) => ({ ...l, source: url }))]
                 }
             } catch (e) {
                 // Continue if one seed fails

@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from 'react'
-import { Video, Phone, MessageCircle, Calendar as CalendarIcon, Users, Link as LinkIcon, Plus } from 'lucide-react'
+import { Video, Phone, MessageCircle, MessageSquare, Calendar as CalendarIcon, Users, Link as LinkIcon, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { WhatsAppSender } from '@/components/ai/WhatsAppSender'
 import { createMeeting, logCommunication } from '../actions'
 
 export default function CommunicationPage() {

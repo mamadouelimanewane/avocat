@@ -43,7 +43,7 @@ interface AnalysisResult {
         counterClaims: string[]
         evidenceNeeded: string[]
     }
-    pleadingDraft: string
+    pleadingDraft: string | null
     jurisprudenceReferences: Array<{
         title: string
         reference: string
@@ -365,7 +365,7 @@ export function AdverseDocumentScanner() {
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    onClick={() => copyToClipboard(analysisResult.pleadingDraft)}
+                                                    onClick={() => copyToClipboard(analysisResult.pleadingDraft || "")}
                                                 >
                                                     <Copy className="h-3 w-3 mr-1" />
                                                     Copier
@@ -377,7 +377,7 @@ export function AdverseDocumentScanner() {
                                             </div>
                                         </div>
                                         <div className="prose prose-sm max-w-none whitespace-pre-wrap font-serif text-slate-700 p-4 bg-slate-50 rounded-md border border-slate-200">
-                                            {analysisResult.pleadingDraft}
+                                            {analysisResult.pleadingDraft || "Aucun projet de plaidoirie généré."}
                                         </div>
                                     </TabsContent>
 

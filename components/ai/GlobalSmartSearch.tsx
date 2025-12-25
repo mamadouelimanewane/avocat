@@ -57,7 +57,7 @@ export function GlobalSmartSearch() {
         setIsSearching(true)
         // Simulated ElasticSearch response
         setTimeout(() => {
-            const mockResults: SearchResult[] = [
+            const mockResults: SearchResult[] = ([
                 {
                     id: '1',
                     title: "Bail Commercial - Ndiaye & Fils",
@@ -84,7 +84,7 @@ export function GlobalSmartSearch() {
                     date: 'Audit 2023',
                     relevance: 0.75
                 }
-            ].filter(r =>
+            ] as SearchResult[]).filter(r =>
                 r.title.toLowerCase().includes(query.toLowerCase()) ||
                 r.description.toLowerCase().includes(query.toLowerCase())
             )

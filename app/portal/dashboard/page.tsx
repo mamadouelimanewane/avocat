@@ -24,7 +24,7 @@ export default async function PortalDashboard() {
                             <Scale className="h-5 w-5" />
                         </div>
                         <div>
-                            <h1 className="font-bold text-slate-800 text-lg leading-tight">Bonjour, {client.name.split(' ')[0]}</h1>
+                            <h1 className="font-bold text-slate-800 text-lg leading-tight">Bonjour, {(client.name || 'Client').split(' ')[0]}</h1>
                             <p className="text-xs text-indigo-500 font-medium">Espace Client Sécurisé</p>
                         </div>
                     </div>
@@ -42,7 +42,7 @@ export default async function PortalDashboard() {
                         <div className="flex justify-between items-start">
                             <div>
                                 <p className="text-indigo-100 text-sm mb-1">Dossiers Actifs</p>
-                                <h2 className="text-4xl font-bold">{client.dossiers.length}</h2>
+                                <h2 className="text-4xl font-bold">{(client.dossiers || []).length}</h2>
                             </div>
                             <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
                                 <FileText className="h-6 w-6 text-white" />
@@ -50,7 +50,7 @@ export default async function PortalDashboard() {
                         </div>
                         <div className="mt-4 flex gap-2">
                             <Badge className="bg-white/20 hover:bg-white/30 text-white border-none">
-                                {client.factures.filter(f => f.status !== 'PAYEE').length} Factures à régler
+                                {(client.factures || []).filter(f => f.status !== 'PAYEE').length} Factures à régler
                             </Badge>
                         </div>
                     </CardContent>
@@ -75,7 +75,7 @@ export default async function PortalDashboard() {
                         <Button variant="link" className="text-indigo-600 text-xs p-0 h-auto">Tout voir</Button>
                     </div>
                     <div className="space-y-3">
-                        {client.dossiers.map(dossier => (
+                        {(client.dossiers || []).map(dossier => (
                             <Card key={dossier.id} className="border-indigo-50 shadow-sm hover:shadow-md transition-shadow">
                                 <CardContent className="p-4 flex justify-between items-center">
                                     <div className="flex gap-3">
@@ -98,7 +98,7 @@ export default async function PortalDashboard() {
                                 </CardContent>
                             </Card>
                         ))}
-                        {client.dossiers.length === 0 && (
+                        {(client.dossiers || []).length === 0 && (
                             <div className="text-center p-8 bg-white rounded-lg border border-dashed border-slate-200">
                                 <p className="text-slate-400 text-sm">Aucun dossier actif.</p>
                             </div>
@@ -112,7 +112,7 @@ export default async function PortalDashboard() {
                         <h3 className="font-semibold text-slate-800">Factures</h3>
                     </div>
                     <div className="space-y-3">
-                        {client.factures.map(facture => (
+                        {(client.factures || []).map(facture => (
                             <Card key={facture.id} className="border-indigo-50 shadow-sm">
                                 <CardContent className="p-4 flex justify-between items-center">
                                     <div>
@@ -124,10 +124,10 @@ export default async function PortalDashboard() {
                                                 <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none text-[10px] h-5">À régler</Badge>
                                             )}
                                         </div>
-                                        <p className="text-xs text-slate-500 mt-1">{new Date(facture.date).toLocaleDateString()}</p>
+                                        <p className="text-xs text-slate-500 mt-1">{new Date(facture.issueDate).toLocaleDateString()}</p>
                                     </div>
                                     <div className="text-right">
-                                        <div className="font-bold text-slate-900">{facture.amount.toLocaleString()} FCFA</div>
+                                        <div className="font-bold text-slate-900">{(facture.amountTTC || 0).toLocaleString()} FCFA</div>
                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 mt-1 ml-auto">
                                             <Download className="h-4 w-4 text-slate-400" />
                                         </Button>

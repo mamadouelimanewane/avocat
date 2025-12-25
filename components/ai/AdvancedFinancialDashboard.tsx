@@ -18,7 +18,8 @@ import {
     Calendar,
     Target,
     Zap,
-    Download
+    Download,
+    Users
 } from "lucide-react"
 import {
     AreaChart,
@@ -120,7 +121,7 @@ export function AdvancedFinancialDashboard() {
                             </Badge>
                         </div>
                         <div className="mt-4">
-                            <p className="text-sm font-medium text-slate-500">Impayés > 60j</p>
+                            <p className="text-sm font-medium text-slate-500">Impayés {'>'} 60j</p>
                             <h3 className="text-2xl font-bold text-slate-900">12.450.000 <span className="text-xs font-normal text-slate-400">FCFA</span></h3>
                         </div>
                     </CardContent>

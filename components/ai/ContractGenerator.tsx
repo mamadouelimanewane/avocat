@@ -24,7 +24,8 @@ import {
     Scaling,
     Calculator,
     ShieldAlert,
-    Landmark
+    Landmark,
+    History
 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { CONTRACT_TEMPLATES, ContractTemplate } from "@/lib/contract-templates"

@@ -10,8 +10,8 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || ''
 interface JurisprudenceDoc {
     id: string
     title: string
-    content: string
-    reference: string
+    content: string | null
+    reference: string | null
     type: string
 }
 
@@ -33,7 +33,7 @@ export async function generateCompletion(
 
         // Construction du contexte RAG
         const context = contextDocs.length > 0
-            ? contextDocs.map(doc => `[${doc.reference}] ${doc.title}\n${doc.content.substring(0, 500)}...`).join('\n\n')
+            ? contextDocs.map(doc => `[${doc.reference || 'N/A'}] ${doc.title}\n${(doc.content || '').substring(0, 500)}...`).join('\n\n')
             : "Aucun document pertinent trouvé dans la base de connaissances.";
 
         // Prompt système selon le mode
@@ -381,9 +381,9 @@ Nous demandons respectueusement au Tribunal de bien vouloir :
     if (docs.length > 0) {
         return `D'après la base de connaissances juridique :
 
-📚 ${docs[0].title} (${docs[0].reference})
+📚 ${docs[0].title} (${docs[0].reference || 'N/A'})
 
-${docs[0].content.substring(0, 300)}...
+${(docs[0].content || '').substring(0, 300)}...
 
 💡 Conseil : ${docs.length} document(s) pertinent(s) trouvé(s) dans la base. Consultez les sources suggérées pour plus de détails.
 

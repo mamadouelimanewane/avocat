@@ -35,7 +35,7 @@ export default async function PortalDashboard() {
                         <CardTitle className="text-sm font-medium text-slate-500">Dossiers Actifs</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-slate-900">{client.dossiers.length}</div>
+                        <div className="text-3xl font-bold text-slate-900">{(client.dossiers || []).length}</div>
                         <p className="text-xs text-slate-500 mt-1">Affaires en cours de traitement</p>
                     </CardContent>
                 </Card>
@@ -53,7 +53,7 @@ export default async function PortalDashboard() {
                         <CardTitle className="text-sm font-medium text-slate-500">Factures à régler</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-slate-900">{client.factures.length}</div>
+                        <div className="text-3xl font-bold text-slate-900">{(client.factures || []).length}</div>
                         <p className="text-xs text-slate-500 mt-1">Documents en attente de paiement</p>
                     </CardContent>
                 </Card>
@@ -69,7 +69,7 @@ export default async function PortalDashboard() {
                         </Link>
                     </div>
                     <div className="space-y-4">
-                        {client.dossiers.map(dossier => (
+                        {(client.dossiers || []).map(dossier => (
                             <Card key={dossier.id} className="hover:shadow-md transition-shadow cursor-pointer">
                                 <CardContent className="p-6">
                                     <div className="flex justify-between items-start mb-4">
@@ -90,7 +90,7 @@ export default async function PortalDashboard() {
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <FileCheck className="h-4 w-4" />
-                                            <span>{dossier._count.documents} document(s)</span>
+                                            <span>{(dossier as any)._count?.documents || 0} document(s)</span>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -107,15 +107,15 @@ export default async function PortalDashboard() {
                             <CardDescription>Règlements en attente</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {client.factures.length > 0 ? (
-                                client.factures.map(facture => (
+                            {(client.factures || []).length > 0 ? (
+                                (client.factures || []).map(facture => (
                                     <div key={facture.id} className="flex justify-between items-center p-3 rounded bg-amber-50 border border-amber-100">
                                         <div>
                                             <p className="font-medium text-amber-900">{facture.number}</p>
                                             <p className="text-xs text-amber-700">Échéance : {facture.dueDate ? formatDate(facture.dueDate) : 'Immédiat'}</p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-bold text-amber-900">{formatCurrency(facture.amount)}</p>
+                                            <p className="font-bold text-amber-900">{formatCurrency((facture as any).amountTTC || 0)}</p>
                                             <Button size="sm" variant="ghost" className="h-6 px-2 text-xs text-amber-700 hover:text-amber-900 hover:bg-amber-100">
                                                 Payer
                                             </Button>
