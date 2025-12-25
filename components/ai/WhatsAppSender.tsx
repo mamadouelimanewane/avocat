@@ -116,9 +116,9 @@ export function WhatsAppSender() {
                     <div className="flex justify-between items-center">
                         <Label className="text-xs font-bold text-slate-500">Message</Label>
                         <div className="flex gap-2">
-                            <Button variant="ghost" size="xs" className="h-6 text-[10px] bg-slate-100" onClick={() => setQuickTemplate('RDV')}>Rappel RDV</Button>
-                            <Button variant="ghost" size="xs" className="h-6 text-[10px] bg-slate-100" onClick={() => setQuickTemplate('DOCS')}>Relance Pièces</Button>
-                            <Button variant="ghost" size="xs" className="h-6 text-[10px] bg-slate-100" onClick={() => setQuickTemplate('AUDIENCE')}>Info Audience</Button>
+                            <Button variant="ghost" size="sm" className="h-6 text-[10px] bg-slate-100" onClick={() => setQuickTemplate('RDV')}>Rappel RDV</Button>
+                            <Button variant="ghost" size="sm" className="h-6 text-[10px] bg-slate-100" onClick={() => setQuickTemplate('DOCS')}>Relance Pièces</Button>
+                            <Button variant="ghost" size="sm" className="h-6 text-[10px] bg-slate-100" onClick={() => setQuickTemplate('AUDIENCE')}>Info Audience</Button>
                         </div>
                     </div>
                     <Textarea
