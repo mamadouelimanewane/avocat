@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Phone, Mail, MapPin, Building, Briefcase, User } from "lucide-react"
+import { AddContactDialog } from "@/components/annuaire/AddContactDialog"
 
 const prisma = new PrismaClient()
 
@@ -23,9 +24,7 @@ export default async function AnnuairePage() {
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Annuaire Pro & Partenaires</h1>
                     <p className="text-slate-500 mt-1">Le carnet d'adresses essentiel du cabinet : Huissiers, Notaires, Experts...</p>
                 </div>
-                <Button className="bg-slate-900 hover:bg-slate-800 text-white">
-                    <User className="mr-2 h-4 w-4" /> Ajouter un Contact
-                </Button>
+                <AddContactDialog />
             </div>
 
             <div className="flex gap-4">

@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { MobileSidebar } from '@/components/layout/MobileSidebar';
 import { ThemeCustomizer } from '@/components/theme-customizer';
 import { CommandMenu } from '@/components/ui/command-menu';
+import { NewTaskDialog } from '@/components/tasks/NewTaskDialog';
+import { NewNoteDialog } from '@/components/notes/NewNoteDialog';
+import { NotificationsPopover } from '@/components/layout/NotificationsPopover';
 
 export function Header() {
     return (
@@ -27,18 +30,21 @@ export function Header() {
 
                 {/* Quick Create Menu */}
                 <div className="hidden md:flex items-center gap-2 mr-2">
-                    <Button variant="outline" className="text-sm h-10 gap-2 border-slate-300 dark:border-slate-700 px-4 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200">
-                        <span className="text-xl leading-none text-amber-600">+</span> Tâche
-                    </Button>
-                    <Button variant="outline" className="text-sm h-10 gap-2 border-slate-300 dark:border-slate-700 px-4 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200">
-                        <span className="text-xl leading-none text-amber-600">+</span> Note
-                    </Button>
+                    <NewTaskDialog>
+                        <Button variant="outline" className="text-sm h-10 gap-2 border-slate-300 dark:border-slate-700 px-4 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200">
+                            <span className="text-xl leading-none text-amber-600">+</span> Tâche
+                        </Button>
+                    </NewTaskDialog>
+
+                    <NewNoteDialog>
+                        <Button variant="outline" className="text-sm h-10 gap-2 border-slate-300 dark:border-slate-700 px-4 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200">
+                            <span className="text-xl leading-none text-amber-600">+</span> Note
+                        </Button>
+                    </NewNoteDialog>
                 </div>
+
                 {/* Notifications */}
-                <Button variant="ghost" size="icon" className="relative text-slate-500 hover:text-slate-700">
-                    <Bell className="h-5 w-5" />
-                    <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full ring-2 ring-white" />
-                </Button>
+                <NotificationsPopover />
 
                 {/* User Profile */}
                 <div className="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-800">

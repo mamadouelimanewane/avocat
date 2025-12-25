@@ -42,7 +42,7 @@ export function NewProspectDialog() {
         // I'll create `createProspect` action if needed. 
         // Actually, let's assume the user can switch status later or I add status param to createClient.
 
-        await createClient({ ...data, type: data.type })
+        await createClient({ ...data, type: data.type, status: 'PROSPECT' })
         setIsLoading(false)
         setOpen(false)
         setData({ name: '', email: '', phone: '', type: 'ENTREPRISE' })

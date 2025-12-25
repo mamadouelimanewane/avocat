@@ -1,5 +1,5 @@
 
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { Plus, Search, FolderOpen, Calendar, Clock, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -14,8 +14,6 @@ import {
 } from "@/components/ui/table"
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { NewDossierDialog } from '@/components/dossier/NewDossierDialog'
-
-const prisma = new PrismaClient()
 
 export default async function DossiersPage() {
     const dossiers = await prisma.dossier.findMany({

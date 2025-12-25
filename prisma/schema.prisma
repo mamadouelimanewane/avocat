@@ -59,6 +59,7 @@ model Client {
   country   String?  @default("Senegal") // Default to Senegal or User's country
   
   accountingCode String? // Code auxiliaire (e.g., 41100001) for Accounting Link
+  accessCode     String? // Code d'accès portail (pin code)
   
   dossiers  Dossier[]
   factures  Facture[]
@@ -255,6 +256,7 @@ model Payment {
 model Task {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
+  description String?
   completed   Boolean  @default(false)
   dueDate     DateTime?
   priority    String   @default("NORMAL") // BASSE, NORMAL, HAUTE, URGENT
@@ -455,11 +457,15 @@ model Jurisprudence {
   summary     String?
   content     String?  // Full text or simulated content
   
+  status      String   @default("VALIDATED") // PENDING (Crawler), VALIDATED (RAG Ready), REJECTED
+  region      String?  // SENEGAL, OHADA, UEMOA, CEDEAO, UA
   category    String?  // COMMERCIAL, SOCIAL, PENAL, FONCIER
   keywords    String?  // JSON array
   
+  vector      Float[]  // Placeholder for Vector Embeddings (requires MongoDB Atlas Vector Search index)
+  
   fileUrl     String?  // Link to PDF
-  sourceUrl   String?  // Link to original source
+  sourceUrl   String?  // Link to original source (Crawler)
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

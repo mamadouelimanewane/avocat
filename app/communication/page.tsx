@@ -363,28 +363,14 @@ export default function CommunicationPage() {
 
                 <TabsContent value="whatsapp" className="mt-6">
                     <div className="grid md:grid-cols-2 gap-6">
-                        <Card className="bg-[#25D366]/10 border-[#25D366]/20">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-[#075E54]">
-                                    <MessageCircle className="h-6 w-6" /> WhatsApp Web
-                                </CardTitle>
-                                <CardDescription>
-                                    Lancez WhatsApp Web pour échanger rapidement avec vos clients.
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <Button className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white" onClick={handleWhatsAppRedirect}>
-                                    Ouvrir WhatsApp Web
-                                </Button>
-                                <p className="text-xs text-slate-500 mt-4 text-center">
-                                    Astuce: Utilisez l'extension Chrome "Save to Dossier" pour archiver les conversations.
-                                </p>
-                            </CardContent>
-                        </Card>
+                        <WhatsAppSender />
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Journal des échanges</CardTitle>
+                                <CardTitle className="flex items-center gap-2">
+                                    <MessageSquare className="h-5 w-5 text-indigo-600" />
+                                    Journal des échanges
+                                </CardTitle>
                                 <CardDescription>Historique des communications enregistrées.</CardDescription>
                             </CardHeader>
                             <CardContent>

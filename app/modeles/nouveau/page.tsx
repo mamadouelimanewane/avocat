@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea' // Need to create this or use standard
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { createTemplate } from '@/app/actions'
 
 export default function NewTemplatePage() {
     const router = useRouter()
@@ -33,18 +34,18 @@ export default function NewTemplatePage() {
     }
 
     const saveTemplate = async () => {
-        const res = await fetch('/api/templates', {
-            method: 'POST',
-            body: JSON.stringify({
-                name,
-                category,
-                content,
-                variables: JSON.stringify(detectedVariables)
-            })
+        const res = await createTemplate({
+            name,
+            category,
+            content,
+            variables: detectedVariables
         })
-        if (res.ok) {
+
+        if (res.success) {
             router.push('/modeles')
             router.refresh()
+        } else {
+            alert("Erreur lors de la création du modèle.")
         }
     }
 

@@ -29,10 +29,11 @@ type ClientOption = {
     name: string
 }
 
-export function NewDossierDialog({ clients }: { clients: ClientOption[] }) {
+export function NewDossierDialog({ clients, preSelectedClientId }: { clients: ClientOption[], preSelectedClientId?: string }) {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [selectedClient, setSelectedClient] = useState(preSelectedClientId || "")
 
     async function handleSubmit(formData: FormData) {
         setLoading(true)
@@ -97,7 +98,7 @@ export function NewDossierDialog({ clients }: { clients: ClientOption[] }) {
                                 Client
                             </Label>
                             <div className="col-span-3">
-                                <Select name="clientId" required>
+                                <Select name="clientId" value={selectedClient} onValueChange={setSelectedClient} required>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Sélectionner un client" />
                                     </SelectTrigger>

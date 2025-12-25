@@ -43,13 +43,13 @@ export function CommandMenu() {
         <>
             <button
                 onClick={() => setOpen(true)}
-                className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-foreground hidden md:flex items-center gap-2 p-2 px-3 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 hover:text-accent-foreground transition-colors w-full max-w-sm justify-between shadow-sm h-10"
+                className="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-foreground hidden md:flex items-center gap-2 p-2 px-3 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 hover:text-accent-foreground transition-colors w-full max-w-sm justify-between shadow-sm h-11"
             >
                 <span className="flex items-center gap-2">
                     <span>Rechercher...</span>
                 </span>
-                <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                    <span className="text-xs">⌘</span>K
+                <kbd className="pointer-events-none inline-flex h-6 select-none items-center gap-1 rounded border bg-muted px-2 font-mono text-xs font-medium text-muted-foreground opacity-100">
+                    <span className="text-sm">⌘</span>K
                 </kbd>
             </button>
 

@@ -21,10 +21,22 @@ const PROCEDURES: Record<ProcedureType, { label: string, duration: number, unit:
     "PREAVIS_BAIL": { label: "Préavis Congé Bail Commercial", duration: 6, unit: 'months', description: "Durée minimale du préavis (Acte Uniforme OHADA Droit Commercial)." },
 }
 
+import { createEvent, getDossiersList } from "@/app/actions"
+import { useToast } from "@/components/ui/use-toast"
+import { useEffect } from "react"
+
 export function DeadlineCalculator() {
     const [procedure, setProcedure] = useState<ProcedureType | "">("")
     const [baseDate, setBaseDate] = useState<string>("")
     const [result, setResult] = useState<{ date: Date, isAdjusted: boolean } | null>(null)
+    const [isSaving, setIsSaving] = useState(false)
+    const [dossiers, setDossiers] = useState<any[]>([])
+    const [selectedDossier, setSelectedDossier] = useState<string>("")
+    const { toast } = useToast()
+
+    useEffect(() => {
+        getDossiersList().then(setDossiers)
+    }, [])
 
     const calculate = () => {
         if (!procedure || !baseDate) return
@@ -34,13 +46,40 @@ export function DeadlineCalculator() {
         let end = proc.unit === 'months' ? addMonths(start, proc.duration) : addDays(start, proc.duration)
 
         let adjusted = false
-        // Basic Adjustment: If falls on weekend, move to next Monday (Common rule in Senegal/France)
         if (isWeekend(end)) {
             end = nextMonday(end)
             adjusted = true
         }
 
         setResult({ date: end, isAdjusted: adjusted })
+    }
+
+    const handleSaveToAgenda = async () => {
+        if (!result) return
+        setIsSaving(true)
+        try {
+            const procLabel = procedure ? PROCEDURES[procedure as ProcedureType].label : "Échéance"
+            const res = await createEvent({
+                title: `Échéance: ${procLabel}`,
+                startDate: result.date,
+                endDate: result.date,
+                type: 'DEADLINE',
+                description: `Calculé automatiquement. Date de départ: ${baseDate}`,
+                dossierId: selectedDossier
+            })
+
+            if (res.success) {
+                toast({
+                    title: "Événement créé",
+                    description: "L'échéance a été ajoutée à votre agenda.",
+                    className: "bg-emerald-50 border-emerald-200"
+                })
+            }
+        } catch (e) {
+            toast({ title: "Erreur", description: "Impossible de sauvegarder l'événement.", variant: "destructive" })
+        } finally {
+            setIsSaving(false)
+        }
     }
 
     return (
@@ -54,6 +93,20 @@ export function DeadlineCalculator() {
             </CardHeader>
             <CardContent className="p-6 space-y-6">
                 <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label>Dossier lié (Optionnel)</Label>
+                        <Select value={selectedDossier} onValueChange={setSelectedDossier}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Choisir un dossier..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {dossiers.map(d => (
+                                    <SelectItem key={d.id} value={d.id}>{d.reference} - {d.title}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
                     <div className="space-y-2">
                         <Label>Type de Procédure / Acte</Label>
                         <Select value={procedure} onValueChange={(v) => setProcedure(v as ProcedureType)}>
@@ -95,6 +148,17 @@ export function DeadlineCalculator() {
                                 <span>Ajusté au jour ouvrable suivant (Weekend).</span>
                             </div>
                         )}
+
+                        <Button
+                            onClick={handleSaveToAgenda}
+                            disabled={isSaving}
+                            variant="outline"
+                            className="w-full mt-4 border-indigo-200 text-indigo-700 hover:bg-indigo-100"
+                        >
+                            <Calendar className="mr-2 h-4 w-4" />
+                            {isSaving ? "Enregistrement..." : "Ajouter à l'Agenda"}
+                        </Button>
+
                         <div className="mt-4 text-xs text-slate-500 border-t border-indigo-200 pt-2">
                             * Ce calcul est indicatif. Vérifiez toujours les jours fériés spécifiques au Sénégal.
                         </div>
@@ -104,3 +168,4 @@ export function DeadlineCalculator() {
         </Card>
     )
 }
+

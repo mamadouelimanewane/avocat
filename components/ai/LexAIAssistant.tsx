@@ -13,7 +13,7 @@ import { generateAIResponse } from '@/app/actions'
 export function LexAIAssistant() {
     const [isOpen, setIsOpen] = useState(false)
     const [query, setQuery] = useState('')
-    const [messages, setMessages] = useState<{ role: 'user' | 'ai', content: string }[]>([
+    const [messages, setMessages] = useState<{ role: 'user' | 'ai', content: string, sources?: any[] }[]>([
         { role: 'ai', content: 'Bonjour Maître. Je suis LexAI, votre assistant juridique expert en droit Sénégalais et OHADA. Comment puis-je vous aider ?' }
     ])
     const [isLoading, setIsLoading] = useState(false)
@@ -31,7 +31,11 @@ export function LexAIAssistant() {
 
         setIsLoading(false)
         if (response.success) {
-            setMessages(prev => [...prev, { role: 'ai', content: response.text || "Je n'ai pas pu générer de réponse." }])
+            setMessages(prev => [...prev, {
+                role: 'ai',
+                content: response.text || "Je n'ai pas pu générer de réponse.",
+                sources: response.sources
+            }])
         }
     }
 
@@ -81,10 +85,35 @@ export function LexAIAssistant() {
                         <ScrollArea className="flex-1 p-4">
                             <div className="space-y-4">
                                 {messages.map((m, i) => (
-                                    <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`max-w-[85%] rounded-lg p-3 text-sm whitespace-pre-wrap ${m.role === 'user' ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm'}`}>
+                                    <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} gap-1 w-full`}>
+                                        <div className={`max-w-[90%] rounded-lg p-3 text-sm whitespace-pre-wrap ${m.role === 'user' ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm'}`}>
                                             {m.content}
                                         </div>
+
+                                        {/* SUGGESTED SOURCES (AI ONLY) */}
+                                        {m.role === 'ai' && m.sources && m.sources.length > 0 && (
+                                            <div className="flex flex-col gap-1 w-[90%] mt-1 animate-in fade-in slide-in-from-top-1 duration-500">
+                                                <div className="text-[10px] uppercase font-bold text-slate-400 pl-1">Sources Suggérées</div>
+                                                {m.sources.map((src, idx) => (
+                                                    <a
+                                                        key={idx}
+                                                        href={`/recherche?q=${encodeURIComponent(src.reference || src.title)}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-2 p-2 bg-white border border-indigo-100 rounded text-xs text-indigo-800 hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-sm group"
+                                                    >
+                                                        <FileText className="h-4 w-4 flex-shrink-0 text-indigo-400 group-hover:text-indigo-600" />
+                                                        <div className="flex-1 truncate">
+                                                            <div className="font-semibold text-indigo-700 truncate">{src.title}</div>
+                                                            <div className="text-[10px] text-slate-500">{src.reference} • {src.type}</div>
+                                                        </div>
+                                                        <Badge variant="secondary" className="text-[9px] h-5 bg-indigo-50 text-indigo-600 group-hover:bg-white">
+                                                            Voir
+                                                        </Badge>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                                 {isLoading && (

@@ -1,0 +1,32 @@
+{
+    "common": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "loading": "Loading...",
+        "actions": "Actions",
+        "close": "Close"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "dossiers": "Cases",
+        "clients": "Clients",
+        "agenda": "Calendar",
+        "billing": "Billing",
+        "crm": "CRM / Prospects",
+        "reports": "Reports",
+        "settings": "Settings"
+    },
+    "crm": {
+        "pipeline": "Sales Pipeline",
+        "new_prospect": "New Prospect",
+        "convert_client": "Convert to Client"
+    },
+    "dashboard": {
+        "welcome": "Welcome",
+        "active_cases": "Active Cases",
+        "revenue": "Revenue",
+        "pending_tasks": "Pending Tasks"
+    }
+}

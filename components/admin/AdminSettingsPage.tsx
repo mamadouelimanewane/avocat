@@ -9,8 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { updateCabinetSettings } from '@/app/actions'
+import { AdminInitialization } from './AdminInitialization'
 
 export default function AdminSettingsPage({ settings }: { settings: any }) {
+    // ... (state init) ...
     const [formData, setFormData] = useState({
         name: settings?.name || '',
         address: settings?.address || '',
@@ -53,6 +55,8 @@ export default function AdminSettingsPage({ settings }: { settings: any }) {
 
     return (
         <div className="space-y-6 max-w-2xl">
+            <AdminInitialization />
+
             <div>
                 <h2 className="text-xl font-bold tracking-tight text-slate-900">Paramètres du Cabinet</h2>
                 <p className="text-slate-500">Configuration générale de l'application.</p>

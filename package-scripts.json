@@ -1,0 +1,13 @@
+{
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "test:ai": "ts-node --esm scripts/test-ai.ts",
+        "db:seed": "node prisma/seed-invoices.mjs",
+        "db:studio": "prisma studio",
+        "db:push": "prisma db push",
+        "db:generate": "prisma generate"
+    }
+}

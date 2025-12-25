@@ -60,8 +60,8 @@ export default function JurisprudencePage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Jurisprudence</h1>
-                    <p className="text-slate-500 mt-1">Base de données unifiée Cour Suprême (Sénégal) & CCJA (OHADA).</p>
+                    <h1 className="text-2xl font-bold tracking-tight text-slate-900">Textes Législatifs, Réglementaires et Jurisprudence</h1>
+                    <p className="text-slate-500 mt-1">Base de données juridique : Lois, Codes, Arrêtés (Sénégal) & OHADA.</p>
                 </div>
             </div>
 
@@ -106,12 +106,14 @@ export default function JurisprudencePage() {
             </div>
 
             <Tabs defaultValue="tous" className="w-full" onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-5 mb-4">
-                    <TabsTrigger value="tous">Tous</TabsTrigger>
-                    <TabsTrigger value="jurisprudence">Jurisprudence</TabsTrigger>
-                    <TabsTrigger value="lois">Lois & Codes</TabsTrigger>
-                    <TabsTrigger value="arretes">Arrêtés</TabsTrigger>
-                    <TabsTrigger value="ohada"><span className="text-indigo-600 font-bold">OHADA</span></TabsTrigger>
+                <TabsList className="grid w-full grid-cols-5 mb-4 bg-slate-100/50 p-1">
+                    <TabsTrigger value="tous" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Tous</TabsTrigger>
+                    <TabsTrigger value="jurisprudence" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Jurisprudence</TabsTrigger>
+                    <TabsTrigger value="lois" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Lois & Codes</TabsTrigger>
+                    <TabsTrigger value="arretes" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Arrêtés</TabsTrigger>
+                    <TabsTrigger value="ohada" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">
+                        <span className="font-bold">OHADA</span>
+                    </TabsTrigger>
                 </TabsList>
             </Tabs>
 

@@ -1,0 +1,32 @@
+{
+    "common": {
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "loading": "Chargement...",
+        "actions": "Actions",
+        "close": "Fermer"
+    },
+    "nav": {
+        "dashboard": "Tableau de Bord",
+        "dossiers": "Dossiers",
+        "clients": "Clients",
+        "agenda": "Agenda",
+        "billing": "Facturation",
+        "crm": "CRM / Prospects",
+        "reports": "Rapports",
+        "settings": "Paramètres"
+    },
+    "crm": {
+        "pipeline": "Pipeline Commercial",
+        "new_prospect": "Nouveau Prospect",
+        "convert_client": "Convertir en Client"
+    },
+    "dashboard": {
+        "welcome": "Bienvenue",
+        "active_cases": "Dossiers Actifs",
+        "revenue": "Chiffre d'Affaires",
+        "pending_tasks": "Tâches en Attente"
+    }
+}

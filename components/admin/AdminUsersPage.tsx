@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { createUser, updateUserStatus, updateUserPermissions } from '@/app/actions'
+import { createUser, updateUserStatus, updateUserPermissions, updateUserRole } from '@/app/actions'
 import { Checkbox } from "@/components/ui/checkbox"
 
 // Define available permissions
@@ -41,6 +41,7 @@ const PERMISSIONS_LIST = [
 export default function AdminUsersPage({ users }: { users: any[] }) {
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [isPermOpen, setIsPermOpen] = useState(false)
+    const [isRoleOpen, setIsRoleOpen] = useState(false)
     const [selectedUser, setSelectedUser] = useState<any>(null)
     const [selectedPerms, setSelectedPerms] = useState<string[]>([])
 
@@ -78,6 +79,17 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
         } else {
             setSelectedPerms([...selectedPerms, permId])
         }
+    }
+
+    const openRoleDialog = (user: any) => {
+        setSelectedUser(user)
+        setIsRoleOpen(true)
+    }
+
+    const handleUpdateRole = async (newRole: string) => {
+        if (!selectedUser) return
+        await updateUserRole(selectedUser.id, newRole)
+        setIsRoleOpen(false)
     }
 
     return (
@@ -169,6 +181,32 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+
+                {/* Role Dialog */}
+                <Dialog open={isRoleOpen} onOpenChange={setIsRoleOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Modifier le Rôle</DialogTitle>
+                            <DialogDescription>
+                                Changer le rôle de {selectedUser?.name}.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4">
+                            <Label>Nouveau Rôle</Label>
+                            <Select value={selectedUser?.role} onValueChange={handleUpdateRole}>
+                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="ADMIN">Administrateur</SelectItem>
+                                    <SelectItem value="AVOCAT">Avocat</SelectItem>
+                                    <SelectItem value="SECRETAIRE">Secrétaire</SelectItem>
+                                    <SelectItem value="COLLABORATEUR">Collaborateur</SelectItem>
+                                    <SelectItem value="STAGIAIRE">Stagiaire</SelectItem>
+                                    <SelectItem value="JURISTE">Juriste</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <Card>
@@ -199,7 +237,13 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline">{user.role}</Badge>
+                                        <Badge
+                                            variant="outline"
+                                            className="cursor-pointer hover:bg-slate-100"
+                                            onClick={() => openRoleDialog(user)}
+                                        >
+                                            {user.role}
+                                        </Badge>
                                     </TableCell>
                                     <TableCell className="text-slate-500">{user.email}</TableCell>
                                     <TableCell>

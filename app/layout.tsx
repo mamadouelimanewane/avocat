@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Outfit } from 'next/font/google';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Header } from '@/components/layout/Header';
-import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
-import { LexAIAssistant } from '@/components/ai/LexAIAssistant';
+import { AppShell } from '@/components/layout/AppShell';
 import './globals.css';
 
 // Using standard fonts if Google Fonts fail, but configuring them here
@@ -16,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/theme-provider"
+import { I18nProvider } from "@/components/i18n-provider"
 
 export default function RootLayout({
     children,
@@ -24,22 +22,18 @@ export default function RootLayout({
 }) {
     return (
         <html lang="fr" suppressHydrationWarning>
-            <body className={`${inter.variable} ${outfit.variable} font-sans bg-background text-foreground md:pl-64 min-h-screen`} suppressHydrationWarning>
+            <body className={`${inter.variable} ${outfit.variable} font-sans bg-background text-foreground min-h-screen`} suppressHydrationWarning>
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <Sidebar className="hidden md:flex" />
-                    <div className="flex flex-col min-h-screen">
-                        <Header />
-                        <main className="flex-1 p-6 md:p-8 animate-in fade-in duration-500 pb-20 md:pb-8">
+                    <I18nProvider>
+                        <AppShell>
                             {children}
-                            <LexAIAssistant />
-                        </main>
-                        <MobileBottomNav />
-                    </div>
+                        </AppShell>
+                    </I18nProvider>
                 </ThemeProvider>
             </body>
         </html>

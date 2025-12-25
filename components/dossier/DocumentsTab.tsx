@@ -48,8 +48,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { createDocumentFromTemplate } from '@/app/actions';
+import { createDocumentFromTemplate, uploadDocument } from '@/app/actions';
 import { Label } from '@/components/ui/label';
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation';
 
 // Mock data for Documents
 const initialDocuments = [
@@ -67,9 +69,11 @@ interface Template {
 }
 
 export default function DocumentsTab({ dossierId, templates = [] }: { dossierId: string, templates?: Template[] }) {
-    const [documents, setDocuments] = useState(initialDocuments);
+    const [documents, setDocuments] = useState<any[]>(initialDocuments);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { toast } = useToast();
+    const router = useRouter();
 
     // Generator State
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
@@ -102,19 +106,54 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
         }
     }
 
-    const handleFiles = (files: FileList) => {
-        const newDocs = Array.from(files).map((file) => ({
-            id: Math.random(),
-            name: file.name,
-            version: 1,
-            type: 'AUTRE',
-            size: (file.size / 1024).toFixed(1) + ' KB',
-            updated: "À l'instant",
-            author: 'Moi',
-            status: 'DRAFT'
-        }));
-        setDocuments(prev => [...newDocs, ...prev]);
-        alert(`${newDocs.length} fichier(s) importé(s) avec succès !`);
+    const handleFiles = async (files: FileList) => {
+        const fileArray = Array.from(files);
+
+        // Optimistic UI updates could go here, but let's just wait for upload
+        let successCount = 0;
+
+        for (const file of fileArray) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('dossierId', dossierId);
+
+            try {
+                const res = await uploadDocument(formData);
+                if (res.success && res.document) {
+                    successCount++;
+                    // Add to local state (adapted to match UI model temporarily)
+                    const newDoc = {
+                        id: res.document.id, // String ID from DB
+                        name: res.document.name,
+                        version: 1,
+                        type: res.document.type || 'AUTRE',
+                        size: (file.size / 1024).toFixed(1) + ' KB',
+                        updated: "À l'instant",
+                        author: 'Moi',
+                        status: 'DRAFT'
+                    };
+                    setDocuments(prev => [newDoc, ...prev]);
+                } else {
+                    console.error('Upload failed for', file.name, res.message);
+                }
+            } catch (error) {
+                console.error('Upload exception', error);
+            }
+        }
+
+        if (successCount > 0) {
+            toast({
+                title: "Import réussi",
+                description: `${successCount} fichier(s) importé(s) avec succès.`
+            });
+            router.refresh();
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Erreur",
+                description: "Échec de l'importation."
+            });
+        }
     }
 
     const onSelectTemplate = (id: string) => {

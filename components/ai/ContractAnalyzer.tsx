@@ -9,12 +9,49 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { analyzeContract } from '@/app/actions'
 import { Progress } from "@/components/ui/progress"
+import { useToast } from "@/components/ui/use-toast"
+import { useRef } from 'react'
 
 export function ContractAnalyzer() {
     const [text, setText] = useState("")
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [result, setResult] = useState<any>(null)
     const [progress, setProgress] = useState(0)
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const { toast } = useToast()
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setIsAnalyzing(true)
+        // Simulate OCR
+        await new Promise(resolve => setTimeout(resolve, 1500))
+
+        setText(`CONTRAT DE PRESTATION DE SERVICES
+        
+ENTRE LES SOUSSIGNÉS :
+Société Alpha, SARL au capital de 1.000.000 FCFA, dont le siège social est situé à Dakar, représentée par M. Directeur Général.
+Ci-après dénommée "Le Prestataire"
+
+ET :
+M. Dupont, demeurant à Dakar, Plateau.
+Ci-après dénommé "Le Client"
+
+IL A ÉTÉ CONVENU CE QUI SUIT :
+
+Article 1 - Objet
+Le Prestataire s'engage à fournir une mission de conseil stratégique.
+
+Article 12 - Non-concurrence
+Le Client s'interdit d'exercer toute activité concurrente pendant une durée de 5 ans sur tout le territoire de la CEDEAO.
+
+Article 15 - Loi Applicable
+Le présent contrat est régi par les usages du commerce.`)
+
+        setIsAnalyzing(false)
+        toast({ title: "OCR Terminé", description: "Texte extrait avec succès du fichier " + file.name })
+    }
 
     const handleAnalyze = async () => {
         if (!text) return
@@ -51,7 +88,17 @@ export function ContractAnalyzer() {
                     <CardDescription>Collez le texte ou téléversez un PDF (simulé) pour analyse.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 p-4 flex flex-col gap-4">
-                    <div className="border-2 border-dashed border-slate-200 rounded-lg p-6 flex flex-col items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors cursor-pointer">
+                    <div
+                        onClick={() => fileInputRef.current?.click()}
+                        className="border-2 border-dashed border-slate-200 rounded-lg p-6 flex flex-col items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors cursor-pointer"
+                    >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept=".pdf,.docx,.txt"
+                            onChange={handleFileChange}
+                        />
                         <Upload className="h-8 w-8 mb-2" />
                         <span className="text-sm font-medium">Glisser-déposer un fichier ici</span>
                         <span className="text-xs">PDF, DOCX (Max 10MB)</span>

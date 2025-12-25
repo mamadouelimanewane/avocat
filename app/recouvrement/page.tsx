@@ -10,18 +10,33 @@ import { BadgePercent, Megaphone, CheckCircle2, AlertTriangle, TrendingUp, Phone
 const prisma = new PrismaClient()
 
 export default async function RecouvrementPage() {
-    // Simulated Data (since we didn't add a Debt Model yet)
-    // In a real app, this would be `prisma.debt.findMany`
-    const debts = [
-        { id: 1, debtor: "BTP Construction SA", creditor: "Banque Atlantique", amount: 15000000, recovered: 5000000, status: "AMIABLE", nextAction: "Relance Téléphonique", date: "2024-05-01" },
-        { id: 2, debtor: "M. Modou Lo", creditor: "Cbao", amount: 2500000, recovered: 0, status: "JUDICIAIRE", nextAction: "Assignation", date: "2024-04-10" },
-        { id: 3, debtor: "Société Diamant", creditor: "Fournisseur Express", amount: 800000, recovered: 800000, status: "CLOTURE", nextAction: "-", date: "2024-03-15" },
-        { id: 4, debtor: "Agence Immobilière Kirene", creditor: "Propriétaire Bailleur", amount: 4500000, recovered: 1500000, status: "AMIABLE", nextAction: "Mise en demeure", date: "2024-05-12" },
-    ]
+    // Fetch dossiers classified as Recouvrement
+    const dossiers = await prisma.dossier.findMany({
+        where: {
+            OR: [
+                { procedureType: 'RECOUVREMENT' },
+                { title: { contains: 'Recouvrement', mode: 'insensitive' } }
+            ]
+        },
+        include: { client: true },
+        orderBy: { updatedAt: 'desc' }
+    })
+
+    // Calculate generic stats from these dossiers (simulated amounts for now if not in DB)
+    const debts = dossiers.map(d => ({
+        id: d.id,
+        debtor: d.opposingParty || "Partie Adverse",
+        creditor: d.client.name,
+        amount: 1000000, // Placeholder as Dossier model doesn't have 'claimAmount' yet
+        recovered: d.status === 'CLOTURE' ? 1000000 : 0,
+        status: d.status,
+        nextAction: d.stage || "Analyse",
+        date: d.createdAt
+    }))
 
     const totalAmount = debts.reduce((sum, d) => sum + d.amount, 0)
     const totalRecovered = debts.reduce((sum, d) => sum + d.recovered, 0)
-    const recoveryRate = Math.round((totalRecovered / totalAmount) * 100)
+    const recoveryRate = totalAmount > 0 ? Math.round((totalRecovered / totalAmount) * 100) : 0
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">

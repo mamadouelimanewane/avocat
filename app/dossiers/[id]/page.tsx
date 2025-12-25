@@ -1,5 +1,5 @@
 
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Clock, Calendar, CheckCircle2, AlertCircle } from 'lucide-react'
@@ -10,8 +10,6 @@ import DocumentsTab from '@/components/dossier/DocumentsTab'
 import FinanceTab from '@/components/dossier/FinanceTab'
 import ExpensesTab from '@/components/dossier/ExpensesTab'
 import DossierOverview from '@/components/dossier/DossierOverview'
-
-const prisma = new PrismaClient()
 
 export default async function DossierDetailPage({ params }: { params: { id: string } }) {
     const dossier = await prisma.dossier.findUnique({

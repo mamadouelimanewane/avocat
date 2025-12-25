@@ -1,9 +1,9 @@
 
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { Plus, Search, Building2, User, Phone, MapPin, MoreHorizontal } from 'lucide-react'
+import { Plus, Search, Building2, User, Phone, MapPin, MoreHorizontal, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input' // I need to create this maybe? Or just use raw input
+import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
     Table,
@@ -13,8 +13,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-const prisma = new PrismaClient()
 
 // Simple Input component inline if it doesn't exist, or standard HTML input
 function SearchInput() {
@@ -104,9 +109,26 @@ export default async function ClientsPage() {
                                     </span>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <Button variant="ghost" size="icon">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                    </Button>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon">
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem onClick={() => {
+                                                const url = `https://avocatos.app/portal/login?email=${encodeURIComponent(client.email || '')}`
+                                                const text = `Bonjour ${client.name},\n\nVoici votre accès sécurisé au portail du cabinet :\n🔗 ${url}\n\n🔑 Code d'accès : ${client.accessCode || 'Non défini'}`
+                                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+                                            }}>
+                                                <Share2 className="mr-2 h-4 w-4" />
+                                                Envoyer accès WhatsApp
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem className="text-red-600">
+                                                Supprimer
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </TableCell>
                             </TableRow>
                         ))}

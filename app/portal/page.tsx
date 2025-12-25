@@ -1,50 +1,17 @@
-
-import { PrismaClient } from '@prisma/client'
-import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import Link from 'next/link'
 import { ArrowRight, Clock, AlertCircle, FileCheck, Phone } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
-
-const prisma = new PrismaClient()
-
-async function getDemoClientData() {
-    // In a real app, we would get the logged-in user's ID from session
-    // Here we pick the first client or create a mock one if empty
-    let client = await prisma.client.findFirst({
-        include: {
-            dossiers: {
-                take: 3,
-                orderBy: { updatedAt: 'desc' },
-                include: { _count: { select: { events: true, documents: true } } }
-            },
-            factures: {
-                take: 3,
-                orderBy: { issueDate: 'desc' },
-                where: { status: { in: ['EMISE', 'PARTIELLE'] } } // Show unpaid/partial first
-            }
-        }
-    })
-
-    if (!client) {
-        // Fallback mock if DB is empty
-        return null
-    }
-
-    return client
-}
+import { getPortalDashboardData } from '@/app/actions'
+import { redirect } from 'next/navigation'
 
 export default async function PortalDashboard() {
-    const client = await getDemoClientData()
+    const { success, client } = await getPortalDashboardData()
 
-    if (!client) {
-        return (
-            <div className="text-center py-20">
-                <h2 className="text-xl font-semibold">Aucune donnée client disponible.</h2>
-                <p className="text-slate-500">Veuillez créer des clients dans l'interface admin d'abord.</p>
-            </div>
-        )
+    if (!success || !client) {
+        redirect('/client-login')
     }
 
     return (
@@ -148,7 +115,7 @@ export default async function PortalDashboard() {
                                             <p className="text-xs text-amber-700">Échéance : {facture.dueDate ? formatDate(facture.dueDate) : 'Immédiat'}</p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-bold text-amber-900">{formatCurrency(facture.amountTTC)}</p>
+                                            <p className="font-bold text-amber-900">{formatCurrency(facture.amount)}</p>
                                             <Button size="sm" variant="ghost" className="h-6 px-2 text-xs text-amber-700 hover:text-amber-900 hover:bg-amber-100">
                                                 Payer
                                             </Button>

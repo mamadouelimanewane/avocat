@@ -22,47 +22,69 @@ import {
     Globe,
     BarChart3,
     BrainCircuit,
+    Activity,
     Archive,
     Rocket,
     Contact2 as Contact,
     GraduationCap,
+    FileSearch,
+    Mail,
+    PenTool,
+    TrendingUp,
+    Sparkles,
+    FileSignature,
     FileInput as FileMsg // Using FileInput as a distinctive file icon for Templates
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Stopwatch } from '@/components/tools/Stopwatch';
+import { useI18n } from '@/components/i18n-provider';
 
-const navigation = [
-    { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
-    { name: 'Dossiers', href: '/dossiers', icon: Briefcase },
-    { name: 'Clients', href: '/clients', icon: Users },
-    { name: 'Agenda', href: '/agenda', icon: Calendar },
-    { name: 'Palais & Audiences', href: '/audiences', icon: Landmark },
-    { name: 'Facturation', href: '/factures', icon: Receipt },
-    { name: 'Recouvrement Massif', href: '/recouvrement', icon: BadgePercent },
-    { name: 'Comptabilité', href: '/comptabilite', icon: Calculator }, // Reordered for better flow
-    { name: 'GED / Documents', href: '/documents', icon: Files }, // Renamed from Outils/Files implies GED usually, but explicit is better
-    { name: 'Recherche Juridique', href: '/recherche', icon: Gavel }, // Consolidating legal resources
-    { name: 'Archives', href: '/archives', icon: Archive }, // Added as requested
-    { name: 'Assistant IA', href: '/analyse', icon: BrainCircuit },
-    { name: 'Annuaire Pro', href: '/annuaire', icon: Contact },
-    { name: 'International', href: '/international', icon: Globe },
-    { name: 'Rapports & Bilan', href: '/rapports', icon: BarChart3 }, // Renamed to be explicit about Bilan
-    { name: 'Outils & Codes', href: '/outils', icon: BookOpen },
-    { name: 'Modèles (Bible)', href: '/modeles', icon: FileMsg },
-    { name: 'CRM & Développement', href: '/crm', icon: Rocket },
-    { name: 'Conflits d\'Intérêts', href: '/conflits', icon: ShieldAlert },
-    { name: 'Communication', href: '/communication', icon: MessageCircle },
-    { name: 'RH & Talents', href: '/rh', icon: GraduationCap },
-    { name: 'Administration', href: '/admin', icon: Settings },
-];
+// Removed static navigation array
+
+// 
+
 
 
 
 export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
+    const { t } = useI18n();
+
+    const translatedNavigation = [
+        { name: t('nav.dashboard'), href: '/', icon: LayoutDashboard },
+        { name: t('nav.dossiers'), href: '/dossiers', icon: Briefcase },
+        { name: t('nav.clients'), href: '/clients', icon: Users },
+        { name: t('nav.agenda'), href: '/agenda', icon: Calendar },
+        { name: 'Palais & Audiences', href: '/audiences', icon: Landmark },
+        { name: t('nav.billing'), href: '/factures', icon: Receipt },
+        { name: 'Recouvrement Massif', href: '/recouvrement', icon: BadgePercent },
+        { name: 'Comptabilité', href: '/comptabilite', icon: Calculator },
+        { name: 'CARPA (Fonds Tiers)', href: '/comptabilite/carpa', icon: Landmark },
+        { name: 'GED / Documents', href: '/documents', icon: Files },
+        { name: 'Recherche Juridique', href: '/recherche', icon: Gavel },
+        { name: 'Archives', href: '/archives', icon: Archive },
+        { name: 'Assistant IA', href: '/analyse', icon: BrainCircuit },
+        { name: 'Scanner Adverse', href: '/scanner-adverse', icon: FileSearch },
+        { name: 'Générateur de Contrats', href: '/generateur-contrat', icon: FileSignature },
+        { name: 'Recherche IA Global', href: '/recherche-ia', icon: Sparkles },
+        { name: 'Templates Email', href: '/templates-email', icon: Mail },
+        { name: 'Parapheur Numérique', href: '/parapheur', icon: PenTool },
+        { name: 'Monitoring IA', href: '/monitoring-ia', icon: Activity },
+        { name: 'Finance Stratégique', href: '/finance-strategique', icon: TrendingUp },
+        { name: 'Annuaire Pro', href: '/annuaire', icon: Contact },
+        { name: 'International', href: '/international', icon: Globe },
+        { name: t('nav.reports'), href: '/rapports', icon: BarChart3 },
+        { name: 'Outils & Codes', href: '/outils', icon: BookOpen },
+        { name: 'Modèles (Bible)', href: '/modeles', icon: FileMsg },
+        { name: t('nav.crm'), href: '/crm', icon: Rocket },
+        { name: 'Conflits d\'Intérêts', href: '/conflits', icon: ShieldAlert },
+        { name: 'Communication', href: '/communication', icon: MessageCircle },
+        { name: 'RH & Talents', href: '/rh', icon: GraduationCap },
+        { name: t('nav.settings'), href: '/admin', icon: Settings },
+    ];
 
     return (
-        <div className={cn("hidden md:flex h-screen flex-col justify-between border-r border-slate-800 bg-black text-white w-64 fixed left-0 top-0 z-50 shadow-sm transition-colors", className)}>
+        <div className={cn("flex h-screen flex-col justify-between border-r border-slate-800 bg-black text-white w-64 shadow-sm transition-colors", className)}>
             <div className="flex flex-col h-full">
                 {/* Logo Area */}
                 <div className="h-20 flex flex-col justify-center px-6 border-b border-slate-800 bg-black">
@@ -75,7 +97,7 @@ export function Sidebar({ className }: { className?: string }) {
 
                 {/* Navigation */}
                 <div className="flex-1 overflow-y-auto py-6 px-3 space-y-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-900 [&::-webkit-scrollbar-thumb]:bg-slate-600 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-slate-500">
-                    {navigation.map((item) => {
+                    {translatedNavigation.map((item) => {
                         const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href));
                         return (
                             <Link
