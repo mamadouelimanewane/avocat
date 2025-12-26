@@ -28,6 +28,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals, createAccount } from "@/app/actions"
 import Link from "next/link"
+import { ExportButton } from "@/components/ui/ExportButton"
 
 export default function AccountingPage() {
     const [accounts, setAccounts] = useState<any[]>([])
@@ -120,7 +121,19 @@ export default function AccountingPage() {
                             <Printer className="mr-2 h-4 w-4" /> Éditions
                         </Button>
                     </Link>
-                    <Button variant="outline" onClick={loadData}><RefreshCcw className="mr-2 h-4 w-4" /> Actualiser (F5)</Button>
+                    <Button variant="outline" onClick={loadData}><RefreshCcw className="mr-2 h-4 w-4" /> Actualiser</Button>
+                    <ExportButton
+                        data={accounts.map(a => ({
+                            Code: a.code,
+                            Intitule: a.name,
+                            Type: a.type,
+                            Solde: a.balance
+                        }))}
+                        filename="Balance_Generale"
+                        sheetName="Balance"
+                        label="Exporter Balance"
+                        variant="premium"
+                    />
 
                     {/* Add Account Dialog */}
                     <Dialog>

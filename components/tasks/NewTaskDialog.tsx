@@ -48,7 +48,7 @@ import { useToast } from "@/components/ui/use-toast"
 const taskSchema = z.object({
     title: z.string().min(2, "Le titre est requis"),
     description: z.string().optional(),
-    priority: z.string().default("NORMAL"),
+    priority: z.string(),
     dueDate: z.date().optional(),
     dossierId: z.string().optional(),
 })

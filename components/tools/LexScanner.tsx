@@ -21,7 +21,6 @@ import {
     PenTool,
     Sparkles
 } from "lucide-react"
-import { analyzeDocument } from "@/app/actions"
 import { useToast } from "@/components/ui/use-toast"
 
 export function LexScanner() {

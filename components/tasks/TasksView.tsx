@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createTask, toggleTask } from "@/app/actions"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
+import { ExportButton } from "@/components/ui/ExportButton"
 
 interface Task {
     id: string
@@ -83,70 +84,85 @@ export function TasksView({ tasks, users, dossiers }: { tasks: Task[], users: Us
                     <Button variant={filter === "COMPLETED" ? "default" : "outline"} onClick={() => setFilter("COMPLETED")}>Terminées</Button>
                 </div>
 
-                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-slate-900 text-white">
-                            <Plus className="mr-2 h-4 w-4" /> Nouvelle Tâche
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Assigner une tâche</DialogTitle>
-                            <DialogDescription>Créer une tâche pour vous ou un collaborateur.</DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid gap-2">
-                                <Label>Titre</Label>
-                                <Input value={newTask.title} onChange={e => setNewTask({ ...newTask, title: e.target.value })} placeholder="Ex: Rédiger conclusions..." />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label>Pour qui ?</Label>
-                                <Select value={newTask.assignedToId} onValueChange={v => setNewTask({ ...newTask, assignedToId: v })}>
-                                    <SelectTrigger><SelectValue placeholder="Assigner à..." /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="unassigned">Non assigné</SelectItem>
-                                        {users.map(u => (
-                                            <SelectItem key={u.id} value={u.id}>{u.name} ({u.role})</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label>Dossier Lié</Label>
-                                <Select value={newTask.dossierId} onValueChange={v => setNewTask({ ...newTask, dossierId: v })}>
-                                    <SelectTrigger><SelectValue placeholder="Lier à un dossier..." /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">Aucun</SelectItem>
-                                        {dossiers.map(d => (
-                                            <SelectItem key={d.id} value={d.id}>{d.reference} - {d.title}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
+                <div className="flex gap-2">
+                    <ExportButton
+                        data={filteredTasks.map(t => ({
+                            Titre: t.title,
+                            Statut: t.completed ? 'Terminé' : 'En cours',
+                            Echeance: t.dueDate ? format(new Date(t.dueDate), 'yyyy-MM-dd') : '',
+                            Priorite: t.priority,
+                            Assigne_a: t.assignedTo?.name || 'Non assigné',
+                            Dossier: t.dossier?.reference || 'Aucun'
+                        }))}
+                        filename="Liste_Taches"
+                        sheetName="Taches"
+                        label="Exporter Excel"
+                    />
+                    <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="bg-slate-900 text-white">
+                                <Plus className="mr-2 h-4 w-4" /> Nouvelle Tâche
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Assigner une tâche</DialogTitle>
+                                <DialogDescription>Créer une tâche pour vous ou un collaborateur.</DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
                                 <div className="grid gap-2">
-                                    <Label>Échéance</Label>
-                                    <Input type="date" value={newTask.dueDate} onChange={e => setNewTask({ ...newTask, dueDate: e.target.value })} />
+                                    <Label>Titre</Label>
+                                    <Input value={newTask.title} onChange={e => setNewTask({ ...newTask, title: e.target.value })} placeholder="Ex: Rédiger conclusions..." />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label>Priorité</Label>
-                                    <Select value={newTask.priority} onValueChange={v => setNewTask({ ...newTask, priority: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <Label>Pour qui ?</Label>
+                                    <Select value={newTask.assignedToId} onValueChange={v => setNewTask({ ...newTask, assignedToId: v })}>
+                                        <SelectTrigger><SelectValue placeholder="Assigner à..." /></SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="BASSE">Basse</SelectItem>
-                                            <SelectItem value="NORMAL">Normale</SelectItem>
-                                            <SelectItem value="HAUTE">Haute</SelectItem>
-                                            <SelectItem value="URGENT">Urgente</SelectItem>
+                                            <SelectItem value="unassigned">Non assigné</SelectItem>
+                                            {users.map(u => (
+                                                <SelectItem key={u.id} value={u.id}>{u.name} ({u.role})</SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
+                                <div className="grid gap-2">
+                                    <Label>Dossier Lié</Label>
+                                    <Select value={newTask.dossierId} onValueChange={v => setNewTask({ ...newTask, dossierId: v })}>
+                                        <SelectTrigger><SelectValue placeholder="Lier à un dossier..." /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">Aucun</SelectItem>
+                                            {dossiers.map(d => (
+                                                <SelectItem key={d.id} value={d.id}>{d.reference} - {d.title}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid gap-2">
+                                        <Label>Échéance</Label>
+                                        <Input type="date" value={newTask.dueDate} onChange={e => setNewTask({ ...newTask, dueDate: e.target.value })} />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label>Priorité</Label>
+                                        <Select value={newTask.priority} onValueChange={v => setNewTask({ ...newTask, priority: v })}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="BASSE">Basse</SelectItem>
+                                                <SelectItem value="NORMAL">Normale</SelectItem>
+                                                <SelectItem value="HAUTE">Haute</SelectItem>
+                                                <SelectItem value="URGENT">Urgente</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <DialogFooter>
-                            <Button onClick={handleCreate} disabled={!newTask.title}>Créer Tâche</Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                            <DialogFooter>
+                                <Button onClick={handleCreate} disabled={!newTask.title}>Créer Tâche</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
             <div className="grid gap-4">

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getAccounts, createTransaction, getDraftTransactions, validateJournalEntries } from "@/app/actions"
 import { Check, Plus, Save, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { ExportButton } from "@/components/ui/ExportButton"
 
 export default function JournalEntryPage({ params }: { params: { code: string } }) {
     const searchParams = useSearchParams()
@@ -93,6 +94,20 @@ export default function JournalEntryPage({ params }: { params: { code: string } 
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={loadData}>Actualiser</Button>
+                    <ExportButton
+                        data={drafts.flatMap(tx => tx.lines.map((l: any) => ({
+                            Piece: tx.description,
+                            Date: tx.date,
+                            Compte: l.account.code,
+                            Intitule: l.account.name,
+                            Debit: l.debit,
+                            Credit: l.credit
+                        })))}
+                        filename={`Journal_${params.code}_Brouillard`}
+                        sheetName="Brouillard"
+                        label="Exporter Brouillard"
+                        variant="outline"
+                    />
                     <Button
                         className={drafts.length > 0 ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}
                         disabled={drafts.length === 0}

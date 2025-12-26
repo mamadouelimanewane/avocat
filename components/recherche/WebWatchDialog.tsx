@@ -44,6 +44,8 @@ export function WebWatchDialog() {
         await createJurisprudence({
             title: item.title,
             summary: item.summary,
+            content: item.content || item.summary || "Contenu non disponible",
+            type: item.type || "JURISPRUDENCE",
             date: new Date(item.date),
             court: item.court,
             reference: item.reference,
