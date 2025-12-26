@@ -80,6 +80,7 @@ export function Sidebar({ className }: { className?: string }) {
         { name: 'Conflits d\'Intérêts', href: '/conflits', icon: ShieldAlert },
         { name: 'Communication', href: '/communication', icon: MessageCircle },
         { name: 'RH & Talents', href: '/rh', icon: GraduationCap },
+        { name: 'Documentation', href: '/admin/documentation', icon: BookOpen },
         { name: t('nav.settings'), href: '/admin', icon: Settings },
     ];
 
