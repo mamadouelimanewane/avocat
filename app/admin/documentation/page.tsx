@@ -1,10 +1,31 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { FileText, Download, BookOpen, ShieldCheck, Cpu, GraduationCap, Layout, Database, AlertCircle } from "lucide-react"
+import { FileText, Download, BookOpen, ShieldCheck, Cpu, GraduationCap, Layout, Database, AlertCircle, Presentation, Megaphone, FileBox } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function DocumentationPage() {
     const manuals = [
+        {
+            id: 'ultra',
+            title: "La Bible LexPremium (Ultra-Détaillé)",
+            description: "Le manuel de référence complet couvrant tous les modules (40+ pages).",
+            icon: <FileBox className="h-8 w-8 text-rose-600" />,
+            file: '/manuals/manuel_utilisation_ultra.pdf'
+        },
+        {
+            id: 'flyer',
+            title: "Flyer Commercial A4",
+            description: "Support visuel pour la prospection et présentation rapide.",
+            icon: <Megaphone className="h-8 w-8 text-amber-500" />,
+            file: '/manuals/marketing_flyer.pdf'
+        },
+        {
+            id: 'presentation',
+            title: "Pitch Deck Commercial",
+            description: "Présentation de 10 slides pour vos rendez-vous stratégiques.",
+            icon: <Presentation className="h-8 w-8 text-indigo-600" />,
+            file: '/manuals/marketing_presentation.pdf'
+        },
         {
             id: 'utilisation',
             title: "Manuel d'Utilisation",

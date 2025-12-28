@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useSearchParams, useRouter } from 'next/navigation'
 import {
     Dialog,
     DialogContent,
@@ -34,6 +35,18 @@ export function NewDossierDialog({ clients, preSelectedClientId }: { clients: Cl
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [selectedClient, setSelectedClient] = useState(preSelectedClientId || "")
+    const searchParams = useSearchParams()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (searchParams.get('new') === 'true') {
+            setOpen(true)
+            // Remove the query param once opened
+            const params = new URLSearchParams(searchParams.toString())
+            params.delete('new')
+            router.replace(`/dossiers?${params.toString()}`, { scroll: false })
+        }
+    }, [searchParams, router])
 
     async function handleSubmit(formData: FormData) {
         setLoading(true)

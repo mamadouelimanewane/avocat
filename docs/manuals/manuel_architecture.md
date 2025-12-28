@@ -1,26 +1,37 @@
-# Manuel d'Architecture Système - LexPremium ERP
+# Manuel d'Architecture Système Approfondi - LexPremium ERP
 
-## 1. Vue d'Ensemble de l'Écosystème
-LexPremium est conçu comme une architecture distribuée moderne centrée sur la donnée. Le système repose sur trois piliers : la persistance (MongoDB), le traitement serverless (Vercel) et l'intelligence augmentée (OpenAI).
+## 1. Philosophie d'Architecture
+L'architecture de LexPremium est pensée comme un "Software-as-a-Service" (SaaS) robuste, capable de supporter la digitalisation d'un barreau entier. Elle repose sur le principe de **Statelessness** pour garantir une disponibilité maximale.
 
-## 2. Couche de Persistance et Schémas (Prisma)
-### 2.1 Modélisation NoSQL Relational-Like
-Bien que nous utilisions MongoDB (NoSQL), Prisma nous permet de définir des relations strictes. Par exemple, un `Dossier` possède une relation obligatoire avec un `Client` et optionnelle avec un `User` (l'avocat assigné).
-### 2.2 Arborescence des Documents (GED)
-Les fichiers physiques sont stockés sur Vercel Blob ou un stockage S3 compatible. La base de données ne stocke que les métadonnées et les chemins d'accès, garantissant une base de données légère et performante.
+## 2. Diagramme des Flux (Data Flow)
+### 2.1 Cycle de Vie d'une Requête Utilisateur
+1. Le Client (Navigateur) envoie une requête via HTTPS.
+2. Vercel achemine la requête vers la fonction Lambda la plus proche.
+3. Le code Next.js vérifie les droits d'accès dans le cookie sécurisé.
+4. Prisma interroge MongoDB pour récupérer les données.
+5. L'IA (si sollicitée) vient enrichir le contexte via une requête asynchrone sécurisée.
+6. La réponse est rendue en HTML/JSON et renvoyée instantanément.
 
-## 3. Flux d'Intelligence Artificielle (RAG)
-### 3.1 Mécanisme de Recherche Augmentée
-Lorsqu'une question est posée à LexA :
-1. Le système extrait les mots-clés de la question.
-2. Il interroge la collection `Jurisprudence` pour trouver les textes de loi pertinents.
-3. Il injecte ces textes dans le "prompt" envoyé à l'IA.
-Cela garantit que l'IA ne "hallucine" pas et se base sur le droit réel.
-### 3.2 Traitement des Documents (OCR)
-Pour les scan PDF, nous utilisons `Tesseract.js` en arrière-plan pour convertir les images en texte exploitable par l'IA de résumé.
+## 3. Architecture de la GED (Gestion Électronique des Documents)
+La GED n'est pas un simple stockage de fichiers ; c'est un système intelligent :
+- **Storage Layer** : Utilisation d'un CDN pour la diffusion rapide des documents.
+- **Processing Layer** : Les documents sont envoyés par fragments (chunks) pour l'analyse IA, évitant les surcharges mémoires.
+- **Indexing Layer** : Chaque document est indexé par titre, date et contenu textuel pour une recherche globale en moins de 100ms.
 
-## 4. Architecture de Sécurité
-### 4.1 Authentification Stateless
-Nous n'utilisons pas de serveur de session centralisé. Chaque requête est authentifiée par un jeton sécurisé présent dans les cookies, ce qui permet à l'application d'être extrêmement résiliente aux pics de charge.
-### 4.2 Isolation des Données
-Chaque cabinet (ou instance) dispose de sa propre chaîne de connexion, assurant qu'aucune donnée ne peut fuiter d'un environnement à un autre.
+## 4. Conception de l'Intelligence Artificielle (RAG 2.0)
+Nous utilisons le modèle **Retrieval-Augmented Generation** :
+1. **Indexation** : La jurisprudence est convertie en vecteurs numériques.
+2. **Récupération** : Lorsqu'un avocat pose une question, le système cherche les vecteurs les plus proches (recherche sémantique).
+3. **Synthèse** : L'IA reçoit la question + les textes de loi et rédige une réponse argumentée.
+
+## 5. Architecture de Sécurité Multi-niveaux
+- **Niveau 1** : Chiffrement TLS 1.3 pour tous les échanges.
+- **Niveau 2** : Firewall d'Application Web (WAF) bloquant les injections SQL et attaques par déni de service (DDoS).
+- **Niveau 3** : Rôles d'accès au niveau applicatif (Role-Based Access Control - RBAC).
+- **Niveau 4** : Sécurité physique garantie par les centres de données certifiés Tier III / IV.
+
+## 6. Stratégie de Scalabilité
+L'application est conçue pour passer de 5 à 500 avocats sans modification de code :
+- **Auto-scaling** : Les ressources serveurs s'adaptent automatiquement au trafic.
+- **Database Sharding** : MongoDB peut être partitionné si le volume de documents dépasse les téraoctets.
+- **Edge Caching** : Les parties statiques de l'application sont répliquées sur des serveurs partout en Afrique pour éliminer la latence internationale.

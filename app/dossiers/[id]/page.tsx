@@ -14,7 +14,26 @@ import DossierOverview from '@/components/dossier/DossierOverview'
 export default async function DossierDetailPage({ params }: { params: { id: string } }) {
     const dossier = await prisma.dossier.findUnique({
         where: { id: params.id },
-        include: { client: true }
+        include: {
+            client: true,
+            documents: {
+                include: {
+                    versions: {
+                        orderBy: { version: 'desc' },
+                        take: 1,
+                        include: { uploadedBy: { select: { name: true } } }
+                    }
+                },
+                orderBy: { updatedAt: 'desc' }
+            },
+            timeEntries: true,
+            carpaTransactions: {
+                orderBy: { date: 'desc' }
+            },
+            factures: {
+                include: { payments: true }
+            }
+        }
     })
 
     if (!dossier) {
@@ -84,7 +103,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                         </TabsContent>
 
                         <TabsContent value="documents">
-                            <DocumentsTab dossierId={dossier.id} templates={templates} />
+                            <DocumentsTab dossierId={dossier.id} templates={templates} initialDocuments={dossier.documents} />
                         </TabsContent>
 
                         <TabsContent value="procedure">
@@ -94,7 +113,11 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                         </TabsContent>
 
                         <TabsContent value="billing">
-                            <FinanceTab dossierId={dossier.id} />
+                            <FinanceTab
+                                dossierId={dossier.id}
+                                carpaTransactions={dossier.carpaTransactions}
+                                expenses={expenses}
+                            />
                         </TabsContent>
                     </div>
                 </Tabs>

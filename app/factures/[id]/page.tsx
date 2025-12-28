@@ -17,6 +17,7 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 import ClientDownloadButton from '@/components/documents/ClientDownloadButton'
 import { InvoiceActions } from '@/components/factures/InvoiceActions'
 import { getCabinetSettings } from '@/app/actions'
+import PrintHandler from '@/components/factures/PrintHandler'
 
 const prisma = new PrismaClient()
 
@@ -35,6 +36,7 @@ export default async function FactureDetailPage({ params }: { params: { id: stri
 
     return (
         <div className="space-y-6 max-w-4xl mx-auto">
+            <PrintHandler />
             {/* Top Navigation */}
             <div className="flex items-center gap-4 text-sm text-slate-500 mb-6">
                 <Link href="/factures" className="hover:text-slate-900 flex items-center">

@@ -1,41 +1,54 @@
-# Structure des Données et des Fonctions - LexPremium ERP
+# Manuel des Structures de Données et Fonctions Algorithmiques
 
-## 1. Modèle de Données (Schema)
-LexPremium utilise un schéma relationnel flexible optimisé pour MongoDB Atlas. Voici les entités principales :
+## 1. Dictionnaire des Données (Data Dictionary)
+Ce chapitre définit les entités atomiques qui composent l'univers LexPremium.
 
-### A. Entités Centrales
-- **User** : Gère les avocats et collaborateurs (Rôles, Taux horaires, Permissions).
-- **Client** : Stocke les informations des particuliers et entreprises, incluant leurs codes comptables auxiliaires.
-- **Dossier** : L'entité pivot liant les pièces (GED), les factures et les événements d'audience.
+### 1.1 Entité `User` (Le Capital Humain)
+- `id` : Identifiant unique (BSON ObjectId).
+- `role` : Typologie d'utilisateur (ADMIN, AVOCAT, COLLABORATEUR).
+- `permissions` : Tableau binaire ou JSON de droits granulaires.
+- `hourlyRate` : Base de calcul de la rentabilité (Standard: FCFA).
 
-### B. Modules Financiers
-- **Facture** : Gère les honoraires, les taxes (TVA) et le statut de paiement.
-- **Transaction** : Enregistrement comptable conforme au système SYSCOHADA (Débit/Crédit).
-- **Account** : Plan comptable structuré (Classe 1 à 8).
+### 1.2 Entité `Dossier` (L'Atome Métier)
+- `reference` : Clé unique métier (Unique Index).
+- `status` : Machine à états (OUVERT -> EN_ATTENTE -> CLOTURE -> ARCHIVE).
+- `metadata` : Champs extensibles pour le type de procédure (Civil, Pénal, Arbitrage).
 
-### C. Modules de Support
-- **Document** : Métadonnées des fichiers avec gestion de versions.
-- **Task** : Système de kanban et de délégation.
-- **CommunicationLog** : Historique des interactions WhatsApp, Mail et Appel.
+### 1.3 Entité `Facture` (Le Flux Financier)
+- `number` : Numérotation chronologique continue (Garantie légale).
+- `items` : Sous-collection contenant les lignes de prestations (Description, Qté, Prix).
+- `tvaRate` : Taux dynamique (Par défaut 18%).
 
-## 2. Fonctions et Logique Métier (Server Actions)
-La logique de l'application est découpée en fonctions serveur sécurisées situées dans `app/actions.ts`.
+## 2. Algorithmes et Fonctions Core
+Les fonctions sont implémentées en tant que `Server Actions` pour une sécurité maximale.
 
-### A. Gestion du Cabinet
-- `createDossier` : Initialise une affaire et crée l'arborescence documentaire.
-- `updateInvoiceStatus` : Gère le cycle de vie d'une facture et déclenche automatiquement l'envoi d'email et l'écriture comptable.
+### 2.1 Calcul de Rentabilité
+`calculateProfitability(dossierId)` :
+1. Récupère le total des honoraires facturés.
+2. Soustrait les débours (frais de justice).
+3. Soustrait le (Temps passé * Taux horaire du collaborateur).
+4. Retourne la marge nette réelle.
 
-### B. Intelligence Artificielle
-- `generateCompletion` : Interface avec OpenAI/Deepseek pour le chat assisté.
-- `analyzeDocument` : Fonction d'extraction de données clés depuis des PDF via OCR et IA.
+### 2.2 Moteur d'Extraction IA (LexParser)
+`analyzeDocument(fileId)` :
+1. Envoie le flux binaire à l'API OCR (Tesseract ou OpenAI Vision).
+2. Analyse le texte brut via un modèle NLP (Natural Language Processing).
+3. Extrait les entités nommées (Dates, Juridictions, Sommes, Articles de loi).
+4. Met à jour les métadonnées du dossier.
 
-### C. Utilitaires
-- `sendEmail` : Wrapper pour le service Resend.
-- `logCommunication` : Assure la traçabilité des échanges clients.
+### 2.3 Système de Notification Automatisé
+`triggerNotification(type, payload)` :
+- **Email** : Forge un template HTML via Resend.
+- **WhatsApp** : Formate une URL encodée pour l'ouverture de session wa.me.
 
-## 3. Flux d'Intégration
-Chaque action utilisateur (ex: créer une facture) déclenche une cascade de fonctions :
-1. Validation des données (Zod).
-2. Mise à jour de la base de données (Prisma).
-3. Notification (Mail/WhatsApp).
-4. Mise à jour de la comptabilité générale.
+## 3. Schéma Relationnel et Intégrité
+Bien que NoSQL, le système maintient une intégrité référentielle :
+- **Cascade Deletion** : La suppression d'un dossier (réservée à l'admin) entraîne le marquage "Soft-Delete" des documents liés.
+- **Relational Mapping** : Utilisation des relations `@relation` de Prisma pour lier les factures aux clients et aux dossiers sans duplication d'information.
+
+## 4. Performance des Requêtes
+- **Indexes** : Indexation sur les champs `email`, `reference`, `clientId` et `status` pour garantir des temps de réponse inférieurs à 50ms sur des bases de 100 000 dossiers.
+- **Caching** : Utilisation du cache d'instance pour les données de configuration (Paramètres du cabinet).
+
+## 5. Extensions et Scalabilité du Schéma
+Le schéma est conçu pour être "backward compatible". L'ajout de nouveaux champs se fait via des types optionnels (`?`) dans Prisma, évitant toute rupture de service lors des mises à jour.

@@ -69,15 +69,24 @@ export default function DossierOverview({ dossier }: { dossier: any }) {
                 <CardContent className="space-y-4">
                     <div className="flex justify-between items-center border-b border-slate-100 pb-2">
                         <span className="text-sm text-slate-500">Temps passé</span>
-                        <span className="font-mono font-bold">12h 30m</span>
+                        <span className="font-mono font-bold">
+                            {Math.floor((dossier.timeEntries?.reduce((acc: number, t: any) => acc + t.duration, 0) || 0) / 60)}h {(dossier.timeEntries?.reduce((acc: number, t: any) => acc + t.duration, 0) || 0) % 60}m
+                        </span>
                     </div>
                     <div className="flex justify-between items-center border-b border-slate-100 pb-2">
                         <span className="text-sm text-slate-500">Facturé</span>
-                        <span className="font-mono font-bold text-emerald-600">2 500 000 F</span>
+                        <span className="font-mono font-bold text-emerald-600">
+                            {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF' }).format(dossier.factures?.reduce((acc: number, f: any) => acc + f.amountTTC, 0) || 0)}
+                        </span>
                     </div>
                     <div className="flex justify-between items-center border-b border-slate-100 pb-2">
                         <span className="text-sm text-slate-500">Restant dû</span>
-                        <span className="font-mono font-bold text-red-500">500 000 F</span>
+                        <span className="font-mono font-bold text-red-500">
+                            {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF' }).format(
+                                (dossier.factures?.reduce((acc: number, f: any) => acc + f.amountTTC, 0) || 0) -
+                                (dossier.factures?.reduce((acc: number, f: any) => acc + (f.payments?.reduce((pa: number, p: any) => pa + p.amount, 0) || 0), 0) || 0)
+                            )}
+                        </span>
                     </div>
 
                     <div className="pt-4">

@@ -14,6 +14,15 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Mail, Printer, Trash2, Loader2 } from 'lucide-react'
+import { sendInvoiceMail } from '@/app/actions'
+import { toast } from '@/components/ui/use-toast'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { ExportButton } from '@/components/ui/ExportButton'
 
@@ -26,6 +35,7 @@ interface FactureWithClient {
     status: string
     client: {
         name: string
+        email: string | null
     }
 }
 
@@ -35,6 +45,24 @@ interface FacturesListProps {
 
 export function FacturesList({ initialFactures }: FacturesListProps) {
     const [search, setSearch] = useState('')
+    const [sendingId, setSendingId] = useState<string | null>(null)
+
+    const handleSendEmail = async (id: string) => {
+        setSendingId(id)
+        const res = await sendInvoiceMail(id)
+        setSendingId(null)
+
+        if (res.success) {
+            toast({ title: "Succès", description: "La facture a été envoyée au client." })
+        } else {
+            toast({ title: "Erreur", description: res.message, variant: "destructive" })
+        }
+    }
+
+    const handlePrint = (id: string) => {
+        // Open the invoice page in a new window and trigger print
+        const printWindow = window.open(`/factures/${id}?print=true`, '_blank')
+    }
 
     const filtered = initialFactures.filter(f =>
         f.number.toLowerCase().includes(search.toLowerCase()) ||
@@ -114,13 +142,38 @@ export function FacturesList({ initialFactures }: FacturesListProps) {
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
                                         <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Télécharger PDF">
-                                            <Link href={`/factures/${facture.id}`}>
+                                            <Link href={`/factures/${facture.id}?download=true`}>
                                                 <Download className="h-4 w-4 text-slate-500" />
                                             </Link>
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                                            <MoreHorizontal className="h-4 w-4 text-slate-500" />
-                                        </Button>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                    <MoreHorizontal className="h-4 w-4 text-slate-500" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="w-48">
+                                                <DropdownMenuItem asChild>
+                                                    <Link href={`/factures/${facture.id}`} className="flex items-center">
+                                                        <FileText className="mr-2 h-4 w-4" /> Voir le détail
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handlePrint(facture.id)}>
+                                                    <Printer className="mr-2 h-4 w-4" /> Imprimer
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleSendEmail(facture.id)} disabled={sendingId === facture.id}>
+                                                    {sendingId === facture.id ? (
+                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                    ) : (
+                                                        <Mail className="mr-2 h-4 w-4" />
+                                                    )}
+                                                    Envoyer par Email
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="text-red-600">
+                                                    <Trash2 className="mr-2 h-4 w-4" /> Supprimer
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
                                 </TableCell>
                             </TableRow>

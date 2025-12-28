@@ -265,3 +265,57 @@ export async function interpretVoiceCommand(transcript: string) {
         return null
     }
 }
+
+/**
+ * Uses DeepSeek to classify a document based on its OCR content.
+ */
+export async function classifyDocument(text: string) {
+    if (!openai) return { category: 'AUTRE', folder: '/', tags: [] };
+
+    try {
+        const systemPrompt = `Tu es un expert en archivage juridique (DMS).
+        Analyse le texte d'un document et détermine sa catégorie, le dossier virtuel approprié et des mots-clés.
+        
+        CATÉGORIES POSSIBLES :
+        - ACTE : Conclusions, Assignations, Requêtes, Actes sous seing privé.
+        - PREUVE : Factures, Emails, Rapports, Pièces jointes.
+        - CORRESPONDANCE : Lettres, Mises en demeure, Notifications.
+        - ADMINISTRATIF : Pièces d'identité, KBIS, Documents cabinet.
+        
+        FORMAT JSON ATTENDU :
+        {
+            "category": "ACTE" | "PREUVE" | "CORRESPONDANCE" | "ADMINISTRATIF",
+            "folder": "/NomDossier",
+            "tags": ["mot1", "mot2"],
+            "detectedDeadline": {
+                "date": "YYYY-MM-DD",
+                "type": "CONVOCATION" | "ECHEANCE_PAIEMENT" | "RECOURS",
+                "reason": "Description courte de l'alerte"
+            } (ou null si rien trouvé)
+        }
+        `;
+
+        const completion = await openai.chat.completions.create({
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: `TEXTE DU DOCUMENT :\n${text.substring(0, 5000)}` }
+            ],
+            model: "deepseek-chat",
+            temperature: 0.1,
+            response_format: { type: "json_object" }
+        });
+
+        const result = completion.choices[0].message.content;
+        const parsed = result ? JSON.parse(result) : { category: 'AUTRE', folder: '/', tags: [] };
+
+        // Add URGENT tag if deadline is found
+        if (parsed.detectedDeadline && !parsed.tags.includes('URGENT')) {
+            parsed.tags.push('URGENT');
+        }
+
+        return parsed;
+    } catch (error) {
+        console.error("Classification Error:", error);
+        return { category: 'AUTRE', folder: '/', tags: [] };
+    }
+}

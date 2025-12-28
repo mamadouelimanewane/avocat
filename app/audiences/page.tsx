@@ -24,9 +24,10 @@ export default async function AudiencesPage() {
         orderBy: { updatedAt: 'desc' }
     })
 
-    // Group by Date for "Rôle" view
+    // Group by Date
     const today = new Date()
     const upcoming = audiences.filter(a => new Date(a.startDate) >= today)
+    const history = audiences.filter(a => new Date(a.startDate) < today)
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -153,9 +154,49 @@ export default async function AudiencesPage() {
                 </TabsContent>
 
                 <TabsContent value="history">
-                    <div className="text-center py-10 text-slate-500">
-                        Historique des audiences passées.
-                    </div>
+                    <Card>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Dossier</TableHead>
+                                    <TableHead>Objet</TableHead>
+                                    <TableHead>Résultat / Note</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {history.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="h-24 text-center text-slate-500">
+                                            Aucun historique disponible.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : history.map((audience) => (
+                                    <TableRow key={audience.id} className="hover:bg-slate-50">
+                                        <TableCell className="font-medium">
+                                            {new Date(audience.startDate).toLocaleDateString('fr-FR')}
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="font-semibold">{audience.dossier?.reference}</div>
+                                            <div className="text-xs text-slate-500">{audience.dossier?.title}</div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline">{audience.title}</Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="text-sm text-slate-600 italic">
+                                                {audience.result || audience.description || "Non renseigné"}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button size="sm" variant="ghost">Voir CR</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

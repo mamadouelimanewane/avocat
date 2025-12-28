@@ -26,18 +26,16 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
-// Mock Data (In real app, this comes from props or fetch)
-const mockExpenses = [
-    { id: 1, description: "Frais de déplacement - Taxi", amount: 15000, date: "2025-12-08", status: "TO_BILL", category: "DEPLACEMENT" },
-    { id: 2, description: "Repas Client", amount: 45000, date: "2025-12-07", status: "BILLED", category: "REPAS" },
-];
+interface FinanceTabProps {
+    dossierId: string
+    carpaTransactions?: any[]
+    expenses?: any[]
+}
 
-const mockCarpa = [
-    { id: 1, reference: "CARPA-2025-098", date: "2025-12-01", type: "DEPOT", amount: 5000000, description: "Séquestre Vente Immeuble", beneficiary: "Cabinet" },
-    { id: 2, reference: "CARPA-2025-102", date: "2025-12-05", type: "RETRAIT", amount: -250000, description: "Frais de Greffe", beneficiary: "Greffe TGI" },
-]
+export default function FinanceTab({ dossierId, carpaTransactions = [], expenses = [] }: FinanceTabProps) {
+    const carpaBalance = carpaTransactions.reduce((acc, tx) => acc + tx.amount, 0)
+    const totalExpensesToBill = expenses.filter(e => e.status === 'TO_BILL').reduce((acc, e) => acc + e.amount, 0)
 
-export default function FinanceTab({ dossierId }: { dossierId: string }) {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
@@ -49,7 +47,7 @@ export default function FinanceTab({ dossierId }: { dossierId: string }) {
                             <Landmark className="h-5 w-5 text-indigo-600" />
                             Compte CARPA (Fonds Tiers)
                         </h3>
-                        <p className="text-sm text-slate-500">Solde actuel: <span className="font-bold text-slate-900">{formatCurrency(4750000)}</span></p>
+                        <p className="text-sm text-slate-500">Solde actuel: <span className={`font-bold ${carpaBalance >= 0 ? 'text-slate-900' : 'text-red-600'}`}>{formatCurrency(carpaBalance)}</span></p>
                     </div>
                     <div className="flex gap-2">
                         <Button variant="outline" size="sm">
@@ -73,9 +71,13 @@ export default function FinanceTab({ dossierId }: { dossierId: string }) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {mockCarpa.map((tx) => (
+                            {carpaTransactions.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="h-24 text-center text-slate-500">Aucune transaction CARPA.</TableCell>
+                                </TableRow>
+                            ) : carpaTransactions.map((tx) => (
                                 <TableRow key={tx.id}>
-                                    <TableCell className="text-slate-500">{tx.date}</TableCell>
+                                    <TableCell className="text-slate-500">{formatDate(tx.date)}</TableCell>
                                     <TableCell className="font-mono text-xs">{tx.reference}</TableCell>
                                     <TableCell>{tx.description}</TableCell>
                                     <TableCell>
@@ -103,7 +105,7 @@ export default function FinanceTab({ dossierId }: { dossierId: string }) {
                             <Wallet className="h-5 w-5 text-amber-600" />
                             Débours & Frais
                         </h3>
-                        <p className="text-sm text-slate-500">Total à refacturer: <span className="font-bold text-amber-600">{formatCurrency(15000)}</span></p>
+                        <p className="text-sm text-slate-500">Total à refacturer: <span className="font-bold text-amber-600">{formatCurrency(totalExpensesToBill)}</span></p>
                     </div>
                     <Button variant="outline" size="sm">
                         <Plus className="mr-2 h-4 w-4" /> Nouveau Frais
@@ -123,13 +125,17 @@ export default function FinanceTab({ dossierId }: { dossierId: string }) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {mockExpenses.map((exp) => (
+                            {expenses.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="h-24 text-center text-slate-500">Aucun frais enregistré.</TableCell>
+                                </TableRow>
+                            ) : expenses.map((exp) => (
                                 <TableRow key={exp.id}>
                                     <TableCell className="font-medium">{exp.description}</TableCell>
                                     <TableCell>
                                         <Badge variant="outline">{exp.category}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-slate-500">{exp.date}</TableCell>
+                                    <TableCell className="text-slate-500">{formatDate(exp.date)}</TableCell>
                                     <TableCell>
                                         <Badge variant={exp.status === 'TO_BILL' ? 'warning' : 'default'} className={exp.status === 'TO_BILL' ? 'bg-amber-100 text-amber-700 hover:bg-amber-100' : ''}>
                                             {exp.status === 'TO_BILL' ? 'À Facturer' : 'Facturé'}

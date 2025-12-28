@@ -1,47 +1,67 @@
-# Manuel d'Utilisation Détaillé - LexPremium ERP
+# Manuel d'Utilisation Exhaustif - LexPremium ERP
 
-## 1. Introduction et Philosophie du Système
-LexPremium ERP n'est pas qu'un simple logiciel de gestion ; c'est un écosystème conçu pour les cabinets d'avocats modernes. Il intègre l'intelligence artificielle pour automatiser les tâches à faible valeur ajoutée (recherche, résumé contractuel) afin de vous permettre de vous concentrer sur la stratégie juridique.
+## 1. Vision et Objectifs
+LexPremium ERP est une solution métier de nouvelle génération, conçue pour transformer la pratique juridique en Afrique. Son objectif est de libérer l'avocat des tâches répétitives grâce à l'automatisation intelligente et à une gestion centralisée des données.
 
-## 2. Authentification et Sécurité
-### 2.1 Connexion
-Utilisez votre email professionnel. Le système utilise un mécanisme de session sécurisée par cookies HTTP-only, ce qui signifie que vos identifiants ne sont jamais stockés en clair dans le navigateur.
-### 2.2 Gestion du Profil
-Dans votre profil (accessible via le menu Admin), vous pouvez configurer votre signature numérique. Cette signature sera utilisée par le "Parapheur Numérique" pour signer électroniquement vos actes et courriers.
+## 2. Interface et Navigation
+### 2.1 Le Menu Principal
+Configuré pour une efficacité maximale, le menu offre un accès direct à :
+- **Tableau de Bord** : Votre cockpit décisionnel.
+- **Dossiers** : Gestion électronique des affaires (GED).
+- **Clients** : Gestion de la relation client (CRM).
+- **Agenda** : Synchronisation des audiences et rendez-vous.
+- **Facturation** : Gestion du cycle financier complet.
 
-## 3. Le Tableau de Bord Stratégique
-Le dashboard est votre tour de contrôle.
-- **Indicateurs financiers** : Le calcul du CA intègre les factures encaissées et les provisions en attente.
-- **Agenda Dynamique** : Les événements marqués comme "Audience" apparaissent en priorité avec un code couleur rouge.
-- **Alertes de Délais** : Le système vous alerte si une tâche arrive à échéance dans moins de 48h.
+### 2.2 La Barre de Recherche Intelligente (Global Search)
+Accessible via le raccourci `Ctrl + K`, elle permet de trouver instantanément un dossier, un client ou un document grâce à une indexation plein texte.
 
-## 4. Gestion de dossiers (GED 2.0)
-### 4.1 Création et Organisation
-Chaque dossier possède une référence unique (ex: DOS-2024-001). Vous pouvez assigner un dossier à un collaborateur spécifique.
-### 4.2 L'onglet Documents
-C'est ici que réside la puissance de LexA. Lorsque vous glissez-déposez un PDF :
-- Le texte est extrait (OCR si nécessaire).
-- Vous pouvez demander à l'IA : "Fais-moi un résumé de 3 points clés de cette conclusion".
-- Le statut "Draft" ou "Validé" permet de suivre l'avancement des pièces.
-### 4.3 Finances du Dossier
-Suivez précisément la rentabilité. Ajoutez chaque débours (frais de justice, timbre) et chaque vacation. Le système comparera le temps passé (via le chronomètre) avec les honoraires forfaitaires pour vous donner un indice de rentabilité.
+## 3. Gestion Approfondie des Dossiers
+### 3.1 Création et Qualification
+Lors de la création d'un dossier (bouton "Nouveau Dossier"), soyez précis sur :
+- **Référence Interne** : Format suggéré `NOM-ANNEE-XXX`.
+- **Statut initial** : Généralement "OUVERT".
+- **Juridiction** : Précisez le tribunal (ex: TGI Dakar, Tribunal de Commerce) pour les filtres statistiques.
 
-## 5. Module de Facturation Avancé
-### 5.1 Création de Facture
-Le bouton "Nouvelle Facture" ouvre un formulaire pré-rempli avec les données du client. Vous pouvez ajouter autant de lignes que nécessaire (Vacations, Forfaits, Frais).
-### 5.2 Cycle de Vie et Comptabilité
-- **Brouillon** : Modifiable à souhait.
-- **Émise** : Verrouillée, envoyée par mail au client, et automatiquement inscrite dans le Journal des Ventes (Comptabilité SYSCOHADA).
-- **Payée** : Déclenche l'écriture de trésorerie (Compte 521 Banque).
+### 3.2 La Gestion Électronique des Documents (GED 2.0)
+L'onglet "Documents" est votre archive vivante.
+- **Importation** : Glissez-déposez vos pièces. Le système supporte PDF, DOCX, et les images (OCR automatique).
+- **Analyse par l'IA** : Pour chaque document, l'assistant LexA peut extraire les dates, les montants, les parties impliquées et les risques juridiques.
+- **Historique des versions** : Chaque modification d'un document crée une nouvelle version, vous permettant de revenir en arrière à tout moment.
 
-## 6. Communication et Workflows
-### 6.1 WhatsApp Professionnel
-Utilisez le "Quick-Sender" pour notifier vos clients sans changer de fenêtre. Les templates intégrés (Rappel RDV, Info Audience) garantissent un ton professionnel et uniforme.
-### 6.2 Workflows de Validation
-Le bouton "Workflow" sur un courrier permet de demander une validation électronique à un associé avant toute sortie du cabinet.
+### 3.3 Suivi des Audiences et Délais
+L'onglet "Agenda" du dossier permet de noter chaque événement. Les dates d'audience sont automatiquement répercutées dans l'agenda global du cabinet et sur le tableau de bord de l'avocat assigné.
 
-## 7. Recherche Juridique et Assistant LexA
-L'assistant LexA dispose d'une base de connaissances de la jurisprudence OHADA et sénégalaise. 
-- **Requêtes complexes** : "Quelle est la peine encourue pour abus de confiance au Sénégal ?"
-- **Comparaison** : "Compare ce contrat avec le modèle standard du cabinet."
-- **Commandes Vocales** : Dites "Ouvre les dossiers" ou "Crée une tâche" pour piloter l'interface sans les mains.
+## 4. Finance et Rentabilité du Dossier
+### 4.1 Enregistrement des Débours
+Chaque dossier comporte un journal financier. Notez-y les frais engagés (timbres fiscaux, émoluments d'huissier, frais de déplacement). Cela permet un calcul exact du bénéfice net à la clôture.
+### 4.2 Temps Passé (Time-Tracking)
+Utilisez le chronomètre intégré pour enregistrer vos vacations. Une fois la vacation terminée, elle peut être convertie en ligne de facture en un seul clic.
+
+## 5. Module CRM et Relation Client
+### 5.1 Fiche Client Détaillée
+Un client peut être une personne physique ou morale. Pour les entreprises, vous pouvez enregistrer plusieurs contacts (Directeur Juridique, Comptable).
+### 5.2 Portail Client Sécurisé
+Chaque client dispose d'un espace dédié pour consulter l'avancement de son dossier et télécharger ses factures. Activez cet accès via le "Code d'Accès" unique.
+
+## 6. L'Assistant IA LexA : Votre Collaborateur Virtuel
+### 6.1 Recherche Jurisprudentielle
+"Quelles sont les dernières décisions de la CCJA sur la validité des saisies-attributions ?" LexA interroge la base de jurisprudence intégrée pour vous répondre.
+### 6.2 Rédaction Assistée
+"Rédige un projet de conclusions d'appel pour ce dossier en te basant sur la violation de l'article 42 du COCC." L'IA génère un premier jet structuré que vous pouvez ensuite affiner.
+### 6.3 Commandes Vocales
+Utilisez l'icône micro pour dicter vos notes ou piloter l'application : "Afficher les factures impayées".
+
+## 7. Facturation et Comptabilité SYSCOHADA
+### 7.1 Cycle de Facturation
+1. **Facture Brouillon** : Pour validation interne.
+2. **Facture Émise** : Déclenche l'envoi par email via Resend.
+3. **Paiement Reçu** : Enregistrement bancaire.
+
+### 7.2 Intégration Comptable Auto
+LexPremium génère automatiquement les écritures de classe 4 (Tiers) et 7 (Produits), simplifiant le travail de votre service comptable.
+
+## 8. Rapports et Statistiques
+Accédez au module "Rapports" pour visualiser :
+- Le CA par avocat ou par domaine du droit (Civil, Social, etc.).
+- Les dossiers les plus rentables.
+- Le taux de recouvrement des factures.

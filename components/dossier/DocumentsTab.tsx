@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
     FileText,
     Upload,
@@ -17,7 +17,9 @@ import {
     BrainCircuit,
     Download,
     Eye,
-    Trash2
+    Trash2,
+    AlertTriangle,
+    Bell
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,18 +50,30 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { createDocumentFromTemplate, uploadDocument } from '@/app/actions';
+import { createDocumentFromTemplate, uploadDocument, generateAIDocument, runOCR, deleteDocument, addDocumentVersion } from '@/app/actions';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/navigation';
 
-// Mock data for Documents
-const initialDocuments = [
-    { id: 1, name: 'Assignation TGI.pdf', version: 3, type: 'ACTE', size: '2.4 MB', updated: 'Il y a 2h', author: 'Maître Dupont', status: 'SIGNED' },
-    { id: 2, name: 'Preuve n°1 - Email.msg', version: 1, type: 'PREUVE', size: '450 KB', updated: 'Hier', author: 'Maître Dupont', status: 'DRAFT' },
-    { id: 3, name: 'Conclusions Récapitulatives.docx', version: 12, type: 'ACTE', size: '1.1 MB', updated: 'Il y a 3j', author: 'Collaborateur Senior', status: 'REVIEW' },
-    { id: 4, name: 'Facture Honoraire.pdf', version: 1, type: 'CORRESPONDANCE', size: '120 KB', updated: 'Semaine dernière', author: 'Comptabilité', status: 'FINAL' },
-];
+// Types
+interface DocumentProps {
+    id: string;
+    name: string;
+    type: string | null;
+    category: string | null;
+    tags: string | null;
+    status: string;
+    updatedAt: Date;
+    folder: string | null;
+    ocrStatus: string | null;
+    ocrContent: string | null;
+    versions: {
+        version: number;
+        size: number;
+        createdAt: Date;
+        uploadedBy?: { name: string | null } | null;
+    }[];
+}
 
 interface Template {
     id: string;
@@ -68,12 +82,41 @@ interface Template {
     variables: string | null;
 }
 
-export default function DocumentsTab({ dossierId, templates = [] }: { dossierId: string, templates?: Template[] }) {
+const formatSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
+
+const formatTimeAgo = (date: any) => {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "N/A";
+
+    const now = new Date();
+    const diff = now.getTime() - d.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (minutes < 1) return "À l'instant";
+    if (minutes < 60) return `Il y a ${minutes} min`;
+    if (hours < 24) return `Il y a ${hours} h`;
+    return `Il y a ${days} j`;
+};
+
+export default function DocumentsTab({ dossierId, templates = [], initialDocuments = [] }: { dossierId: string, templates?: Template[], initialDocuments?: any[] }) {
     const [documents, setDocuments] = useState<any[]>(initialDocuments);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const router = useRouter();
+
+    useEffect(() => {
+        setDocuments(initialDocuments);
+    }, [initialDocuments]);
 
     // Generator State
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
@@ -81,6 +124,13 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
     const [variableValues, setVariableValues] = useState<Record<string, string>>({});
     const [isGenerating, setIsGenerating] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedDocForView, setSelectedDocForView] = useState<DocumentProps | null>(null);
+
+    const filteredDocuments = documents.filter(doc =>
+        doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (doc.ocrContent && doc.ocrContent.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -108,51 +158,39 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
 
     const handleFiles = async (files: FileList) => {
         const fileArray = Array.from(files);
-
-        // Optimistic UI updates could go here, but let's just wait for upload
         let successCount = 0;
+        setIsGenerating(true);
 
-        for (const file of fileArray) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('dossierId', dossierId);
+        try {
+            for (const file of fileArray) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('dossierId', dossierId);
 
-            try {
                 const res = await uploadDocument(formData);
                 if (res.success && res.document) {
                     successCount++;
-                    // Add to local state (adapted to match UI model temporarily)
-                    const newDoc = {
-                        id: res.document.id, // String ID from DB
-                        name: res.document.name,
-                        version: 1,
-                        type: res.document.type || 'AUTRE',
-                        size: (file.size / 1024).toFixed(1) + ' KB',
-                        updated: "À l'instant",
-                        author: 'Moi',
-                        status: 'DRAFT'
-                    };
-                    setDocuments(prev => [newDoc, ...prev]);
-                } else {
-                    console.error('Upload failed for', file.name, res.message);
+                    // Real-time Intelligence: Run OCR & Classification immediately
+                    await runOCR(res.document.id);
                 }
-            } catch (error) {
-                console.error('Upload exception', error);
             }
-        }
 
-        if (successCount > 0) {
-            toast({
-                title: "Import réussi",
-                description: `${successCount} fichier(s) importé(s) avec succès.`
-            });
-            router.refresh();
-        } else {
+            if (successCount > 0) {
+                toast({
+                    title: "Import & Analyse terminés",
+                    description: `${successCount} fichier(s) importés et analysés par LexAI.`
+                });
+                router.refresh();
+            }
+        } catch (error) {
+            console.error('Upload exception', error);
             toast({
                 variant: "destructive",
                 title: "Erreur",
-                description: "Échec de l'importation."
+                description: "Une erreur est survenue lors de l'importation."
             });
+        } finally {
+            setIsGenerating(false);
         }
     }
 
@@ -175,23 +213,33 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
     }
 
     const handleAIGenerate = async () => {
-        const userDesc = prompt("Décrivez le document que vous souhaitez que l'IA rédige pour vous :");
+        const userDesc = prompt("Décrivez le document que vous souhaitez que l'IA rédige (ex: Requête en référé, Mise en demeure...) :");
         if (userDesc) {
             setIsGenerating(true);
-            setTimeout(() => {
+            try {
+                const res = await generateAIDocument(dossierId, userDesc);
+                if (res.success) {
+                    toast({
+                        title: "Document généré",
+                        description: res.message,
+                    });
+                    router.refresh(); // Refresh to show the new document
+                } else {
+                    toast({
+                        title: "Erreur",
+                        description: res.message,
+                        variant: "destructive",
+                    });
+                }
+            } catch (e) {
+                toast({
+                    title: "Erreur",
+                    description: "Une erreur est survenue lors de la communication avec l'IA.",
+                    variant: "destructive",
+                });
+            } finally {
                 setIsGenerating(false);
-                setDocuments(prev => [{
-                    id: Math.random(),
-                    name: `Brouillon IA - ${userDesc.substring(0, 15)}....docx`,
-                    version: 1,
-                    type: 'ACTE',
-                    size: '15 KB',
-                    updated: "À l'instant",
-                    author: 'LexAI',
-                    status: 'DRAFT'
-                }, ...prev]);
-                alert("Document généré par l'IA et ajouté au dossier.");
-            }, 2000);
+            }
         }
     }
 
@@ -217,30 +265,104 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
     }
 
     // Actions Handlers
-    const handleOCR = () => {
-        alert("Scan OCR lancé sur tous les nouveaux documents. Indexation en cours...");
+    const handleOCR = async () => {
+        if (documents.length === 0) return;
+
+        setIsGenerating(true);
+        let successCount = 0;
+
+        try {
+            for (const doc of documents) {
+                const res = await runOCR(doc.id);
+                if (res.success) successCount++;
+            }
+
+            toast({
+                title: "Scan OCR terminé",
+                description: `${successCount} document(s) analysé(s) et indexé(s).`,
+            });
+            router.refresh();
+        } catch (e) {
+            toast({
+                title: "Erreur OCR",
+                description: "Une erreur est survenue lors du traitement des documents.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsGenerating(false);
+        }
     }
 
-    const handleOpenFile = (fileName: string) => {
-        alert(`Ouverture du fichier : ${fileName}\n(Simulation de la visionneuse PDF/Word)`);
+    const handleOpenFile = (doc: DocumentProps) => {
+        setSelectedDocForView(doc);
     }
 
     const handleStamp = () => {
-        alert("Tamponnage numérique (Bates Stamping) appliqué aux documents sélectionnés.");
+        toast({
+            title: "Tamponnage Bates",
+            description: "Tamponnage numérique appliqué aux documents sélectionnés.",
+        });
     }
 
     const handleCompare = () => {
-        alert("Comparaison des versions lancée. Différences mises en évidence.");
+        toast({
+            title: "Comparaison",
+            description: "Comparaison des versions lancée. Différences en cours d'analyse.",
+        });
     }
 
     const handleSign = () => {
-        alert("Redirection vers la plateforme de signature électronique (Yousign/DocuSign).");
+        toast({
+            title: "Signature Électronique",
+            description: "Préparation de la session de signature (Yousign)...",
+        });
     }
 
-    const handleDelete = (id: number) => {
-        if (confirm("Confirmer la suppression de ce document ?")) {
-            setDocuments(prev => prev.filter(d => d.id !== id));
+    const handleDelete = async (id: string) => {
+        if (confirm("Confirmer la suppression de ce document et de son historique ?")) {
+            const res = await deleteDocument(id);
+            if (res.success) {
+                toast({
+                    title: "Document supprimé",
+                    description: res.message,
+                });
+                router.refresh();
+            } else {
+                toast({
+                    title: "Erreur",
+                    description: res.message,
+                    variant: "destructive"
+                });
+            }
         }
+    }
+
+    const handleAddVersion = async (docId: string) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = async (e: any) => {
+            const file = e.target.files[0];
+            if (file) {
+                const comment = prompt("Commentaire pour cette nouvelle version :");
+                const formData = new FormData();
+                formData.append('file', file);
+                if (comment) formData.append('comment', comment);
+
+                setIsGenerating(true);
+                try {
+                    const res = await addDocumentVersion(docId, formData);
+                    if (res.success) {
+                        toast({ title: "Succès", description: res.message });
+                        router.refresh();
+                    } else {
+                        toast({ title: "Erreur", description: res.message, variant: "destructive" });
+                    }
+                } finally {
+                    setIsGenerating(false);
+                }
+            }
+        };
+        input.click();
     }
 
     return (
@@ -260,6 +382,10 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                     </Button>
                     <Button variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100" onClick={handleAIGenerate}>
                         <BrainCircuit className="mr-2 h-4 w-4" /> Assistant Rédaction IA
+                    </Button>
+
+                    <Button variant="outline" className="text-slate-700 border-slate-300" onClick={handleOCR}>
+                        <ScanLine className="mr-2 h-4 w-4" /> Scan OCR
                     </Button>
 
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -325,10 +451,11 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                 <div className="flex items-center gap-2">
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
-                        <input
-                            type="search"
-                            placeholder="Recherche dans le contenu (OCR)..."
+                        <Input
                             className="pl-9 h-9 w-[250px] text-sm bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="Recherche dans le contenu (OCR)..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
                 </div>
@@ -368,50 +495,86 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {documents.map((doc) => (
-                                    <TableRow key={doc.id} className="group hover:bg-slate-50">
-                                        <TableCell>
-                                            <FileIcon type={doc.type} />
-                                        </TableCell>
-                                        <TableCell className="font-medium text-slate-900 cursor-pointer hover:underline" onClick={() => handleOpenFile(doc.name)}>
-                                            {doc.name}
-                                            <div className="text-xs text-slate-400 font-normal">Modifié {doc.updated} par {doc.author}</div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className="text-[10px]">{doc.type}</Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-1 text-xs font-mono bg-slate-100 px-2 py-1 rounded w-fit">
-                                                v{doc.version}.0 <History className="h-3 w-3 text-slate-400 ml-1 cursor-pointer hover:text-slate-900" onClick={() => alert("Historique des versions...")} />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <StatusBadge status={doc.status} />
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex justify-end gap-1">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900" onClick={handleStamp} title="Tamponner">
-                                                    <ShieldCheck className="h-4 w-4" />
-                                                </Button>
+                                {filteredDocuments.map((doc) => {
+                                    const latestVersion = doc.versions?.[0];
+                                    return (
+                                        <TableRow key={doc.id} className="group hover:bg-slate-50">
+                                            <TableCell>
+                                                <FileIcon type={doc.category || 'AUTRE'} />
+                                            </TableCell>
+                                            <TableCell className="font-medium text-slate-900 cursor-pointer hover:underline" onClick={() => handleOpenFile(doc)}>
+                                                <div className="flex items-center gap-2">
+                                                    {doc.name}
+                                                    {doc.ocrStatus === 'DONE' && (
+                                                        <Badge variant="outline" className="h-4 px-1 text-[8px] bg-indigo-50 text-indigo-600 border-indigo-100 flex items-center gap-0.5">
+                                                            <ScanLine className="h-2 w-2" /> OCR
+                                                        </Badge>
+                                                    )}
+                                                    {doc.tags?.includes("URGENT") && (
+                                                        <Badge variant="destructive" className="h-4 px-1 text-[8px] flex items-center gap-0.5 animate-pulse">
+                                                            <AlertTriangle className="h-2 w-2" /> URGENT
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                <div className="text-xs text-slate-400 font-normal flex items-center gap-2">
+                                                    Modifié {formatTimeAgo(doc.updatedAt)} par {latestVersion?.uploadedBy?.name || latestVersion?.uploadedBy?.email || 'Système'}
+                                                    {doc.folder && doc.folder !== '/' && (
+                                                        <span className="flex items-center text-indigo-500 font-medium">
+                                                            <FolderOpenIcon /> {doc.folder}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {doc.ocrContent && (
+                                                    <div className="text-[10px] text-slate-400 truncate max-w-[200px] italic mt-0.5">
+                                                        "{doc.ocrContent.substring(0, 50)}..."
+                                                    </div>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className="text-[10px]">{doc.category || 'AUTRE'}</Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-1 text-xs font-mono bg-slate-100 px-2 py-1 rounded w-fit">
+                                                    v{latestVersion?.version || 1}.0 <History className="h-3 w-3 text-slate-400 ml-1 cursor-pointer hover:text-slate-900" onClick={() => alert("Historique des versions...")} />
+                                                </div>
+                                                <div className="text-[10px] text-slate-400 mt-0.5">{formatSize(latestVersion?.size || 0)}</div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <StatusBadge status={doc.status} />
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-1">
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900" onClick={handleStamp} title="Tamponner">
+                                                        <ShieldCheck className="h-4 w-4" />
+                                                    </Button>
 
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900">
-                                                            <MoreVertical className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                        <DropdownMenuItem onClick={() => handleOpenFile(doc.name)}><Eye className="mr-2 h-4 w-4" /> Ouvrir</DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => alert("Téléchargement lancé...")}><Download className="mr-2 h-4 w-4" /> Télécharger</DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(doc.id)}><Trash2 className="mr-2 h-4 w-4" /> Supprimer</DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900">
+                                                                <MoreVertical className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                            <DropdownMenuItem onClick={() => handleOpenFile(doc)}><Eye className="mr-2 h-4 w-4" /> Ouvrir</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleAddVersion(doc.id)}><FilePlus className="mr-2 h-4 w-4" /> Nouvelle version</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={async () => {
+                                                                setIsGenerating(true);
+                                                                await runOCR(doc.id);
+                                                                toast({ title: "OCR Terminé", description: "Le document a été scanné." });
+                                                                setIsGenerating(false);
+                                                                router.refresh();
+                                                            }}><ScanLine className="mr-2 h-4 w-4" /> Re-scanner (OCR)</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => alert("Téléchargement lancé...")}><Download className="mr-2 h-4 w-4" /> Télécharger</DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(doc.id)}><Trash2 className="mr-2 h-4 w-4" /> Supprimer</DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
                             </TableBody>
                         </Table>
 
@@ -460,6 +623,107 @@ export default function DocumentsTab({ dossierId, templates = [] }: { dossierId:
                     </Card>
                 </div>
             </div>
+
+            {/* AI Generation / OCR Processing State Dialog */}
+            <Dialog open={isGenerating}>
+                <DialogContent className="sm:max-w-[425px] flex flex-col items-center justify-center py-10">
+                    <BrainCircuit className="h-12 w-12 text-indigo-600 animate-pulse mb-4" />
+                    <DialogTitle className="text-lg font-semibold animate-pulse">Action intelligente en cours...</DialogTitle>
+                    <DialogDescription className="text-sm text-slate-500 text-center mt-2">
+                        LexAI analyse, traite ou rédige vos documents juridiques pour votre dossier.
+                    </DialogDescription>
+                </DialogContent>
+            </Dialog>
+
+            {/* Document Visionnaire (Preview) */}
+            <Dialog open={!!selectedDocForView} onOpenChange={(open) => !open && setSelectedDocForView(null)}>
+                <DialogContent className="sm:max-w-[800px] h-[80vh] flex flex-col p-0 overflow-hidden">
+                    <DialogHeader className="p-4 border-b bg-slate-50">
+                        <div className="flex items-center justify-between pr-8">
+                            <div>
+                                <DialogTitle className="text-xl flex items-center gap-2">
+                                    <FileIcon type={selectedDocForView?.category || 'AUTRE'} />
+                                    {selectedDocForView?.name}
+                                </DialogTitle>
+                                <DialogDescription>
+                                    Visualisation du contenu extrait par LexAI • {selectedDocForView?.folder || 'Racine'}
+                                </DialogDescription>
+                            </div>
+                        </div>
+                    </DialogHeader>
+
+                    <div className="flex-1 overflow-hidden flex flex-col">
+                        <Tabs defaultValue="preview" className="flex-1 flex flex-col">
+                            <TabsList className="mx-4 mt-2">
+                                <TabsTrigger value="preview" className="flex items-center gap-2"><Eye className="h-4 w-4" /> Contenu (OCR)</TabsTrigger>
+                                <TabsTrigger value="versions" className="flex items-center gap-2"><History className="h-4 w-4" /> Versions</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="preview" className="flex-1 p-0 overflow-hidden">
+                                <ScrollArea className="h-full p-6 bg-white">
+                                    <div className="max-w-2xl mx-auto">
+                                        {selectedDocForView?.ocrContent ? (
+                                            <div className="prose prose-slate max-w-none">
+                                                <div className="bg-amber-50 border border-amber-100 p-4 rounded-lg mb-6 text-sm text-amber-800 flex items-start gap-3">
+                                                    <Sparkles className="h-5 w-5 text-amber-500 mt-0.5" />
+                                                    <div>
+                                                        <strong>Intelligence LexAI :</strong> Ce texte a été extrait et structuré automatiquement.
+                                                        Il est indexé pour vos recherches croisées.
+                                                    </div>
+                                                </div>
+                                                <pre className="whitespace-pre-wrap font-sans text-slate-800 leading-relaxed text-base bg-slate-50 p-6 rounded-xl border border-slate-100 italic">
+                                                    {selectedDocForView.ocrContent}
+                                                </pre>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+                                                <ScanLine className="h-16 w-16 mb-4 opacity-20" />
+                                                <p>Aucun contenu textuel extrait pour ce document.</p>
+                                                <Button variant="outline" className="mt-4" onClick={async () => {
+                                                    if (selectedDocForView) {
+                                                        const res = await runOCR(selectedDocForView.id);
+                                                        if (res.success) {
+                                                            toast({ title: "OCR Terminé" });
+                                                            router.refresh();
+                                                            setSelectedDocForView(null);
+                                                        }
+                                                    }
+                                                }}>Lancer l'OCR maintenant</Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </ScrollArea>
+                            </TabsContent>
+
+                            <TabsContent value="versions" className="flex-1 p-6">
+                                <div className="space-y-4">
+                                    {selectedDocForView?.versions?.map((v, i) => (
+                                        <div key={i} className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50 transition-colors">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-8 w-8 rounded bg-slate-100 flex items-center justify-center font-mono text-xs font-bold text-slate-600">
+                                                    v{v.version}
+                                                </div>
+                                                <div>
+                                                    <div className="text-sm font-medium">{v.comment || 'Sans commentaire'}</div>
+                                                    <div className="text-[10px] text-slate-400">Ajouté le {new Date(v.createdAt).toLocaleDateString()} par {v.uploadedBy?.name || 'Système'}</div>
+                                                </div>
+                                            </div>
+                                            <Button variant="ghost" size="sm" className="h-8 px-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50">
+                                                <Download className="h-4 w-4 mr-1" /> Télécharger
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    <Button variant="outline" className="w-full border-dashed" onClick={() => {
+                                        if (selectedDocForView) handleAddVersion(selectedDocForView.id);
+                                    }}>
+                                        <FilePlus className="h-4 w-4 mr-2" /> Ajouter une nouvelle version
+                                    </Button>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

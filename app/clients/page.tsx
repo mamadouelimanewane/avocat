@@ -1,7 +1,6 @@
 
 import { prisma } from '@/lib/prisma'
-import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { NewClientDialog } from '@/components/client/NewClientDialog'
 import { ClientsList } from '@/components/client/ClientsList'
 
 export default async function ClientsPage() {
@@ -22,10 +21,7 @@ export default async function ClientsPage() {
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Clients</h1>
                     <p className="text-slate-500 mt-1">Gérez votre base de contacts et prospects.</p>
                 </div>
-                <Button className="bg-emerald-600 text-white hover:bg-emerald-700">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Nouveau Client
-                </Button>
+                <NewClientDialog />
             </div>
 
             <ClientsList initialClients={clients as any} />

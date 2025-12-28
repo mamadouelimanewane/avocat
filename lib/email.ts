@@ -141,3 +141,50 @@ export function appointmentEmailTemplate(clientName: string, eventTitle: string,
     </html>
     `
 }
+export function deadlineAlertEmailTemplate(lawyerName: string, docName: string, deadlineType: string, deadlineDate: string, reason: string, dossierTitle: string) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #fff1f2; margin: 0; padding: 20px; }
+            .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(225,29,72,0.1); border-top: 6px solid #e11d48; }
+            .header { padding: 30px; text-align: center; }
+            .header h1 { margin: 0; font-size: 24px; color: #e11d48; }
+            .content { padding: 30px; }
+            .alert-box { background: #fff1f2; border: 1px solid #fecdd3; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .alert-box h2 { margin: 0 0 10px 0; color: #9f1239; font-size: 18px; }
+            .alert-box p { margin: 5px 0; color: #475569; }
+            .btn { display: inline-block; background: #e11d48; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; }
+            .footer { text-align: center; padding: 20px; color: #94a3b8; font-size: 12px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🚨 ALERTE ÉCHÉANCE DÉTECTÉE</h1>
+            </div>
+            <div class="content">
+                <p>Maître <strong>${lawyerName}</strong>,</p>
+                <p>LexAI a détecté une échéance critique lors de l'analyse d'un nouveau document dans le dossier : <strong>${dossierTitle}</strong>.</p>
+                
+                <div class="alert-box">
+                    <h2>${deadlineType} detected</h2>
+                    <p>📅 <strong>Date : ${deadlineDate}</strong></p>
+                    <p>📄 <strong>Document :</strong> ${docName}</p>
+                    <p>💬 <strong>Détail :</strong> ${reason}</p>
+                </div>
+                
+                <p style="text-align: center;">
+                    <a href="https://avocatos.app/dossiers" class="btn">Consulter le Dossier</a>
+                </p>
+            </div>
+            <div class="footer">
+                LexPremium Intelligence Artificielle<br>
+                Service de surveillance automatique du cabinet.
+            </div>
+        </div>
+    </body>
+    </html>
+    `
+}

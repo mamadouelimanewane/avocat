@@ -5,10 +5,14 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { cookies } from 'next/headers'
-import { generateCompletion, analyzeCrawledContent, filterRelevantLinks, findTargetUrls, extractSearchFilters, interpretVoiceCommand } from '@/lib/openai'
-import { sendEmail, invoiceEmailTemplate } from '@/lib/email'
-import { writeFile, mkdir } from 'fs/promises'
+import { generateCompletion, analyzeCrawledContent, filterRelevantLinks, findTargetUrls, extractSearchFilters, interpretVoiceCommand, classifyDocument } from '@/lib/openai'
+import { sendEmail, invoiceEmailTemplate, deadlineAlertEmailTemplate } from '@/lib/email'
+import { sendWhatsApp, formatDeadlineWhatsAppMessage } from '@/lib/whatsapp'
+import { writeFile, mkdir, readFile } from 'fs/promises'
 import { join } from 'path'
+import pdf from 'pdf-parse'
+import mammoth from 'mammoth'
+import { createWorker } from 'tesseract.js'
 
 // Validation schema
 const CreateDossierSchema = z.object({
@@ -69,6 +73,137 @@ export async function uploadDocument(formData: FormData) {
     } catch (e) {
         console.error("Upload error:", e)
         return { success: false, message: "Erreur lors de l'upload" }
+    }
+}
+
+export async function runOCR(documentId: string) {
+    try {
+        const doc = await prisma.document.findUnique({
+            where: { id: documentId },
+            include: {
+                versions: { orderBy: { version: 'desc' }, take: 1 },
+                dossier: { include: { assignedTo: true } }
+            }
+        })
+
+        if (!doc || !doc.versions?.[0]) {
+            return { success: false, message: "Document non trouvé" }
+        }
+
+        const latestVersion = doc.versions[0]
+        const absolutePath = join(process.cwd(), 'public', latestVersion.path)
+        const fileBuffer = await readFile(absolutePath)
+        const extension = doc.name.split('.').pop()?.toLowerCase() || ''
+
+        let extractedText = ""
+        let status = "DONE"
+
+        if (extension === 'pdf') {
+            const data = await pdf(fileBuffer)
+            extractedText = data.text
+            if (!extractedText || extractedText.trim().length < 10) {
+                // If text is too short, it might be a scanned PDF. 
+                // In a perfect world we'd convert to image and then Tesseract.
+                // For now, we'll mark as potentially needing specialized OCR or just return what we have.
+                extractedText = "[SCAN PDF - Texte non extractible par scanner simple]"
+                status = "REQUIRES_FIX"
+            }
+        } else if (extension === 'docx') {
+            const result = await mammoth.extractRawText({ buffer: fileBuffer })
+            extractedText = result.value
+        } else if (['png', 'jpg', 'jpeg', 'tiff'].includes(extension)) {
+            const worker = await createWorker('fra')
+            const { data: { text } } = await worker.recognize(fileBuffer)
+            extractedText = text
+            await worker.terminate()
+        } else {
+            extractedText = "[Type de fichier non supporté pour l'OCR automatique]"
+            status = "FAILED"
+        }
+
+        // Auto-Classification with AI
+        let updates: any = {
+            ocrContent: extractedText,
+            ocrStatus: status
+        }
+
+        if (status === "DONE" && extractedText.trim().length > 20) {
+            const classification = await classifyDocument(extractedText)
+            if (classification) {
+                updates.category = classification.category
+                updates.folder = classification.folder
+                updates.tags = JSON.stringify(classification.tags)
+
+                // Handle Detected Deadline
+                if (classification.detectedDeadline) {
+                    const { date, type, reason } = classification.detectedDeadline
+                    try {
+                        await prisma.event.create({
+                            data: {
+                                title: `[IA] ${type} : ${reason}`,
+                                description: `Alerte générée automatiquement par LexAI après analyse du document "${doc.name}"`,
+                                startDate: new Date(date),
+                                endDate: new Date(new Date(date).getTime() + 3600000), // +1h
+                                type: type === 'CONVOCATION' ? 'AUDIENCE' : 'ECHEANCE',
+                                dossierId: doc.dossierId
+                            }
+                        })
+
+                        // 🔔 TRIGGER NOTIFICATIONS (Mobile & Email)
+                        if (doc.dossier.assignedTo) {
+                            const lawyer = doc.dossier.assignedTo
+                            const dateStr = new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+
+                            // 1. Email Alert
+                            await sendEmail({
+                                to: lawyer.email,
+                                subject: `🚨 ALERTE LEXAI : ${type} détectée`,
+                                html: deadlineAlertEmailTemplate(
+                                    lawyer.name || 'Maître',
+                                    doc.name,
+                                    type,
+                                    dateStr,
+                                    reason,
+                                    doc.dossier.title
+                                )
+                            })
+
+                            // 2. WhatsApp Alert
+                            // Use a placeholder number if no phone is set for the lawyer
+                            const phone = "221770000000" // Simulated or lawyer.phone if role exists
+                            await sendWhatsApp({
+                                phone: phone,
+                                message: formatDeadlineWhatsAppMessage(
+                                    lawyer.name || 'Maître',
+                                    doc.dossier.title,
+                                    type,
+                                    dateStr,
+                                    reason
+                                )
+                            })
+                        }
+                    } catch (err) {
+                        console.error("Auto-Event Creation Error:", err)
+                    }
+                }
+            }
+        }
+
+        await prisma.document.update({
+            where: { id: documentId },
+            data: updates
+        })
+
+        revalidatePath(`/dossiers/${doc.dossierId}`)
+        return {
+            success: true,
+            text: extractedText.substring(0, 500) + (extractedText.length > 500 ? '...' : ''),
+            category: updates.category
+        }
+
+    } catch (error) {
+        console.error("OCR Error:", error)
+        return { success: false, message: "Erreur lors du traitement OCR" }
     }
 }
 
@@ -153,6 +288,147 @@ export async function createDocumentFromTemplate(dossierId: string, templateId: 
     } catch (e) {
         console.error(e)
         return { success: false, message: 'Erreur lors de la génération' }
+    }
+}
+
+export async function generateAIDocument(dossierId: string, description: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { client: true }
+        })
+
+        const otherDocs = await prisma.document.findMany({
+            where: {
+                dossierId: dossierId,
+                ocrContent: { not: null }
+            },
+            select: { name: true, ocrContent: true, category: true }
+        })
+
+        const contextDocs = otherDocs.map(d => ({
+            title: d.name,
+            content: d.ocrContent,
+            reference: d.category || 'DOCUMENT'
+        }))
+
+        const prompt = `Rédige un brouillon de document juridique pour le dossier suivant :
+        Titre du dossier : ${dossier?.title}
+        Référence : ${dossier?.reference}
+        Client : ${dossier?.client?.name}
+        
+        Description du document demandée par l'avocat : "${description}"
+        
+        CONSIGNE : Utilise les informations des documents déjà présents dans le dossier (fournis en contexte) pour être le plus précis possible (noms, dates, faits mentionnés).
+        
+        Produis un contenu structuré, professionnel et juridiquement rigoureux adaptés au contexte Sénégalais/OHADA.`;
+
+        const content = await generateCompletion(prompt, contextDocs, "DRAFTING");
+
+        const finalContent = content || `BROUILLON GÉNÉRÉ AUTOMATIQUEMENT\n\nObjet : ${description}\n\nDossier : ${dossier?.title}\nClient : ${dossier?.client?.name}\n\n[Contenu simulé par l'IA en l'absence de clé API]\nLe présent projet d'acte concerne...`;
+
+        const newDoc = await prisma.document.create({
+            data: {
+                name: `Brouillon IA - ${description.substring(0, 30)}.docx`,
+                type: 'ACTE',
+                category: 'AUTRE',
+                status: 'DRAFT',
+                dossierId: dossierId,
+                ocrContent: finalContent,
+                versions: {
+                    create: {
+                        version: 1,
+                        size: Buffer.byteLength(finalContent, 'utf8'),
+                        path: '/mock/ai-generated.docx',
+                        comment: content ? 'Généré par LexAI' : 'Généré par LexAI (Simulation)'
+                    }
+                }
+            }
+        })
+
+        revalidatePath(`/dossiers/${dossierId}`)
+        return { success: true, message: content ? 'Document généré par l\'IA' : 'Document généré (Mode Simulation)', documentId: newDoc.id }
+
+    } catch (e) {
+        console.error(e)
+        return { success: false, message: 'Erreur lors de la génération IA' }
+    }
+}
+
+export async function deleteDocument(documentId: string) {
+    try {
+        const doc = await prisma.document.findUnique({
+            where: { id: documentId }
+        })
+
+        if (!doc) return { success: false, message: "Document non trouvé" }
+
+        // Versions are deleted automatically due to `onDelete: Cascade` in schema
+        await prisma.document.delete({
+            where: { id: documentId }
+        })
+
+        if (doc.dossierId) {
+            revalidatePath(`/dossiers/${doc.dossierId}`)
+        }
+
+        return { success: true, message: "Document supprimé avec succès" }
+    } catch (e) {
+        console.error(e)
+        return { success: false, message: "Erreur lors de la suppression" }
+    }
+}
+
+export async function addDocumentVersion(documentId: string, formData: FormData) {
+    const file = formData.get('file') as File
+    const comment = formData.get('comment') as string || 'Nouvelle version'
+
+    if (!file) return { success: false, message: "Fichier manquant" }
+
+    try {
+        const doc = await prisma.document.findUnique({
+            where: { id: documentId },
+            include: { versions: { orderBy: { version: 'desc' }, take: 1 } }
+        })
+
+        if (!doc) return { success: false, message: "Document non trouvé" }
+
+        const nextVersion = (doc.versions[0]?.version || 0) + 1
+
+        // Simulation storage
+        const bytes = await file.arrayBuffer()
+        const buffer = Buffer.from(bytes)
+        const uploadDir = join(process.cwd(), 'public', 'uploads')
+        await mkdir(uploadDir, { recursive: true })
+
+        const uniqueName = `v${nextVersion}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
+        const filePath = join(uploadDir, uniqueName)
+        const webPath = `/uploads/${uniqueName}`
+
+        await writeFile(filePath, buffer)
+
+        await prisma.documentVersion.create({
+            data: {
+                version: nextVersion,
+                path: webPath,
+                size: file.size,
+                comment: comment,
+                documentId: documentId
+            }
+        })
+
+        // Update document updatedAt timestamp
+        await prisma.document.update({
+            where: { id: documentId },
+            data: { updatedAt: new Date() }
+        })
+
+        revalidatePath(`/dossiers/${doc.dossierId}`)
+        return { success: true, message: `Version ${nextVersion} ajoutée` }
+
+    } catch (e) {
+        console.error(e)
+        return { success: false, message: "Erreur lors de l'ajout de version" }
     }
 }
 
@@ -880,11 +1156,41 @@ export async function updateInvoiceStatus(invoiceId: string, status: string) {
         // rather than just status toggle, to capture date/method.
 
         revalidatePath('/factures')
-        revalidatePath('/comptabilite') // Update account balances
+        revalidatePath('/comptabilite')
         return { success: true }
     } catch (error) {
         console.error(error)
         return { success: false, message: 'Erreur lors de la mise à jour' }
+    }
+}
+
+export async function sendInvoiceMail(invoiceId: string) {
+    try {
+        const invoice = await prisma.facture.findUnique({
+            where: { id: invoiceId },
+            include: { client: true }
+        })
+        if (!invoice) return { success: false, message: "Facture introuvable" }
+        if (!invoice.client?.email) return { success: false, message: "Le client n'a pas d'adresse email." }
+
+        const dueDate = invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString('fr-FR') : 'N/A'
+        const html = invoiceEmailTemplate(
+            invoice.client.name,
+            invoice.number,
+            invoice.amountTTC,
+            dueDate
+        )
+
+        await sendEmail({
+            to: invoice.client.email,
+            subject: `Facture ${invoice.number} - Cabinet LexPremium`,
+            html
+        })
+
+        return { success: true, message: "Email envoyé avec succès" }
+    } catch (e) {
+        console.error(e)
+        return { success: false, message: "Erreur lors de l'envoi" }
     }
 }
 

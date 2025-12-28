@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Building2, Briefcase, Users, FileText as FileIcon } from 'lucide-react'
+import { Building2, Briefcase, Users, FileText as FileIcon, Gavel, Scale, ShieldAlert, Landmark, Globe, Cpu } from 'lucide-react'
 
 const prisma = new PrismaClient()
 
@@ -31,7 +31,14 @@ export default async function ModelesPage() { // Keep as server component but ma
     const affaires = templates.filter(t => t.category === 'AFFAIRES')
     const foncier = templates.filter(t => t.category === 'FONCIER')
     const travail = templates.filter(t => t.category === 'TRAVAIL')
-    const others = templates.filter(t => !['AFFAIRES', 'FONCIER', 'TRAVAIL'].includes(t.category || ''))
+    const procedure = templates.filter(t => ['LITIGE', 'PROCEDURE', 'PENAL', 'ADMINISTRATIF'].includes(t.category || '')) // Grouping procedural ones to keep tab bar sane
+    const social = templates.filter(t => t.category === 'SOCIAL')
+    const civil = templates.filter(t => t.category === 'CIVIL')
+    const penal = templates.filter(t => t.category === 'PENAL')
+    const admin = templates.filter(t => t.category === 'ADMINISTRATIF')
+    const international = templates.filter(t => t.category === 'INTERNATIONAL')
+    const tech = templates.filter(t => t.category === 'TECH')
+    const others = templates.filter(t => !['AFFAIRES', 'FONCIER', 'TRAVAIL', 'LITIGE', 'PROCEDURE', 'SOCIAL', 'CIVIL', 'PENAL', 'ADMINISTRATIF', 'INTERNATIONAL', 'TECH'].includes(t.category || ''))
 
     const TemplateTable = ({ data }: { data: typeof templates }) => (
         <div className="rounded-md border border-slate-200 bg-white shadow-sm mt-4">
@@ -95,24 +102,45 @@ export default async function ModelesPage() { // Keep as server component but ma
             </div>
 
             <Tabs defaultValue="tous" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 lg:w-[600px]">
-                    <TabsTrigger value="tous">Tous</TabsTrigger>
-                    <TabsTrigger value="afaires" className="gap-2"><Briefcase className="h-4 w-4" /> Affaires</TabsTrigger>
-                    <TabsTrigger value="foncier" className="gap-2"><Building2 className="h-4 w-4" /> Foncier</TabsTrigger>
-                    <TabsTrigger value="travail" className="gap-2"><Users className="h-4 w-4" /> Travail</TabsTrigger>
+                <TabsList className="flex flex-wrap h-auto gap-1 bg-transparent p-0">
+                    <TabsTrigger value="tous" className="data-[state=active]:bg-slate-100">Tous</TabsTrigger>
+                    <TabsTrigger value="affaires" className="gap-2 data-[state=active]:bg-slate-100"><Briefcase className="h-4 w-4" /> Affaires & OHADA</TabsTrigger>
+                    <TabsTrigger value="procedure" className="gap-2 data-[state=active]:bg-slate-100"><Gavel className="h-4 w-4" /> Procédure</TabsTrigger>
+                    <TabsTrigger value="international" className="gap-2 data-[state=active]:bg-slate-100"><Globe className="h-4 w-4" /> International</TabsTrigger>
+                    <TabsTrigger value="admin" className="gap-2 data-[state=active]:bg-slate-100"><Landmark className="h-4 w-4" /> Administratif</TabsTrigger>
+                    <TabsTrigger value="travail" className="gap-2 data-[state=active]:bg-slate-100"><Users className="h-4 w-4" /> Travail</TabsTrigger>
+                    <TabsTrigger value="social" className="gap-2 data-[state=active]:bg-slate-100"><Users className="h-4 w-4" /> Famille & Social</TabsTrigger>
+                    <TabsTrigger value="foncier" className="gap-2 data-[state=active]:bg-slate-100"><Building2 className="h-4 w-4" /> Foncier</TabsTrigger>
+                    <TabsTrigger value="tech" className="gap-2 data-[state=active]:bg-slate-100"><Cpu className="h-4 w-4" /> Tech & Données</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="tous">
                     <TemplateTable data={templates} />
                 </TabsContent>
-                <TabsContent value="afaires">
+                <TabsContent value="affaires">
                     <TemplateTable data={affaires} />
                 </TabsContent>
-                <TabsContent value="foncier">
-                    <TemplateTable data={foncier} />
+                <TabsContent value="procedure">
+                    {/* Combine Procedure, Penal, Civil for visibility */}
+                    <TemplateTable data={[...procedure, ...penal, ...civil]} />
+                </TabsContent>
+                <TabsContent value="international">
+                    <TemplateTable data={international} />
+                </TabsContent>
+                <TabsContent value="admin">
+                    <TemplateTable data={admin} />
                 </TabsContent>
                 <TabsContent value="travail">
                     <TemplateTable data={travail} />
+                </TabsContent>
+                <TabsContent value="social">
+                    <TemplateTable data={social} />
+                </TabsContent>
+                <TabsContent value="tech">
+                    <TemplateTable data={tech} />
+                </TabsContent>
+                <TabsContent value="foncier">
+                    <TemplateTable data={foncier} />
                 </TabsContent>
             </Tabs>
         </div>

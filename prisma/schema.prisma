@@ -117,6 +117,7 @@ model Event {
   endDate     DateTime
   type        String   @default("RENDEZ_VOUS") // RENDEZ_VOUS, AUDIENCE, ECHEANCE
   location    String?
+  result      String?  // Outcome of hearing (e.g. "Renvoyé", "Gagné")
   
   dossierId   String?  @db.ObjectId
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
