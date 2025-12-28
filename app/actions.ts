@@ -10,7 +10,6 @@ import { sendEmail, invoiceEmailTemplate, deadlineAlertEmailTemplate } from '@/l
 import { sendWhatsApp, formatDeadlineWhatsAppMessage } from '@/lib/whatsapp'
 import { writeFile, mkdir, readFile } from 'fs/promises'
 import { join } from 'path'
-import pdf from 'pdf-parse'
 import mammoth from 'mammoth'
 import { createWorker } from 'tesseract.js'
 
@@ -99,6 +98,8 @@ export async function runOCR(documentId: string) {
         let status = "DONE"
 
         if (extension === 'pdf') {
+            // @ts-ignore
+            const pdf = require('pdf-parse');
             const data = await pdf(fileBuffer)
             extractedText = data.text
             if (!extractedText || extractedText.trim().length < 10) {

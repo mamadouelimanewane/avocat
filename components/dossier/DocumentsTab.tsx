@@ -50,6 +50,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
 import { createDocumentFromTemplate, uploadDocument, generateAIDocument, runOCR, deleteDocument, addDocumentVersion } from '@/app/actions';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/components/ui/use-toast"
