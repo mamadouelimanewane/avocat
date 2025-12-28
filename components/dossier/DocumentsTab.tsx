@@ -79,6 +79,7 @@ interface DocumentProps {
         version: number;
         size: number;
         createdAt: Date;
+        comment?: string | null;
         uploadedBy?: { name: string | null } | null;
     }[];
 }
