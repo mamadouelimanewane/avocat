@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,7 @@ import { Check, Plus, Save, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { ExportButton } from "@/components/ui/ExportButton"
 
-export default function JournalEntryPage({ params }: { params: { code: string } }) {
+function JournalEntryContent({ params }: { params: { code: string } }) {
     const searchParams = useSearchParams()
     const journalId = searchParams.get('id') || ""
 
@@ -233,5 +233,13 @@ export default function JournalEntryPage({ params }: { params: { code: string } 
                 )}
             </div>
         </div>
+    )
+}
+
+export default function JournalEntryPage({ params }: { params: { code: string } }) {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-slate-500 animate-pulse">Chargement du journal...</div>}>
+            <JournalEntryContent params={params} />
+        </Suspense>
     )
 }

@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic'
+
 import { PrismaClient } from '@prisma/client'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import AdminUsersPage from '@/components/admin/AdminUsersPage'

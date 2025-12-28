@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/prisma'
 import { NewInvoiceDialog } from '@/components/factures/NewInvoiceDialog'
 import { FacturesList } from '@/components/factures/FacturesList'

@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic'
+
 import { getLedgerEntries } from "@/app/actions"
 import { GrandLivreList } from "@/components/comptabilite/GrandLivreList"
 

@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic'
+
 import { getAccounts } from "@/app/actions"
 import { calculateResultat } from "@/lib/syscohada-mapper"
 import { format } from "date-fns"

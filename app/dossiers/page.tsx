@@ -1,7 +1,11 @@
 
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/prisma'
 import { NewDossierDialog } from '@/components/dossier/NewDossierDialog'
 import { DossiersList } from '@/components/dossier/DossiersList'
+import { Suspense } from 'react'
+import { Button } from '@/components/ui/button'
 
 export default async function DossiersPage() {
     const dossiers = await prisma.dossier.findMany({
@@ -26,7 +30,9 @@ export default async function DossiersPage() {
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Dossiers</h1>
                     <p className="text-slate-500 mt-1">Gérez vos affaires juridiques.</p>
                 </div>
-                <NewDossierDialog clients={clientsList} />
+                <Suspense fallback={<Button variant="outline" disabled>Chargement...</Button>}>
+                    <NewDossierDialog clients={clientsList} />
+                </Suspense>
             </div>
 
             <DossiersList initialDossiers={dossiers as any} />

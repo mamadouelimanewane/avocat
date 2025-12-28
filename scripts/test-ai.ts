@@ -3,7 +3,7 @@
  * Vérifie que toutes les fonctionnalités IA sont opérationnelles
  */
 
-import { generateCompletion, interpretVoiceCommand, analyzeContractText, extractSearchFilters } from './lib/ai'
+import { generateCompletion, interpretVoiceCommand, analyzeContractText, extractSearchFilters } from '../lib/ai'
 
 const RESET = '\x1b[0m'
 const GREEN = '\x1b[32m'

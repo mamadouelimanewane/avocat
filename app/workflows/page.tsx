@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic'
+
 import { PrismaClient } from '@prisma/client'
 import { KanbanBoard } from '@/components/workflow/KanbanBoard'
 import { Button } from '@/components/ui/button'

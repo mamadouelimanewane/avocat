@@ -1,7 +1,11 @@
 
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/prisma'
 import { NewClientDialog } from '@/components/client/NewClientDialog'
 import { ClientsList } from '@/components/client/ClientsList'
+import { Suspense } from 'react'
+import { Button } from '@/components/ui/button'
 
 export default async function ClientsPage() {
     const clients = await prisma.client.findMany({
@@ -21,7 +25,9 @@ export default async function ClientsPage() {
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Clients</h1>
                     <p className="text-slate-500 mt-1">Gérez votre base de contacts et prospects.</p>
                 </div>
-                <NewClientDialog />
+                <Suspense fallback={<Button className="bg-emerald-600 text-white" disabled>Chargement...</Button>}>
+                    <NewClientDialog />
+                </Suspense>
             </div>
 
             <ClientsList initialClients={clients as any} />
