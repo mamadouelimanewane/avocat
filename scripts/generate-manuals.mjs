@@ -28,12 +28,28 @@ const styles = StyleSheet.create({
     image: { width: '100%', height: 250, marginBottom: 20, borderRadius: 8, objectFit: 'cover' },
     marketingBadge: { padding: '4 8', backgroundColor: '#fef3c7', color: '#92400e', fontSize: 10, borderRadius: 4, marginBottom: 10, alignSelf: 'flex-start' },
     footer: { position: 'absolute', bottom: 30, left: 60, right: 60, textAlign: 'center', fontSize: 9, color: '#94a3b8', borderTopWidth: 1, borderTopColor: '#e2e8f0', paddingTop: 10 },
-    pageNumber: { position: 'absolute', bottom: 30, right: 60, fontSize: 9, color: '#94a3b8' }
+    pageNumber: { position: 'absolute', bottom: 30, right: 60, fontSize: 9, color: '#94a3b8' },
+    boldBrown: { fontWeight: 'bold', color: '#8B4513' } // Marron premium
 });
 
 const ManualDocument = ({ title, content, isMarketing = false }) => {
     const lines = content.split('\n');
     const elements = [];
+
+    const formatText = (text) => {
+        if (!text) return null;
+        // Split by ** or * to find bold-brown parts
+        const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+        return parts.map((part, i) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return React.createElement(Text, { key: i, style: styles.boldBrown }, part.slice(2, -2));
+            }
+            if (part.startsWith('*') && part.endsWith('*')) {
+                return React.createElement(Text, { key: i, style: styles.boldBrown }, part.slice(1, -1));
+            }
+            return part;
+        });
+    };
 
     lines.forEach((line) => {
         const trimmed = line.trim();
@@ -74,16 +90,16 @@ const ManualDocument = ({ title, content, isMarketing = false }) => {
                         React.createElement(Text, { style: styles.headerText }, "LEXPREMIUM ERP")
                     ),
                     elements.map((el, i) => {
-                        if (el.type === 'h2') return React.createElement(Text, { key: i, style: styles.h2 }, el.text);
-                        if (el.type === 'h3') return React.createElement(Text, { key: i, style: styles.h3 }, el.text);
+                        if (el.type === 'h2') return React.createElement(Text, { key: i, style: styles.h2 }, formatText(el.text));
+                        if (el.type === 'h3') return React.createElement(Text, { key: i, style: styles.h3 }, formatText(el.text));
                         if (el.type === 'li') return React.createElement(View, { key: i, style: styles.ul },
-                            React.createElement(Text, { style: styles.li }, `• ${el.text}`)
+                            React.createElement(Text, { style: styles.li }, "• ", formatText(el.text))
                         );
                         if (el.type === 'image') {
                             const imagePath = path.join(process.cwd(), 'scripts', 'images', el.src);
                             if (fs.existsSync(imagePath)) return React.createElement(Image, { key: i, src: imagePath, style: styles.image });
                         }
-                        return React.createElement(Text, { key: i, style: styles.p }, el.text);
+                        return React.createElement(Text, { key: i, style: styles.p }, formatText(el.text));
                     }),
                     React.createElement(Text, { style: styles.footer, fixed: true }, "LexPremium ERP - L'intelligence au service du Droit en Afrique"),
                     React.createElement(Text, { style: styles.pageNumber, render: ({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`, fixed: true })
@@ -97,23 +113,23 @@ const ManualDocument = ({ title, content, isMarketing = false }) => {
                                 React.createElement(Text, { style: styles.headerText }, title),
                                 React.createElement(Text, { style: styles.headerText }, "LEXPREMIUM ERP")
                             ),
-                            React.createElement(Text, { style: styles.h2 }, el.text),
+                            React.createElement(Text, { style: styles.h2 }, formatText(el.text)),
                             ...elements.slice(i + 1).filter((e, idx) => {
                                 const globalIdx = i + 1 + idx;
                                 const nextChapters = elements.slice(i + 1).filter(nx => nx.type === 'h2' && nx.text.includes('CHAPITRE'));
                                 const nextChapterIdx = elements.indexOf(nextChapters[0]);
                                 return globalIdx < (nextChapterIdx === -1 ? elements.length : nextChapterIdx);
                             }).map((subEl, subI) => {
-                                if (subEl.type === 'h2') return React.createElement(Text, { key: `sub-${subI}`, style: styles.h2 }, subEl.text);
-                                if (subEl.type === 'h3') return React.createElement(Text, { key: `sub-${subI}`, style: styles.h3 }, subEl.text);
+                                if (subEl.type === 'h2') return React.createElement(Text, { key: `sub-${subI}`, style: styles.h2 }, formatText(subEl.text));
+                                if (subEl.type === 'h3') return React.createElement(Text, { key: `sub-${subI}`, style: styles.h3 }, formatText(subEl.text));
                                 if (subEl.type === 'li') return React.createElement(View, { key: `sub-${subI}`, style: styles.ul },
-                                    React.createElement(Text, { style: styles.li }, `• ${subEl.text}`)
+                                    React.createElement(Text, { style: styles.li }, "• ", formatText(subEl.text))
                                 );
                                 if (subEl.type === 'image') {
                                     const imagePath = path.join(process.cwd(), 'scripts', 'images', subEl.src);
                                     if (fs.existsSync(imagePath)) return React.createElement(Image, { key: `sub-${subI}`, src: imagePath, style: styles.image });
                                 }
-                                return React.createElement(Text, { key: `sub-${subI}`, style: styles.p }, subEl.text);
+                                return React.createElement(Text, { key: `sub-${subI}`, style: styles.p }, formatText(subEl.text));
                             }),
                             React.createElement(Text, { style: styles.footer, fixed: true }, "LexPremium ERP - L'intelligence au service du Droit en Afrique"),
                             React.createElement(Text, { style: styles.pageNumber, render: ({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`, fixed: true })

@@ -19,10 +19,10 @@ Automatisez vos factures, gérez la BRS (Sénégal) et suivez votre balance comp
 ![[lawyer.png]]
 
 ## Vos Avantages Compétitifs
-- **Gain de temps** : +40% de productivité sur la rédaction d'actes.
-- **Transparence** : Un portail dédié pour vos clients (Particuliers & Entreprises).
-- **Communication** : Relances WhatsApp et Mail intégrées.
+- *Gain de temps* : +40% de productivité sur la rédaction d'actes.
+- *Transparence* : Un portail dédié pour vos clients (Particuliers & Entreprises).
+- *Communication* : Relances *WhatsApp* et *Mail* intégrées.
 
 ## Rejoignez l'élite des cabinets digitalisés.
-**LexPremium ERP** : L'intelligence au service du Droit.
+*LexPremium ERP* : L'intelligence au service du Droit.
 Contactez votre administrateur pour une démonstration.

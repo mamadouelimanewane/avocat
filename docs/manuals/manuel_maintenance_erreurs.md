@@ -1,49 +1,50 @@
-# Manuel de Maintenance et Bibliothèque des Erreurs (Pro-Guide)
+# Manuel de Maintenance et Bibliothèque des Erreurs
+![[ai_concept.png]]
 
-## 1. Monitoring du Système
-Le maintien en condition opérationnelle (MCO) de LexPremium nécessite une surveillance sur trois niveaux.
+## AVANT-PROPOS
+Garantir une disponibilité sans faille est le défi de tout administrateur système. Ce manuel de niveau industriel détaille les procédures de surveillance, les interventions de maintenance et la résolution rapide des incidents de *LexPremium ERP*. Chaque terme en *Marron* identifie un point de contrôle ou un système critique.
 
-### 1.1 Niveau Infrastucture (Vercel)
-Vérifiez régulièrement l'onglet **"Runtime Logs"**. Recherchez les codes 5xx qui indiquent un échec de fonction serverless (souvent dû à un timeout lors d'une analyse IA trop longue).
-### 1.2 Niveau Base de Données (Atlas)
-Surveillez le **"Logical Size"** et le **"Throughput"**. Si le nombre de connexions simultanées approche de la limite de votre tier, envisagez une mise à l'échelle.
-### 1.3 Niveau API Externes
-- **Resend** : Vérifiez le taux de rebond (Bounce rate). Un taux élevé indique des emails de clients mal saisis.
-- **OpenAI** : Suivez les limites de jetons (Usage limits) pour éviter une interruption du service LexA en fin de mois.
+---
 
-## 2. Procédures de Maintenance Préventive
-- **Hebdomadaire** : Vérification des logs de facturation pour identifier d'éventuels échecs d'envoi mail.
-- **Mensuelle** : Audit des utilisateurs actifs. Désactivez les accès des stagiaires ou collaborateurs ayant quitté le cabinet.
-- **Trimestrielle** : Mise à jour des dépendances (`npm update`) pour intégrer les derniers patchs de sécurité.
+## CHAPITRE 1 : MONITORING ET SURVEILLANCE DU SYSTÈME
+Le maintien en condition opérationnelle (MCO) repose sur une surveillance proactive à trois échelles.
 
-## 3. Bibliothèque des Erreurs et Solutions (Troubleshooting)
+### 1.1 Niveau Infrastructure (Vercel et Cloud)
+- *Runtime Logs (Journaux d'exécution)* : C'est le carnet de bord du logiciel. Résultat attendu : identification immédiate des erreurs de code ou des interruptions de connexion.
+- *Performance Monitoring* : Surveille la vitesse de chargement pour les avocats au cabinet ou en déplacement.
 
-### 3.1 Erreurs d'Authentification
-- **Erreur** : "Session Expired" ou redirection constante vers `/login`.
-- **Cause** : Cookies bloqués ou heure du système décalée.
-- **Solution** : Vérifiez que les cookies tiers sont autorisés et que votre ordinateur est à l'heure du réseau.
+### 1.2 Niveau Base de Données (MongoDB Atlas)
+- *Logical Size (Volume de données)* : Mesure la croissance de votre base. Résultat attendu : anticiper le besoin de stockage avant que le système ne sature.
+- *Throughput (Débit)* : Analyse le nombre de connexions simultanées. Résultat attendu : garantir que le logiciel reste rapide même lors des pics d'activité (ex: fin de mois avec facturation massive).
 
-### 3.2 Erreurs de Base de Données
-- **Erreur** : `PrismaClientInitializationError` (Authentication failed).
-- **Cause** : Mauvais mot de passe dans `DATABASE_URL` ou IP non autorisée.
-- **Solution** : Dans MongoDB Atlas > Network Access, ajoutez `0.0.0.0/0` (ou les IP spécifiques de Vercel).
+### 1.3 Niveau API et Services Externes
+- *Resend (Emails)* : Surveillance du taux de délivrabilité. Résultat attendu : s'assurer que vos factures arrivent bien dans la boîte mail du client et non dans les spams.
+- *OpenAI (Intelligence Artificielle)* : Suivi de la consommation de jetons. Résultat attendu : éviter toute coupure de l'assistant *LexAI* suite à un dépassement de budget.
 
-### 3.3 Erreurs de l'Assistant IA
-- **Erreur** : LexA ne répond pas ou affiche "Erreur Interne".
-- **Cause** : Document trop lourd ou clé API OpenAI invalide.
-- **Solution** : Vérifiez la balance de votre compte OpenAI et assurez-vous que le document fait moins de 20 Mo.
+---
 
-### 3.4 Erreurs de Génération PDF
-- **Erreur** : Facture blanche ou caractères étranges.
-- **Cause** : Caractères emojis ou polices non standard dans l'adresse.
-- **Solution** : Utilisez uniquement des caractères alphanumériques standard pour les coordonnées du cabinet.
+## CHAPITRE 2 : BIBLIOTHÈQUE DES ERREURS ET SOLUTIONS
+Ce chapitre permet une résolution autonome des incidents les plus courants.
 
-## 4. Procédures de Secours (Disaster Recovery)
-1. **Perte de données** : Allez dans le dashboard MongoDB Atlas > Backups > Restore. Choisissez le "Point-in-time" souhaité.
-2. **Site Down** : Vérifiez [Vercel Status](https://www.vercel-status.com/). Si Vercel est opérationnel, redéployez la dernière version stable via `vercel --prod`.
+### 2.1 Incidents d'Accès et Sessions
+- **Erreur : "Session Expired"** : Souvent dû à des réglages de sécurité locaux. Solution : autoriser les cookies de session et vérifier la mise à l'heure automatique de votre ordinateur.
+- **Erreur : "Accès Refusé"** : Le collaborateur n'a pas les droits nécessaires. Action administrateur : vérifier le *Rôle* de l'utilisateur dans le module *Paramètres*.
 
-## 5. Contact du Support Escalade
-Pour toute erreur non répertoriée, préparez un "Incident Report" contenant :
-- L'URL de la page concernée.
-- Une capture d'écran du message d'erreur.
-- Si possible, le log correspondant extrait du dashboard Vercel.
+### 2.2 Incidents liés à l'Intelligence Artificielle
+- **LexA ne répond pas** : Généralement causé par un document PDF protégé par mot de passe ou trop volumineux. Solution : s'assurer que le fichier est déverrouillé et fait moins de 20 Mo.
+
+---
+
+## CHAPITRE 3 : PROCÉDURES DE SECOURS ET RESTAURATION
+En cas d'incident majeur, suivez ces protocoles de sécurité.
+
+### 3.1 Sauvegardes et Restauration
+- *Backups Automatiques* : En cas de suppression accidentelle d'un dossier important, l'administrateur peut effectuer une *Restauration au Point de Sauvegarde*. Résultat attendu : retour à l'état exact du système avant l'incident.
+
+### 3.2 Support Technique de Niveau 2
+Si un problème complexe persiste, préparez un *Rapport d'Incident* incluant une capture d'écran et l'heure précise du dysfonctionnement. Ce document sera transmis à votre support technique pour une résolution prioritaire.
+
+---
+**LexPremium - La Fiabilité au service de votre sérénité.**
+*Documentation mise à jour : Décembre 2025*
+*SCP d'Avocats Dia & Associés*

@@ -53,4 +53,4 @@ Passez à la vitesse supérieure. Digitalisez votre cabinet et gagnez en sérén
 
 ## SLIDE 10: CONTACT & DÉMONSTRATION
 Prenez rendez-vous dès aujourd'hui pour transformer votre cabinet.
-**LexPremium** : Le futur du Droit est ici.
+*LexPremium* : Le futur du Droit est ici.

@@ -1,37 +1,44 @@
-# Manuel d'Architecture Système Approfondi - LexPremium ERP
+# Manuel d'Architecture Système et de Sécurité - LexPremium ERP
+![[ai_concept.png]]
 
-## 1. Philosophie d'Architecture
-L'architecture de LexPremium est pensée comme un "Software-as-a-Service" (SaaS) robuste, capable de supporter la digitalisation d'un barreau entier. Elle repose sur le principe de **Statelessness** pour garantir une disponibilité maximale.
+## AVANT-PROPOS
+Ce document détaille l'architecture structurelle de *LexPremium ERP*. Il explique comment les flux de données circulent pour garantir une intégrité parfaite et une rapidité d'exécution exceptionnelle au service du Cabinet Dia & Associés. Chaque terme en *Marron* identifie une couche ou une technologie de l'infrastructure.
 
-## 2. Diagramme des Flux (Data Flow)
-### 2.1 Cycle de Vie d'une Requête Utilisateur
-1. Le Client (Navigateur) envoie une requête via HTTPS.
-2. Vercel achemine la requête vers la fonction Lambda la plus proche.
-3. Le code Next.js vérifie les droits d'accès dans le cookie sécurisé.
-4. Prisma interroge MongoDB pour récupérer les données.
-5. L'IA (si sollicitée) vient enrichir le contexte via une requête asynchrone sécurisée.
-6. La réponse est rendue en HTML/JSON et renvoyée instantanément.
+---
 
-## 3. Architecture de la GED (Gestion Électronique des Documents)
-La GED n'est pas un simple stockage de fichiers ; c'est un système intelligent :
-- **Storage Layer** : Utilisation d'un CDN pour la diffusion rapide des documents.
-- **Processing Layer** : Les documents sont envoyés par fragments (chunks) pour l'analyse IA, évitant les surcharges mémoires.
-- **Indexing Layer** : Chaque document est indexé par titre, date et contenu textuel pour une recherche globale en moins de 100ms.
+## CHAPITRE 1 : PHILOSOPHIE D'ARCHITECTURE
+L'infrastructure de *LexPremium* est conçue comme un écosystème cloud robuste, privilégiant la haute disponibilité et la protection absolue du secret professionnel.
 
-## 4. Conception de l'Intelligence Artificielle (RAG 2.0)
-Nous utilisons le modèle **Retrieval-Augmented Generation** :
-1. **Indexation** : La jurisprudence est convertie en vecteurs numériques.
-2. **Récupération** : Lorsqu'un avocat pose une question, le système cherche les vecteurs les plus proches (recherche sémantique).
-3. **Synthèse** : L'IA reçoit la question + les textes de loi et rédige une réponse argumentée.
+### 1.1 Cycle de Vie d'une Requête Utilisateur
+1. Le navigateur de l'avocat envoie une demande sécurisée via le protocole *HTTPS*.
+2. La plateforme de routage oriente la demande vers le centre de calcul le plus proche de Dakar pour minimiser la latence.
+3. Le système Next.js valide l'identité de l'utilisateur via un *Cookie Sécurisé*.
+4. Le moteur *Prisma* interroge la base de données *MongoDB* pour extraire les informations demandées.
+5. L'IA, si nécessaire, enrichit les données (ex: analyse d'un document ou recherche de jurisprudence).
+6. Résultat attendu : l'utilisateur reçoit une interface complète et mise à jour en une fraction de seconde.
 
-## 5. Architecture de Sécurité Multi-niveaux
-- **Niveau 1** : Chiffrement TLS 1.3 pour tous les échanges.
-- **Niveau 2** : Firewall d'Application Web (WAF) bloquant les injections SQL et attaques par déni de service (DDoS).
-- **Niveau 3** : Rôles d'accès au niveau applicatif (Role-Based Access Control - RBAC).
-- **Niveau 4** : Sécurité physique garantie par les centres de données certifiés Tier III / IV.
+---
 
-## 6. Stratégie de Scalabilité
-L'application est conçue pour passer de 5 à 500 avocats sans modification de code :
-- **Auto-scaling** : Les ressources serveurs s'adaptent automatiquement au trafic.
-- **Database Sharding** : MongoDB peut être partitionné si le volume de documents dépasse les téraoctets.
-- **Edge Caching** : Les parties statiques de l'application sont répliquées sur des serveurs partout en Afrique pour éliminer la latence internationale.
+## CHAPITRE 2 : ARCHITECTURE DE LA GESTION DOCUMENTAIRE (GED)
+La *GED* de LexPremium n'est pas un simple espace de stockage, c'est un système de traitement intelligent.
+
+### 2.1 Les Trois Couches de Traitement
+- *Storage Layer (Stockage)* : Les documents sont conservés dans un coffre-fort numérique hautement sécurisé avec réplication géographique. Résultat attendu : aucune perte de document n'est physiquement possible.
+- *Processing Layer (Traitement)* : Chaque nouveau fichier est découpé et analysé par nos algorithmes *OCR*. Résultat attendu : transformer une image scannée en un texte cherchable et compréhensible par l'IA.
+- *Indexing Layer (Indexation)* : Les mots-clés sont indexés dans un moteur de recherche ultra-rapide. Résultat attendu : retrouver un dossier via une simple phrase contenue dans une pièce jointe en moins de 100 millisecondes.
+
+---
+
+## CHAPITRE 3 : SÉCURITÉ ET PROTECTION MULTI-NIVEAUX
+La protection de vos données juridiques repose sur une défense en profondeur répartie sur quatre niveaux.
+
+### 3.1 Niveaux de Défense
+- *Niveau 1 : Chiffrement TLS* : Sécurise le tunnel de communication entre votre ordinateur et le serveur. Résultat attendu : impossibilité absolue d'intercepter vos échanges par un tiers.
+- *Niveau 2 : Firewall WAF* : Protection active contre les cyberattaques sophistiquées. Résultat attendu : blocage automatique de toute tentative d'intrusion ou attaque par déni de service.
+- *Niveau 3 : Contrôle RBAC* : Gestion des accès basée sur les rôles. Résultat attendu : chaque collaborateur n'accède qu'aux informations strictement nécessaires à sa mission.
+- *Niveau 4 : Infrastructure Tier IV* : Hébergement dans les centres de données les plus sécurisés au monde. Résultat attendu : garantie d'une continuité de service même en cas d'incident majeur sur le réseau électrique ou internet.
+
+---
+**LexPremium - Une Architecture de confiance pour l'élite juridique.**
+*Documentation mise à jour : Décembre 2025*
+*SCP d'Avocats Dia & Associés*
