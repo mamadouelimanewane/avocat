@@ -1,67 +1,59 @@
 # Manuel d'Utilisation Exhaustif - LexPremium ERP
 
-## 1. Vision et Objectifs
-LexPremium ERP est une solution métier de nouvelle génération, conçue pour transformer la pratique juridique en Afrique. Son objectif est de libérer l'avocat des tâches répétitives grâce à l'automatisation intelligente et à une gestion centralisée des données.
+## CHAPITRE 1 : VISION ET OBJECTIFS
+Bienvenue dans l'ère de l'avocat augmenté. *LexPremium ERP* n'est pas qu'un simple logiciel de gestion ; c'est le partenaire stratégique de votre cabinet. Sa mission fondamentale est de libérer l'intelligence de l'avocat en automatisant les processus chronophages et en centralisant l'intégralité de la connaissance juridique et factuelle de vos dossiers. En utilisant ce système, vous garantissez une *Rigueur Totale* et une *Efficacité Décuplée* dans votre pratique quotidienne au sein du cabinet.
 
-## 2. Interface et Navigation
-### 2.1 Le Menu Principal
-Configuré pour une efficacité maximale, le menu offre un accès direct à :
-- **Tableau de Bord** : Votre cockpit décisionnel.
-- **Dossiers** : Gestion électronique des affaires (GED).
-- **Clients** : Gestion de la relation client (CRM).
-- **Agenda** : Synchronisation des audiences et rendez-vous.
-- **Facturation** : Gestion du cycle financier complet.
+## CHAPITRE 2 : INTERFACE ET NAVIGATION DYNAMIQUE
+### 2.1 Le Cockpit de Navigation
+Le menu latéral, conçu pour une ergonomie fluide, constitue votre point d'entrée vers tous les univers du cabinet.
+- **Tableau de Bord** : Votre centre de commandement où l'IA synthétise vos priorités dès votre arrivée au bureau.
+- **Dossiers** : L'espace sacré de la *Gestion Électronique des Documents* (GED) et du suivi procédural.
+- **Clients** : Le répertoire intelligent (CRM) qui garde en mémoire chaque interaction et chaque spécificité de vos mandants.
+- **Agenda** : Un ordonnanceur puissant qui synchronise vos audiences, vos délais de grâce et vos rendez-vous stratégiques.
+- **Facturation** : L'outil de transformation de vos diligences en valeur financière réelle.
 
-### 2.2 La Barre de Recherche Intelligente (Global Search)
-Accessible via le raccourci `Ctrl + K`, elle permet de trouver instantanément un dossier, un client ou un document grâce à une indexation plein texte.
+### 2.2 La Recherche Universelle (Smart Search)
+Accessible instantanément par la commande *Ctrl + K*, la barre de recherche ne se contente pas de chercher des noms. Elle indexe le contenu intégral de vos PDF, de vos emails et de vos notes, vous permettant de retrouver une clause spécifique ou une pièce de procédure en moins de deux secondes.
 
-## 3. Gestion Approfondie des Dossiers
-### 3.1 Création et Qualification
-Lors de la création d'un dossier (bouton "Nouveau Dossier"), soyez précis sur :
-- **Référence Interne** : Format suggéré `NOM-ANNEE-XXX`.
-- **Statut initial** : Généralement "OUVERT".
-- **Juridiction** : Précisez le tribunal (ex: TGI Dakar, Tribunal de Commerce) pour les filtres statistiques.
+## CHAPITRE 3 : GESTION APPROFONDIE DES AFFAIRES
+### 3.1 Création et Qualification d'une Procédure
+La création d'un dossier via le bouton *Nouveau Dossier* est l'acte fondateur de votre suivi.
+- **La Référence Interne** : Indispensable pour votre classement, elle doit suivre une nomenclature claire (ex: *REF-2025-001*).
+- **La Juridiction** : En renseignant précisément le tribunal (ex: *Tribunal de Commerce de Dakar*), vous permettez au système de vous fournir des statistiques précises sur vos chances de succès par chambre.
 
-### 3.2 La Gestion Électronique des Documents (GED 2.0)
-L'onglet "Documents" est votre archive vivante.
-- **Importation** : Glissez-déposez vos pièces. Le système supporte PDF, DOCX, et les images (OCR automatique).
-- **Analyse par l'IA** : Pour chaque document, l'assistant LexA peut extraire les dates, les montants, les parties impliquées et les risques juridiques.
-- **Historique des versions** : Chaque modification d'un document crée une nouvelle version, vous permettant de revenir en arrière à tout moment.
+### 3.2 L'Intelligence Documentaire (GED 2.0)
+L'onglet *Documents* transforme vos fichiers passifs en données exploitables.
+- **Analyse Automatique LexAI** : Pour chaque pièce téléchargée, l'intelligence artificielle effectue un scan complet. Résultat attendu : le système identifie seul les dates limites, les montants en jeu et les parties adverses pour les intégrer à votre calendrier.
+- **Historique de Révision** : Chaque modification d'un acte est tracée. Vous pouvez consulter les anciennes versions pour ne jamais perdre le fil de votre argumentation initiale.
 
-### 3.3 Suivi des Audiences et Délais
-L'onglet "Agenda" du dossier permet de noter chaque événement. Les dates d'audience sont automatiquement répercutées dans l'agenda global du cabinet et sur le tableau de bord de l'avocat assigné.
+## CHAPITRE 4 : FINANCE ET RENTABILITÉ DU CABINET
+### 4.1 Maîtrise des Débours et Frais
+Un cabinet rentable est un cabinet qui ne perd aucune dépense. Le module *Frais & Débours* dans chaque dossier vous permet d'enregistrer immédiatement les timbres fiscaux ou les frais d'huissier. Une fois enregistrés, ces frais sont automatiquement marqués pour être refacturés au client final, évitant ainsi toute déperdition de marge.
+### 4.2 Optimisation du Temps Passé
+Le *Time-Tracking* intégré vous permet de valoriser chaque minute de recherche juridique ou de rédaction. En cliquant sur le bouton *Démarrer*, vous lancez un chronomètre lié au dossier. À la fin de la tâche, le système vous propose de convertir ce temps en honoraires facturables, garantissant une facturation juste et transparente.
 
-## 4. Finance et Rentabilité du Dossier
-### 4.1 Enregistrement des Débours
-Chaque dossier comporte un journal financier. Notez-y les frais engagés (timbres fiscaux, émoluments d'huissier, frais de déplacement). Cela permet un calcul exact du bénéfice net à la clôture.
-### 4.2 Temps Passé (Time-Tracking)
-Utilisez le chronomètre intégré pour enregistrer vos vacations. Une fois la vacation terminée, elle peut être convertie en ligne de facture en un seul clic.
+## CHAPITRE 5 : CRM ET PORTAIL CLIENT SÉCURISÉ
+### 5.1 Gestion de la Relation Mandant
+Chaque fiche client compile l'intégralité des affaires passées et présentes. Vous disposez d'un historique financier limpide permettant de connaître instantanément l'encours total de chaque client.
+### 5.2 L'Espace Client (Portail)
+Offrez à vos clients une expérience premium. En activant le *Code d'Accès* unique, votre client peut se connecter à son espace personnel pour télécharger ses documents et suivre l'avancement de sa procédure. Cela réduit vos appels entrants de plus de 40% tout en augmentant la satisfaction client.
 
-## 5. Module CRM et Relation Client
-### 5.1 Fiche Client Détaillée
-Un client peut être une personne physique ou morale. Pour les entreprises, vous pouvez enregistrer plusieurs contacts (Directeur Juridique, Comptable).
-### 5.2 Portail Client Sécurisé
-Chaque client dispose d'un espace dédié pour consulter l'avancement de son dossier et télécharger ses factures. Activez cet accès via le "Code d'Accès" unique.
+## CHAPITRE 6 : L'ASSISTANT LEXAI AU QUOTIDIEN
+### 6.1 Recherche Jurisprudentielle IA
+Ne perdez plus des heures dans les annuaires papier. Posez votre question juridique à *LexAI* (ex: "Quels sont les motifs de rejet d'une saisie-attribution en droit OHADA ?"). L'IA fouille la base de jurisprudence et vous propose une synthèse structurée accompagnée des références d'arrêts CCJA pertinents.
+### 6.2 Aide à la Rédaction de Plaidoiries
+L'IA peut générer des premiers jets de conclusions ou d'assignations en se basant sur les faits du dossier et les textes de loi applicables. Vous gardez bien sûr le contrôle final, mais gagnez un temps précieux sur la structure et les références légales.
 
-## 6. L'Assistant IA LexA : Votre Collaborateur Virtuel
-### 6.1 Recherche Jurisprudentielle
-"Quelles sont les dernières décisions de la CCJA sur la validité des saisies-attributions ?" LexA interroge la base de jurisprudence intégrée pour vous répondre.
-### 6.2 Rédaction Assistée
-"Rédige un projet de conclusions d'appel pour ce dossier en te basant sur la violation de l'article 42 du COCC." L'IA génère un premier jet structuré que vous pouvez ensuite affiner.
-### 6.3 Commandes Vocales
-Utilisez l'icône micro pour dicter vos notes ou piloter l'application : "Afficher les factures impayées".
+## CHAPITRE 7 : FACTURATION ET COMPTABILITÉ SYSCOHADA
+### 7.1 Cycle de Vie de la Facture
+La facturation dans LexPremium suit un flux sécurisé :
+1. **Émission** : La facture est générée au format PDF et envoyée automatiquement par email sécurisé.
+2. **Suivi des Paiements** : L'enregistrement d'un paiement met à jour votre solde client et votre journal de banque.
+### 7.2 L'Interface Comptable Intégrée
+Toutes vos ventes et vos règlements génèrent automatiquement des écritures dans le journal de vente (*VE*) et de banque (*BQ*), respectant scrupuleusement le plan de comptes *SYSCOHADA*. Votre comptabilité de fin d'année est ainsi préparée quotidiennement sans effort supplémentaire.
 
-## 7. Facturation et Comptabilité SYSCOHADA
-### 7.1 Cycle de Facturation
-1. **Facture Brouillon** : Pour validation interne.
-2. **Facture Émise** : Déclenche l'envoi par email via Resend.
-3. **Paiement Reçu** : Enregistrement bancaire.
-
-### 7.2 Intégration Comptable Auto
-LexPremium génère automatiquement les écritures de classe 4 (Tiers) et 7 (Produits), simplifiant le travail de votre service comptable.
-
-## 8. Rapports et Statistiques
-Accédez au module "Rapports" pour visualiser :
-- Le CA par avocat ou par domaine du droit (Civil, Social, etc.).
-- Les dossiers les plus rentables.
-- Le taux de recouvrement des factures.
+## CHAPITRE 8 : PILOTAGE ET TABLEAUX DE BORD (REPORTING)
+Le module *Rapports* vous donne une vision "Hélicoptère" sur la santé du cabinet.
+- **Chiffre d'Affaires par Avocat** : Mesurez la performance de chaque collaborateur.
+- **Taux de Recouvrement** : Identifiez les clients qui tardent à payer pour lancer vos actions de relance en un clic.
+- **Analyse de rentabilité** : Comparez le coût interne (temps passé) avec les honoraires encaissés pour chaque type d'affaire.

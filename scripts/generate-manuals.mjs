@@ -78,7 +78,7 @@ const ManualDocument = ({ title, content, isMarketing = false }) => {
                     React.createElement(Text, { style: styles.mainTitle }, title.toUpperCase()),
                     React.createElement(View, { style: { width: 100, height: 4, backgroundColor: '#f59e0b', marginBottom: 40 } }),
                     React.createElement(Text, { style: styles.subtitle }, isMarketing ? "L'Excellence Juridique Augmentée" : "Documentation Officielle LexPremium ERP"),
-                    React.createElement(Text, { style: { fontSize: 14, color: '#ffffff', marginTop: 100 } }, "SCP d'Avocats Dia & Associés"),
+                    React.createElement(Text, { style: { fontSize: 14, color: '#ffffff', marginTop: 100 } }, "Cabinet LexPremium"),
                     React.createElement(Text, { style: { fontSize: 10, color: '#64748b', marginTop: 10 } }, "Version Industrielle - Manuel Complet")
                 )
             ),
