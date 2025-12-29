@@ -37,26 +37,16 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Stopwatch } from '@/components/tools/Stopwatch';
-import { useI18n } from '@/components/i18n-provider';
-
-// Removed static navigation array
-
-// 
-
-
-
-
 export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
-    const { t } = useI18n();
 
     const translatedNavigation = [
-        { name: t('nav.dashboard'), href: '/', icon: LayoutDashboard },
-        { name: t('nav.dossiers'), href: '/dossiers', icon: Briefcase },
-        { name: t('nav.clients'), href: '/clients', icon: Users },
-        { name: t('nav.agenda'), href: '/agenda', icon: Calendar },
+        { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+        { name: 'Dossiers', href: '/dossiers', icon: Briefcase },
+        { name: 'Clients', href: '/clients', icon: Users },
+        { name: 'Agenda', href: '/agenda', icon: Calendar },
         { name: 'Palais & Audiences', href: '/audiences', icon: Landmark },
-        { name: t('nav.billing'), href: '/factures', icon: Receipt },
+        { name: 'Facturation', href: '/factures', icon: Receipt },
         { name: 'Recouvrement Massif', href: '/recouvrement', icon: BadgePercent },
         { name: 'Comptabilité', href: '/comptabilite', icon: Calculator },
         { name: 'CARPA (Fonds Tiers)', href: '/comptabilite/carpa', icon: Landmark },
@@ -73,15 +63,15 @@ export function Sidebar({ className }: { className?: string }) {
         { name: 'Finance Stratégique', href: '/finance-strategique', icon: TrendingUp },
         { name: 'Annuaire Pro', href: '/annuaire', icon: Contact },
         { name: 'International', href: '/international', icon: Globe },
-        { name: t('nav.reports'), href: '/rapports', icon: BarChart3 },
+        { name: 'Rapports', href: '/rapports', icon: BarChart3 },
         { name: 'Outils & Codes', href: '/outils', icon: BookOpen },
         { name: 'Modèles (Bible)', href: '/modeles', icon: FileMsg },
-        { name: t('nav.crm'), href: '/crm', icon: Rocket },
+        { name: 'CRM', href: '/crm', icon: Rocket },
         { name: 'Conflits d\'Intérêts', href: '/conflits', icon: ShieldAlert },
         { name: 'Communication', href: '/communication', icon: MessageCircle },
         { name: 'RH & Talents', href: '/rh', icon: GraduationCap },
         { name: 'Documentation', href: '/admin/documentation', icon: BookOpen },
-        { name: t('nav.settings'), href: '/admin', icon: Settings },
+        { name: 'Paramètres', href: '/admin', icon: Settings },
     ];
 
     return (

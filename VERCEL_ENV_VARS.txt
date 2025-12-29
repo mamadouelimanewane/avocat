@@ -1,0 +1,31 @@
+# ============================================
+# VARIABLES D'ENVIRONNEMENT POUR VERCEL
+# ============================================
+# 
+# INSTRUCTIONS :
+# 1. Remplacez <VOTRE_MOT_DE_PASSE> par votre vrai mot de passe MongoDB
+# 2. Copiez chaque ligne ci-dessous dans Vercel
+# 3. Sur Vercel : Settings → Environment Variables → Add
+#
+# ============================================
+
+# 🔴 OBLIGATOIRE - Base de données MongoDB
+DATABASE_URL=mongodb+srv://mamadouelimane:<VOTRE_MOT_DE_PASSE>@cluster0.orfpiew.mongodb.net/lexpremium?retryWrites=true&w=majority
+
+# 🟡 OPTIONNEL - Intelligence Artificielle (fonctionnalités IA avancées)
+# Si vous avez une clé DeepSeek ou OpenAI, ajoutez-la ici :
+# DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxx
+# OPENAI_API_KEY=sk-xxxxxxxxxxxxx
+
+# ============================================
+# NOTES IMPORTANTES :
+# ============================================
+# 
+# - DATABASE_URL : C'est la connexion à votre base de données MongoDB
+#   → Sans cela, l'application NE FONCTIONNERA PAS sur Vercel
+#
+# - Les clés API IA sont optionnelles
+#   → Sans elles, l'IA fonctionne en mode "dégradé" (RAG local uniquement)
+#   → Créer une clé gratuite sur : https://platform.deepseek.com
+#
+# ============================================

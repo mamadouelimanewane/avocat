@@ -12,9 +12,6 @@ export const metadata: Metadata = {
     description: 'Solution de gestion pour cabinets d\'avocats modernes.',
 };
 
-import { ThemeProvider } from "@/components/theme-provider"
-import { I18nProvider } from "@/components/i18n-provider"
-
 export default function RootLayout({
     children,
 }: {
@@ -23,18 +20,9 @@ export default function RootLayout({
     return (
         <html lang="fr" suppressHydrationWarning>
             <body className={`${inter.variable} ${outfit.variable} font-sans bg-background text-foreground min-h-screen`} suppressHydrationWarning>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <I18nProvider>
-                        <AppShell>
-                            {children}
-                        </AppShell>
-                    </I18nProvider>
-                </ThemeProvider>
+                <AppShell>
+                    {children}
+                </AppShell>
             </body>
         </html>
     );

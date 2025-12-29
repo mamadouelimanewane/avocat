@@ -18,6 +18,7 @@ import ClientDownloadButton from '@/components/documents/ClientDownloadButton'
 import { InvoiceActions } from '@/components/factures/InvoiceActions'
 import { getCabinetSettings } from '@/app/actions'
 import PrintHandler from '@/components/factures/PrintHandler'
+import SendInvoiceButton from '@/components/factures/SendInvoiceButton'
 import { Suspense } from 'react'
 
 const prisma = new PrismaClient()
@@ -65,9 +66,7 @@ export default async function FactureDetailPage({ params }: { params: { id: stri
 
                 <div className="flex gap-2">
                     <InvoiceActions facture={facture} />
-                    <Button variant="outline" size="sm">
-                        <Send className="mr-2 h-4 w-4" /> Envoyer
-                    </Button>
+                    <SendInvoiceButton facture={facture} />
                     <ClientDownloadButton facture={facture} settings={settings} />
                 </div>
             </div>

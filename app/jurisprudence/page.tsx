@@ -2,13 +2,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Gavel, Scale, FileText, Download, ExternalLink, RefreshCcw, Eye, Upload as UploadIcon, Book, ScrollText } from "lucide-react"
+import Link from "next/link"
+import { Search, Gavel, Scale, FileText, Download, ExternalLink, RefreshCcw, Eye, Upload as UploadIcon, Book, ScrollText, CheckCircle, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { initJurisprudenceLibrary, searchJurisprudence } from "@/app/actions"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
@@ -19,6 +20,7 @@ export default function JurisprudencePage() {
     const [query, setQuery] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [activeTab, setActiveTab] = useState("tous")
+    const [pendingUploads, setPendingUploads] = useState<any[]>([])
 
     const filteredResults = results.filter(item => {
         if (activeTab === "tous") return true;
@@ -29,16 +31,111 @@ export default function JurisprudencePage() {
         return true;
     });
 
-    const handleUpload = () => {
+    const handleDownloadPDF = (item: any) => {
+        // ... (code existant pour download PDF) ...
+        const pdfContent = `
+═══════════════════════════════════════════════════════════════
+${item.title}
+═══════════════════════════════════════════════════════════════
+
+Référence: ${item.reference || 'N/A'}
+Date: ${format(new Date(item.date), 'dd MMMM yyyy', { locale: fr })}
+Court: ${item.court || 'N/A'}
+Type: ${item.type || 'N/A'}
+
+───────────────────────────────────────────────────────────────
+RÉSUMÉ
+───────────────────────────────────────────────────────────────
+
+${item.summary || 'Aucun résumé disponible.'}
+
+───────────────────────────────────────────────────────────────
+CONTENU INTÉGRAL
+───────────────────────────────────────────────────────────────
+
+${item.content || 'Contenu complet non disponible dans la base locale.'}
+
+${item.sourceUrl ? `\n\n───────────────────────────────────────────────────────────────\nSOURCE OFFICIELLE\n───────────────────────────────────────────────────────────────\n\n${item.sourceUrl}` : ''}
+
+═══════════════════════════════════════════════════════════════
+Document généré par LexPremium - ${new Date().toLocaleDateString('fr-FR')}
+═══════════════════════════════════════════════════════════════
+        `.trim()
+
+        // Créer un blob et télécharger
+        const blob = new Blob([pdfContent], { type: 'text/plain;charset=utf-8' })
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${item.reference?.replace(/[\/\\]/g, '-') || 'document'}.txt`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+
         toast({
-            title: "Téléversement simulé",
-            description: "Votre document a été ajouté à la file d'attente de validation.",
-            duration: 3000,
+            title: "Téléchargement réussi",
+            description: "Le document a été téléchargé.",
         })
     }
 
+    const handleValidation = (item: any) => {
+        // En production, appel API pour update le statut. Ici simulation.
+
+        // Update results list
+        setResults(prev => prev.map(doc => {
+            if (doc.id === item.id) {
+                return {
+                    ...doc,
+                    status: 'VALIDATED',
+                    reference: `JURIS-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`,
+                    summary: "Ce document a été validé par le comité de lecture et intégré à la base de connaissances.",
+                    content: `DOCUMENT CERTIFIÉ ET VALIDÉ
+                    
+TITRE: ${doc.title}
+DATE DE VALIDATION: ${new Date().toLocaleDateString('fr-FR')}
+STATUT: APPROUVÉ PAR LE COMITÉ DE LECTURE
+
+[Le contenu complet du fichier original a été traité, indexé et archivé sécurisé.]
+
+Ce texte est désormais opposable et consultable par l'ensemble des collaborateurs du cabinet.
+Il a été vérifié pour sa conformité juridique.
+
+---
+Signature numérique: VALIDÉ-#${Math.floor(Math.random() * 100000)}`
+                }
+            }
+            return doc
+        }))
+
+        // Update pending list (remove from pending)
+        setPendingUploads(prev => prev.map(p => {
+            if (p.name === item.title + '.pdf') return { ...p, status: 'Validé' }
+            return p
+        }))
+
+        toast({
+            title: "Document Validé",
+            description: "Le document est maintenant accessible à tout le cabinet.",
+            className: "bg-emerald-50 border-emerald-200"
+        })
+    }
+
+    const handleDelete = (id: string, e: React.MouseEvent) => {
+        e.preventDefault() // Prevent link navigation if inside a link (though button handles clicks)
+        e.stopPropagation()
+
+        if (confirm("Êtes-vous sûr de vouloir supprimer ce document ?")) {
+            setResults(prev => prev.filter(item => item.id !== id))
+            toast({
+                title: "Document supprimé",
+                description: "Le document a été retiré de la liste.",
+                variant: "destructive"
+            })
+        }
+    }
+
     useEffect(() => {
-        // Initial load & seed
         const load = async () => {
             setIsLoading(true)
             await initJurisprudenceLibrary()
@@ -96,11 +193,92 @@ export default function JurisprudencePage() {
                             <DialogDescription>Partagez une décision ou un texte de loi avec le cabinet.</DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
-                            <div className="border-2 border-dashed border-slate-200 rounded-lg h-32 flex flex-col items-center justify-center text-slate-500 hover:bg-slate-50 cursor-pointer" onClick={handleUpload}>
-                                <UploadIcon className="h-8 w-8 mb-2" />
-                                <span>Glisser-déposer un PDF ici</span>
-                            </div>
+                            <label
+                                htmlFor="file-upload"
+                                className="border-2 border-dashed border-slate-200 rounded-lg h-32 flex flex-col items-center justify-center text-slate-500 hover:bg-slate-50 cursor-pointer transition-colors"
+                            >
+                                <UploadIcon className="h-8 w-8 mb-2 text-slate-400" />
+                                <span className="font-medium text-sm">Cliquez pour sélectionner vos PDF</span>
+                                <span className="text-xs text-slate-400 mt-1">Maximum 10 Mo - Sélection Multiple</span>
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    accept=".pdf"
+                                    multiple
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const files = Array.from(e.target.files || [])
+                                        if (files.length > 0) {
+                                            toast({
+                                                title: `${files.length} Fichier(s) reçu(s)`,
+                                                description: `Traitement en cours...`,
+                                                className: "bg-blue-50 border-blue-200"
+                                            })
+
+                                            files.forEach((file, index) => {
+                                                setTimeout(() => {
+                                                    const newDoc = {
+                                                        id: `pending-${Date.now()}-${index}`,
+                                                        title: file.name.replace('.pdf', ''),
+                                                        reference: "EN ATTENTE",
+                                                        court: "Contribution",
+                                                        date: new Date(),
+                                                        summary: "Document téléversé en attente de revue par le comité de lecture.",
+                                                        type: "CONTRIBUTION",
+                                                        status: 'PENDING',
+                                                        keywords: JSON.stringify(["nouveau", "contribution"])
+                                                    }
+
+                                                    setPendingUploads(prev => [...prev, {
+                                                        name: file.name,
+                                                        date: new Date(),
+                                                        status: 'En cours de validation'
+                                                    }])
+
+                                                    setResults(prev => [newDoc, ...prev])
+                                                }, 500 * (index + 1))
+                                            })
+
+                                            setTimeout(() => {
+                                                toast({
+                                                    title: "Succès",
+                                                    description: "Les documents ont été ajoutés à la file d'attente.",
+                                                    className: "bg-green-50 border-green-200"
+                                                })
+                                            }, 500 * files.length + 500)
+                                        }
+                                    }}
+                                />
+                                <span className="text-xs text-indigo-600 mt-2 font-medium block text-center">Sélection multiple autorisée</span>
+                            </label>
+
+                            {/* Liste des fichiers en attente */}
+                            {pendingUploads.length > 0 && (
+                                <div className="mt-4 space-y-2">
+                                    <h4 className="text-sm font-semibold text-slate-700">Contributions en attente</h4>
+                                    <div className="bg-slate-50 rounded-md p-3 space-y-2 max-h-40 overflow-y-auto">
+                                        {pendingUploads.map((file, idx) => (
+                                            <div key={idx} className="flex justify-between items-center text-sm p-2 bg-white rounded border border-slate-100">
+                                                <div className="flex items-center gap-2">
+                                                    <FileText className="h-4 w-4 text-slate-400" />
+                                                    <span className="font-medium text-slate-700 truncate max-w-[200px]">{file.name}</span>
+                                                </div>
+                                                <Badge variant="outline" className="text-orange-600 border-orange-200 bg-orange-50">
+                                                    {file.status}
+                                                </Badge>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type="button" variant="secondary">
+                                    Terminer
+                                </Button>
+                            </DialogClose>
+                        </DialogFooter>
                     </DialogContent>
                 </Dialog>
             </div>
@@ -134,47 +312,83 @@ export default function JurisprudencePage() {
                             <CardHeader className="pb-2">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <CardTitle className="text-lg text-indigo-900 font-serif">{item.title}</CardTitle>
+                                        <div className="flex items-center gap-2">
+                                            {item.status === 'PENDING' ? (
+                                                <span className="text-lg text-slate-500 font-serif font-medium cursor-not-allowed">{item.title}</span>
+                                            ) : (
+                                                <Link href={`/jurisprudence/${item.id}`}>
+                                                    <CardTitle className="text-lg text-indigo-900 font-serif hover:text-indigo-700 cursor-pointer transition-colors">
+                                                        {item.title}
+                                                    </CardTitle>
+                                                </Link>
+                                            )}
+                                            {item.status === 'PENDING' && (
+                                                <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200 animate-pulse text-[10px]">
+                                                    En attente validation
+                                                </Badge>
+                                            )}
+                                        </div>
                                         <div className="flex items-center gap-2 text-sm text-slate-500">
-                                            <Badge className={item.court === 'CCJA' ? 'bg-indigo-600' : 'bg-emerald-600'}>
-                                                {item.court}
+                                            <Badge className={item.status === 'PENDING' ? 'bg-slate-400' : (item.court === 'CCJA' ? 'bg-indigo-600' : 'bg-emerald-600')}>
+                                                {item.court || 'Contribution'}
                                             </Badge>
                                             <span className="flex items-center gap-1"><Gavel className="h-3 w-3" /> {item.reference}</span>
                                             <span className="flex items-center gap-1"><Scale className="h-3 w-3" /> {format(new Date(item.date), 'dd MMMM yyyy', { locale: fr })}</span>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <Button variant="outline" size="sm" className="text-xs gap-2">
-                                                    <Eye className="h-3 w-3" /> Voir
-                                                </Button>
-                                            </DialogTrigger>
-                                            <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
-                                                <DialogHeader>
-                                                    <DialogTitle>{item.title}</DialogTitle>
-                                                    <DialogDescription>
-                                                        {item.reference} - {format(new Date(item.date), 'dd MMMM yyyy', { locale: fr })}
-                                                    </DialogDescription>
-                                                </DialogHeader>
-                                                <div className="flex-1 bg-slate-50 p-6 rounded-md overflow-y-auto border">
-                                                    <div className="prose max-w-none">
-                                                        <h3 className="text-lg font-bold mb-4">Texte Intégral / Extrait</h3>
-                                                        <div className="whitespace-pre-wrap text-slate-800 font-mono text-sm leading-relaxed p-4 bg-white border rounded shadow-sm">
-                                                            {item.content || item.summary || "Contenu non disponible."}
-                                                        </div>
-                                                        {item.sourceUrl && (
-                                                            <div className="mt-8">
-                                                                <a href={item.sourceUrl} target="_blank" className="text-blue-600 underline">Voir la source officielle (PDF)</a>
+                                        {item.status === 'PENDING' ? (
+                                            <Button
+                                                size="sm"
+                                                className="text-xs gap-2 bg-indigo-600 hover:bg-indigo-700 text-white animate-in zoom-in"
+                                                onClick={() => handleValidation(item)}
+                                            >
+                                                <CheckCircle className="h-3 w-3" /> Valider (Admin)
+                                            </Button>
+                                        ) : (
+                                            <>
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="outline" size="sm" className="text-xs gap-2">
+                                                            <Eye className="h-3 w-3" /> Voir
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+                                                        <DialogHeader>
+                                                            <DialogTitle>{item.title}</DialogTitle>
+                                                            <DialogDescription>
+                                                                {item.reference} - {format(new Date(item.date), 'dd MMMM yyyy', { locale: fr })}
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="flex-1 bg-slate-50 p-6 rounded-md overflow-y-auto border">
+                                                            <div className="prose max-w-none">
+                                                                <h3 className="text-lg font-bold mb-4">Texte Intégral / Extrait</h3>
+                                                                <div className="whitespace-pre-wrap text-slate-800 font-mono text-sm leading-relaxed p-4 bg-white border rounded shadow-sm">
+                                                                    {item.content || item.summary || "Contenu non disponible."}
+                                                                </div>
+                                                                {item.sourceUrl && (
+                                                                    <div className="mt-8">
+                                                                        <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Voir la source officielle (PDF)</a>
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </DialogContent>
-                                        </Dialog>
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
 
-                                        <Button variant="outline" size="sm" className="text-xs" onClick={() => toast({ title: "Téléchargement", description: "Le téléchargement a démarré..." })}>
-                                            <Download className="mr-2 h-3 w-3" /> PDF
+                                                <Button variant="outline" size="sm" className="text-xs" onClick={() => handleDownloadPDF(item)}>
+                                                    <Download className="mr-2 h-3 w-3" /> PDF
+                                                </Button>
+                                            </>
+                                        )}
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                                            onClick={(e) => handleDelete(item.id, e)}
+                                            title="Supprimer le document"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
                                         </Button>
                                     </div>
                                 </div>

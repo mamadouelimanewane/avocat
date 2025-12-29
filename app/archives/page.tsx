@@ -4,6 +4,7 @@ import { ArchiveSearch } from '@/components/archives/ArchiveSearch'
 import { ArchiveStats } from '@/components/archives/ArchiveStats'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Archive, Box, Search, FileText } from 'lucide-react'
+import { Suspense } from 'react'
 
 const prisma = new PrismaClient()
 
@@ -68,7 +69,9 @@ export default async function ArchivesPage({ searchParams }: { searchParams: { q
                             <p className="text-xs text-slate-500 mb-4">
                                 Indexation Lucene/Solr active. Recherche sémantique disponible.
                             </p>
-                            <ArchiveSearch />
+                            <Suspense fallback={<div className="h-20 animate-pulse bg-slate-100 dark:bg-slate-800 rounded" />}>
+                                <ArchiveSearch />
+                            </Suspense>
                         </CardContent>
                     </Card>
                 </div>

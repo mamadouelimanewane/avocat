@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     {/* Les assistants sont montés après le contenu principal */}
                     <div className="relative z-50">
                         <LexAIAssistant />
-                        <VoiceCommander />
+                        {/* <VoiceCommander /> */}
                     </div>
                 </main>
                 <MobileBottomNav />
