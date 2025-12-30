@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from 'react'
-import { Users, Settings, Shield, Activity, Plus, Key, Check } from 'lucide-react'
+import { Users, Settings, Shield, Activity, Plus, Key, Check, Edit } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { createUser, updateUserStatus, updateUserPermissions, updateUserRole } from '@/app/actions'
+import { createUser, updateUserStatus, updateUserPermissions, updateUserRole, updateUser } from '@/app/actions'
 import { Checkbox } from "@/components/ui/checkbox"
 
 // Define available permissions
@@ -42,8 +42,10 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [isPermOpen, setIsPermOpen] = useState(false)
     const [isRoleOpen, setIsRoleOpen] = useState(false)
+    const [isEditOpen, setIsEditOpen] = useState(false)
     const [selectedUser, setSelectedUser] = useState<any>(null)
     const [selectedPerms, setSelectedPerms] = useState<string[]>([])
+    const [editData, setEditData] = useState({ name: '', email: '', role: '', hourlyRate: '' })
 
     const [newUser, setNewUser] = useState({ name: '', email: '', role: 'AVOCAT', hourlyRate: '200' })
 
@@ -51,10 +53,12 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
         await createUser(newUser)
         setIsCreateOpen(false)
         setNewUser({ name: '', email: '', role: 'AVOCAT', hourlyRate: '200' })
+        window.location.reload()
     }
 
     const toggleStatus = async (id: string, currentStatus: boolean) => {
         await updateUserStatus(id, !currentStatus)
+        window.location.reload()
     }
 
     const openPerms = (user: any) => {
@@ -71,6 +75,7 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
         if (!selectedUser) return
         await updateUserPermissions(selectedUser.id, selectedPerms)
         setIsPermOpen(false)
+        window.location.reload()
     }
 
     const togglePerm = (permId: string) => {
@@ -90,6 +95,32 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
         if (!selectedUser) return
         await updateUserRole(selectedUser.id, newRole)
         setIsRoleOpen(false)
+        window.location.reload()
+    }
+
+    const openEditDialog = (user: any) => {
+        setSelectedUser(user)
+        setEditData({
+            name: user.name || '',
+            email: user.email || '',
+            role: user.role || 'AVOCAT',
+            hourlyRate: String(user.hourlyRate || 200)
+        })
+        setIsEditOpen(true)
+    }
+
+    const handleUpdateUser = async () => {
+        if (!selectedUser) return
+        const formData = new FormData()
+        formData.append('id', selectedUser.id)
+        formData.append('name', editData.name)
+        formData.append('email', editData.email)
+        formData.append('role', editData.role)
+        formData.append('hourlyRate', editData.hourlyRate)
+
+        await updateUser(null, formData)
+        setIsEditOpen(false)
+        window.location.reload()
     }
 
     return (
@@ -207,6 +238,67 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                         </div>
                     </DialogContent>
                 </Dialog>
+
+                {/* Edit User Dialog */}
+                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                    <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                            <DialogTitle>Modifier l'Utilisateur</DialogTitle>
+                            <DialogDescription>
+                                Modifiez les informations de {selectedUser?.name}.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid gap-2">
+                                <Label>Nom complet</Label>
+                                <Input
+                                    value={editData.name}
+                                    onChange={e => setEditData({ ...editData, name: e.target.value })}
+                                    placeholder="Nom de l'utilisateur"
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>Email professionnel</Label>
+                                <Input
+                                    type="email"
+                                    value={editData.email}
+                                    onChange={e => setEditData({ ...editData, email: e.target.value })}
+                                    placeholder="email@lexpremium.sn"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label>Rôle</Label>
+                                    <Select value={editData.role} onValueChange={v => setEditData({ ...editData, role: v })}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="ADMIN">Administrateur</SelectItem>
+                                            <SelectItem value="AVOCAT">Avocat</SelectItem>
+                                            <SelectItem value="SECRETAIRE">Secrétaire</SelectItem>
+                                            <SelectItem value="COLLABORATEUR">Collaborateur (Avocat)</SelectItem>
+                                            <SelectItem value="STAGIAIRE">Stagiaire</SelectItem>
+                                            <SelectItem value="JURISTE">Juriste</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label>Taux Horaire (FCFA/h)</Label>
+                                    <Input
+                                        type="number"
+                                        value={editData.hourlyRate}
+                                        onChange={e => setEditData({ ...editData, hourlyRate: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsEditOpen(false)}>Annuler</Button>
+                            <Button onClick={handleUpdateUser} className="bg-slate-900 text-white">
+                                <Check className="mr-2 h-4 w-4" /> Enregistrer les Modifications
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <Card>
@@ -258,7 +350,10 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
-                                            <Button variant="ghost" size="sm" onClick={() => openPerms(user)}>
+                                            <Button variant="ghost" size="sm" onClick={() => openEditDialog(user)} title="Modifier les informations">
+                                                <Edit className="h-4 w-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="sm" onClick={() => openPerms(user)} title="Gérer les privilèges">
                                                 <Key className="h-4 w-4" />
                                             </Button>
                                             <Button variant="ghost" size="sm" onClick={() => toggleStatus(user.id, user.active)}>

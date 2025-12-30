@@ -574,6 +574,31 @@ export async function updateUserStatus(userId: string, active: boolean) {
     }
 }
 
+export async function updateUser(prevState: any, formData: FormData) {
+    try {
+        const userId = formData.get('id') as string
+        const name = formData.get('name') as string
+        const email = formData.get('email') as string
+        const role = formData.get('role') as string
+        const hourlyRate = formData.get('hourlyRate') as string
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                name,
+                email,
+                role,
+                hourlyRate: parseFloat(hourlyRate || '200')
+            }
+        })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (e) {
+        console.error('Update User Error:', e)
+        return { success: false, message: 'Erreur lors de la mise à jour' }
+    }
+}
+
 export async function getCabinetSettings() {
     return await prisma.cabinetSettings.upsert({
         where: { id: '6765f0e698823528f1455555' },
