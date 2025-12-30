@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Scanner, FileText, Sparkles, Loader2, Check, AlertCircle } from 'lucide-react'
+import { ScanLine, FileText, Sparkles, Loader2, Check, AlertCircle } from 'lucide-react'
 import { createTransaction, getAccounts, getJournals } from '@/app/actions'
 import { toast } from '@/components/ui/use-toast'
 
@@ -83,7 +83,7 @@ export function AccountingOCRDialog() {
         <Dialog open={isPromptOpen} onOpenChange={setIsPromptOpen}>
             <DialogTrigger asChild>
                 <Button variant="premium" className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md hover:shadow-lg transition-all border-none">
-                    <Scanner className="mr-2 h-4 w-4" /> Saisie OCR (IA)
+                    <ScanLine className="mr-2 h-4 w-4" /> Saisie OCR (IA)
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">

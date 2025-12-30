@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import {
     getCarpaTransactions,
-    getCarpaStats,
     createCarpaTransaction,
     getDossiersList
 } from "@/app/actions"
@@ -60,13 +59,14 @@ export default function CarpaPage() {
     const loadData = async () => {
         setIsLoading(true)
         try {
-            const [t, s, d] = await Promise.all([
+            const [t, d] = await Promise.all([
                 getCarpaTransactions(),
-                getCarpaStats(),
                 getDossiersList()
             ])
             setTransactions(t)
-            setStats(s)
+            // Calculate stats locally from transactions
+            const total = t.reduce((sum: number, tx: any) => sum + tx.amount, 0)
+            setStats({ total, count: t.length })
             setDossiers(d)
         } catch (error) {
             toast({ title: "Erreur", description: "Impossible de charger les données CARPA", variant: "destructive" })

@@ -26,7 +26,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals, createAccount, getDossiers } from "@/app/actions"
+import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals, createAccount, getDossiersList } from "@/app/actions"
 import Link from "next/link"
 import { ExportButton } from "@/components/ui/ExportButton"
 import { AccountingAssistantDialog } from "@/components/comptabilite/AccountingAssistantDialog"
@@ -53,7 +53,7 @@ export default function AccountingPage() {
 
     const loadData = async () => {
         setIsLoading(true)
-        const [accRes, jnlRes, dosRes] = await Promise.all([getAccounts(), getJournals(), getDossiers()])
+        const [accRes, jnlRes, dosRes] = await Promise.all([getAccounts(), getJournals(), getDossiersList()])
 
         if (accRes.length === 0) {
             await initSyscohadaAccounts()
