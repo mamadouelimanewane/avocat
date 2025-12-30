@@ -539,7 +539,10 @@ export async function checkConflicts(query: string) {
 }
 
 export async function getUsers() {
-    return await prisma.user.findMany({ orderBy: { name: 'asc' } })
+    return await prisma.user.findMany({
+        include: { userRole: true },
+        orderBy: { name: 'asc' }
+    })
 }
 
 export async function createUser(data: any) {
@@ -548,15 +551,17 @@ export async function createUser(data: any) {
             data: {
                 name: data.name,
                 email: data.email,
-                role: data.role,
+                role: data.role, // legacy
+                roleId: data.roleId, // dynamic
                 hourlyRate: parseFloat(data.hourlyRate || '200'),
                 password: 'password123', // Default password
                 active: true
             }
         })
-        revalidatePath('/admin/users')
+        revalidatePath('/admin')
         return { success: true }
     } catch (e) {
+        console.error('Create User Error:', e)
         return { success: false, message: 'Erreur création utilisateur' }
     }
 }
@@ -579,15 +584,19 @@ export async function updateUser(prevState: any, formData: FormData) {
         const userId = formData.get('id') as string
         const name = formData.get('name') as string
         const email = formData.get('email') as string
-        const role = formData.get('role') as string
+        const roleId = formData.get('roleId') as string
         const hourlyRate = formData.get('hourlyRate') as string
+
+        // Find the role name for the legacy 'role' field
+        const roleRecord = await prisma.role.findUnique({ where: { id: roleId } })
 
         await prisma.user.update({
             where: { id: userId },
             data: {
                 name,
                 email,
-                role,
+                roleId: roleId,
+                role: roleRecord?.name || 'AVOCAT', // sync legacy field
                 hourlyRate: parseFloat(hourlyRate || '200')
             }
         })
@@ -596,6 +605,61 @@ export async function updateUser(prevState: any, formData: FormData) {
     } catch (e) {
         console.error('Update User Error:', e)
         return { success: false, message: 'Erreur lors de la mise à jour' }
+    }
+}
+
+export async function getRoles() {
+    return await prisma.role.findMany({
+        orderBy: { name: 'asc' }
+    })
+}
+
+export async function createRole(data: any) {
+    try {
+        await prisma.role.create({
+            data: {
+                name: data.name,
+                description: data.description,
+                permissions: data.permissions || '[]'
+            }
+        })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (e) {
+        console.error('Create Role Error:', e)
+        return { success: false, message: 'Erreur création rôle' }
+    }
+}
+
+export async function updateRoleData(id: string, data: any) {
+    try {
+        await prisma.role.update({
+            where: { id },
+            data: {
+                name: data.name,
+                description: data.description,
+                permissions: data.permissions
+            }
+        })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (e) {
+        return { success: false, message: 'Erreur mise à jour rôle' }
+    }
+}
+
+export async function deleteRole(id: string) {
+    try {
+        // Check if users are assigned to this role
+        const usersCount = await prisma.user.count({ where: { roleId: id } })
+        if (usersCount > 0) {
+            return { success: false, message: 'Impossible de supprimer un rôle assigné à des utilisateurs' }
+        }
+        await prisma.role.delete({ where: { id } })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (e) {
+        return { success: false, message: 'Erreur suppression rôle' }
     }
 }
 
@@ -2768,11 +2832,15 @@ export async function exportDatabase() {
     return { success: true, data: JSON.stringify(data, null, 2) }
 }
 
-export async function updateUserRole(userId: string, role: string) {
+export async function updateUserRole(userId: string, roleId: string) {
     try {
+        const roleRecord = await prisma.role.findUnique({ where: { id: roleId } })
         await prisma.user.update({
             where: { id: userId },
-            data: { role }
+            data: {
+                roleId: roleId,
+                role: roleRecord?.name || 'AVOCAT' // sync legacy field
+            }
         })
         revalidatePath('/admin')
         return { success: true }

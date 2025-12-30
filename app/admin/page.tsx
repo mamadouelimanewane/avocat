@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import AdminUsersPage from '@/components/admin/AdminUsersPage'
 import AdminSettingsPage from '@/components/admin/AdminSettingsPage'
 import AdminSecurityPage from '@/components/admin/AdminSecurityPage'
-import { getUsers, getCabinetSettings } from '@/app/actions'
+import AdminRolesPage from '@/components/admin/AdminRolesPage'
+import { getUsers, getCabinetSettings, getRoles } from '@/app/actions'
 
 const prisma = new PrismaClient()
 
@@ -14,8 +15,9 @@ export default async function AdminPage() {
     // Parallel data fetching
     const usersData = getUsers()
     const settingsData = getCabinetSettings()
+    const rolesData = getRoles()
 
-    const [users, settings] = await Promise.all([usersData, settingsData])
+    const [users, settings, roles] = await Promise.all([usersData, settingsData, rolesData])
 
     return (
         <div className="space-y-6 max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -27,14 +29,19 @@ export default async function AdminPage() {
             </div>
 
             <Tabs defaultValue="users" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 lg:w-[600px] mb-8">
+                <TabsList className="grid w-full grid-cols-4 lg:w-[800px] mb-8">
                     <TabsTrigger value="users">Utilisateurs</TabsTrigger>
+                    <TabsTrigger value="roles">Rôles & Permissions</TabsTrigger>
                     <TabsTrigger value="settings">Paramètres Cabinet</TabsTrigger>
                     <TabsTrigger value="security">Sécurité & Sauvegarde</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="users">
-                    <AdminUsersPage users={users} />
+                    <AdminUsersPage users={users} roles={roles} />
+                </TabsContent>
+
+                <TabsContent value="roles">
+                    <AdminRolesPage roles={roles} />
                 </TabsContent>
 
                 <TabsContent value="settings">

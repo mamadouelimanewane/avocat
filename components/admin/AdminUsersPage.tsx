@@ -38,21 +38,21 @@ const PERMISSIONS_LIST = [
     { id: 'EXPORT_DATA', label: 'Exporter Données' },
 ]
 
-export default function AdminUsersPage({ users }: { users: any[] }) {
+export default function AdminUsersPage({ users, roles }: { users: any[], roles: any[] }) {
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [isPermOpen, setIsPermOpen] = useState(false)
     const [isRoleOpen, setIsRoleOpen] = useState(false)
     const [isEditOpen, setIsEditOpen] = useState(false)
     const [selectedUser, setSelectedUser] = useState<any>(null)
     const [selectedPerms, setSelectedPerms] = useState<string[]>([])
-    const [editData, setEditData] = useState({ name: '', email: '', role: '', hourlyRate: '' })
+    const [editData, setEditData] = useState({ name: '', email: '', roleId: '', hourlyRate: '' })
 
-    const [newUser, setNewUser] = useState({ name: '', email: '', role: 'AVOCAT', hourlyRate: '200' })
+    const [newUser, setNewUser] = useState({ name: '', email: '', roleId: roles[0]?.id || '', hourlyRate: '200' })
 
     const handleCreate = async () => {
         await createUser(newUser)
         setIsCreateOpen(false)
-        setNewUser({ name: '', email: '', role: 'AVOCAT', hourlyRate: '200' })
+        setNewUser({ name: '', email: '', roleId: roles[0]?.id || '', hourlyRate: '200' })
         window.location.reload()
     }
 
@@ -103,7 +103,7 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
         setEditData({
             name: user.name || '',
             email: user.email || '',
-            role: user.role || 'AVOCAT',
+            roleId: user.roleId || '',
             hourlyRate: String(user.hourlyRate || 200)
         })
         setIsEditOpen(true)
@@ -115,7 +115,7 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
         formData.append('id', selectedUser.id)
         formData.append('name', editData.name)
         formData.append('email', editData.email)
-        formData.append('role', editData.role)
+        formData.append('roleId', editData.roleId)
         formData.append('hourlyRate', editData.hourlyRate)
 
         await updateUser(null, formData)
@@ -153,15 +153,12 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label>Rôle</Label>
-                                    <Select value={newUser.role} onValueChange={v => setNewUser({ ...newUser, role: v })}>
+                                    <Select value={newUser.roleId} onValueChange={v => setNewUser({ ...newUser, roleId: v })}>
                                         <SelectTrigger><SelectValue /></SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="ADMIN">Administrateur</SelectItem>
-                                            <SelectItem value="AVOCAT">Avocat</SelectItem>
-                                            <SelectItem value="SECRETAIRE">Secrétaire</SelectItem>
-                                            <SelectItem value="COLLABORATEUR">Collaborateur (Avocat)</SelectItem>
-                                            <SelectItem value="STAGIAIRE">Stagiaire</SelectItem>
-                                            <SelectItem value="JURISTE">Juriste</SelectItem>
+                                            {roles.map(role => (
+                                                <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -224,15 +221,12 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                         </DialogHeader>
                         <div className="py-4">
                             <Label>Nouveau Rôle</Label>
-                            <Select value={selectedUser?.role} onValueChange={handleUpdateRole}>
+                            <Select value={selectedUser?.roleId} onValueChange={handleUpdateRole}>
                                 <SelectTrigger><SelectValue /></SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="ADMIN">Administrateur</SelectItem>
-                                    <SelectItem value="AVOCAT">Avocat</SelectItem>
-                                    <SelectItem value="SECRETAIRE">Secrétaire</SelectItem>
-                                    <SelectItem value="COLLABORATEUR">Collaborateur</SelectItem>
-                                    <SelectItem value="STAGIAIRE">Stagiaire</SelectItem>
-                                    <SelectItem value="JURISTE">Juriste</SelectItem>
+                                    {roles.map(role => (
+                                        <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -269,15 +263,12 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label>Rôle</Label>
-                                    <Select value={editData.role} onValueChange={v => setEditData({ ...editData, role: v })}>
+                                    <Select value={editData.roleId} onValueChange={v => setEditData({ ...editData, roleId: v })}>
                                         <SelectTrigger><SelectValue /></SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="ADMIN">Administrateur</SelectItem>
-                                            <SelectItem value="AVOCAT">Avocat</SelectItem>
-                                            <SelectItem value="SECRETAIRE">Secrétaire</SelectItem>
-                                            <SelectItem value="COLLABORATEUR">Collaborateur (Avocat)</SelectItem>
-                                            <SelectItem value="STAGIAIRE">Stagiaire</SelectItem>
-                                            <SelectItem value="JURISTE">Juriste</SelectItem>
+                                            {roles.map(role => (
+                                                <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -334,7 +325,7 @@ export default function AdminUsersPage({ users }: { users: any[] }) {
                                             className="cursor-pointer hover:bg-slate-100"
                                             onClick={() => openRoleDialog(user)}
                                         >
-                                            {user.role}
+                                            {user.userRole?.name || user.role}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-slate-500">{user.email}</TableCell>
