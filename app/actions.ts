@@ -1799,7 +1799,7 @@ export async function getGrandLivreData(startDate?: Date, endDate?: Date) {
             }
             grouped[accId].lines.push({
                 date: line.transaction.date,
-                journal: line.transaction.journal.code,
+                journal: line.transaction.journal?.code || "N/A",
                 ref: `ECR-${line.transactionId.substring(0, 6)}`, // Mock ref
                 libelle: line.transaction.description,
                 debit: line.debit,
@@ -3677,3 +3677,4 @@ export async function applyProcedureSteps(dossierId: string, steps: any[]) {
         return { success: false, message: "Erreur lors de l'application des étapes" }
     }
 }
+
