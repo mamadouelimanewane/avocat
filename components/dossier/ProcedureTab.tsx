@@ -1,3 +1,5 @@
+"use client"
+
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -1059,3 +1061,4 @@ export default function ProcedureTab({ dossierId, currentStage, procedureType }:
         </div>
     )
 }
+
