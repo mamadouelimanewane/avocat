@@ -351,8 +351,29 @@ model CommunicationLog {
   dossierId   String?  @db.ObjectId
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
 
+  // Digital Signature
+  signedBy    String?
+  signedAt    DateTime?
+  signatureUrl String? // Path to signature image/data
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model CommunicationLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String   // EMAIL, WHATSAPP, SMS, CALL
+  direction String   // INBOUND, OUTBOUND
+  content   String?
+  date      DateTime @default(now())
+  
+  clientId  String?  @db.ObjectId
+  client    Client?  @relation(fields: [clientId], references: [id])
+  
+  dossierId String?  @db.ObjectId
+  dossier   Dossier? @relation(fields: [dossierId], references: [id])
+  
+  createdAt DateTime @default(now())
 }
 
 model CabinetSettings {

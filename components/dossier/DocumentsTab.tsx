@@ -134,6 +134,11 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
     const [isGenerating, setIsGenerating] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    import { SignatureDialog } from '../documents/SignatureDialog';
+
+    // ...
+
+    const [selectedDocForSigning, setSelectedDocForSigning] = useState<DocumentProps | null>(null);
     const [selectedDocForView, setSelectedDocForView] = useState<DocumentProps | null>(null);
 
     const filteredDocuments = documents.filter(doc =>
@@ -320,11 +325,15 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
         });
     }
 
-    const handleSign = () => {
-        toast({
-            title: "Signature Électronique",
-            description: "Préparation de la session de signature (Yousign)...",
-        });
+    const handleSign = (doc?: DocumentProps) => {
+        if (doc) {
+            setSelectedDocForSigning(doc);
+        } else {
+            toast({
+                title: "Signature",
+                description: "Veuillez sélectionner un document à signer via le menu d'actions.",
+            });
+        }
     }
 
     const handleDelete = async (id: string) => {
@@ -574,6 +583,7 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
                                                                 setIsGenerating(false);
                                                                 router.refresh();
                                                             }}><ScanLine className="mr-2 h-4 w-4" /> Re-scanner (OCR)</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleSign(doc)}><PenTool className="mr-2 h-4 w-4" /> Signer (Élec.)</DropdownMenuItem>
                                                             <DropdownMenuItem onClick={() => alert("Téléchargement lancé...")}><Download className="mr-2 h-4 w-4" /> Télécharger</DropdownMenuItem>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(doc.id)}><Trash2 className="mr-2 h-4 w-4" /> Supprimer</DropdownMenuItem>
@@ -614,8 +624,8 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
                             <Button className="w-full justify-start text-xs" variant="outline" onClick={handleCompare}>
                                 <Maximize2 className="mr-2 h-4 w-4" /> Comparer Versions
                             </Button>
-                            <Button className="w-full justify-start text-xs text-blue-700 bg-blue-50 border-blue-200" variant="ghost" onClick={handleSign}>
-                                <PenTool className="mr-2 h-4 w-4" /> Signature (Yousign)
+                            <Button className="w-full justify-start text-xs text-blue-700 bg-blue-50 border-blue-200" variant="ghost" onClick={() => handleSign()}>
+                                <PenTool className="mr-2 h-4 w-4" /> Signature (Parapheur)
                             </Button>
                         </CardContent>
                     </Card>
@@ -733,6 +743,17 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
                     </div>
                 </DialogContent>
             </Dialog>
+            {/* Signature Dialog */}
+            {selectedDocForSigning && (
+                <SignatureDialog
+                    documentId={selectedDocForSigning.id}
+                    documentName={selectedDocForSigning.name}
+                    onSigned={() => {
+                        setSelectedDocForSigning(null)
+                        router.refresh()
+                    }}
+                />
+            )}
         </div>
     );
 }

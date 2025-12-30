@@ -1,7 +1,8 @@
 import { ContractAnalyzer } from "@/components/ai/ContractAnalyzer"
 import { AIDrafter } from "@/components/ai/AIDrafter"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Sparkles, FileText, Scale, Gavel } from "lucide-react"
+import { Sparkles, FileText, Scale, Gavel, TrendingUp } from "lucide-react"
+import { JusticePredictor } from "@/components/ai/JusticePredictor"
 
 export default function AnalysePage() {
     return (
@@ -21,6 +22,7 @@ export default function AnalysePage() {
                     <TabsTrigger value="redaction" className="gap-2"><FileText className="h-4 w-4" /> Rédaction d'Actes</TabsTrigger>
                     <TabsTrigger value="plaidoirie" className="gap-2"><Gavel className="h-4 w-4" /> Assistant Plaidoirie</TabsTrigger>
                     <TabsTrigger value="analyse" className="gap-2"><Scale className="h-4 w-4" /> Analyse Contractuelle</TabsTrigger>
+                    <TabsTrigger value="prediction" className="gap-2 text-indigo-600 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700"><TrendingUp className="h-4 w-4" /> Prédiction (Beta)</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="redaction" className="flex-1 mt-0 h-full">
@@ -33,6 +35,10 @@ export default function AnalysePage() {
 
                 <TabsContent value="analyse" className="flex-1 mt-0 h-full">
                     <ContractAnalyzer />
+                </TabsContent>
+
+                <TabsContent value="prediction" className="flex-1 mt-0 h-full">
+                    <JusticePredictor />
                 </TabsContent>
             </Tabs>
         </div>

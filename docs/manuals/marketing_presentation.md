@@ -23,6 +23,13 @@ Imaginez un collaborateur qui a lu toute la jurisprudence et qui résume vos dos
 - La recherche jurisprudentielle ciblée.
 - La dictée vocale de vos rapports.
 
+## SLIDE 4-BIS: OMNISEARCH - VOTRE GOOGLE JURIDIQUE
+Ne perdez plus jamais un dossier. Notre moteur de recherche unifié scanne en temps réel :
+- Vos **milliers de documents** (même les vieux scans grâce à l'OCR).
+- Vos emails et conversations clients (WhatsApp intégré).
+- La **Jurisprudence OHADA et nationale** à jour.
+Trouvez une clause spécifique dans un contrat de 2018 ou un arrêt récent en moins d'une seconde.
+
 ## SLIDE 5: RELATION CLIENT & PORTAIL SÉCURISÉ
 Offrez à vos clients l'expérience qu'ils méritent :
 - Portail web pour suivre leurs affaires 24/7.

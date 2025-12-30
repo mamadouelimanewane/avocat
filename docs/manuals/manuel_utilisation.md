@@ -36,6 +36,17 @@ Le *Tableau de Bord* est la "Tour de Contrôle" de votre cabinet, offrant une vu
 
 ### 1.2 Actions & Résultats Attendus
 - **Cliquer sur une carte statistique** : Le système vous redirige automatiquement vers le module détaillé correspondant à la statistique sélectionnée (par exemple, un clic sur la carte des dossiers ouvrira la liste complète de vos affaires).
+- La dictée vocale de vos rapports.
+
+### 1.3 NOUVEAU : OmniSearch (Recherche Unifiée - Ctrl+K)
+Accessible partout dans l'application, ce moteur de recherche est votre "Google interne".
+- **Recherche Transverse** : Une seule barre pour trouver :
+    - Un **Client** (M. Diop)
+    - Un **Dossier** (Affaire SARL Keur Gui)
+    - Un **Document** (via son contenu OCR complet)
+    - Une **Jurisprudence** (Arrêt CCJA 2024, Article 110 Code des Obligations)
+- **Intelligence** : La recherche comprend les synonymes, tolère les fautes de frappe ("Syla" trouve "Sylla") et met en surbrillance les passages pertinents dans les documents scannés.
+
 - **Cliquer sur le bouton *Nouveau Client*** : Cette action fait apparaître une fenêtre de saisie prioritaire permettant d'enregistrer les coordonnées et le profil d'un nouveau mandant en quelques secondes.
 - **Cliquer sur le bouton *Nouveau Dossier*** : Vous ouvrez ainsi l'interface de création d'affaire où vous pourrez définir la juridiction compétente et rattacher le dossier à un client déjà présent dans votre base.
 - **Cliquer sur un item du *Flux de Veille*** : Le logiciel déploie alors le texte intégral de l'arrêt ou de la loi concernée, vous permettant une lecture approfondie accompagnée d'une synthèse automatique réalisée par l'IA.
@@ -56,8 +67,17 @@ Le module *Dossiers* constitue le cœur battant de votre pratique juridique, où
 
 ### 2.2 Actions & Résultats Attendus
 - **Cliquer sur *Ouvrir* dans le tableau** : Vous pénétrez dans l'espace de travail dédié au dossier sélectionné, où sont regroupés tous les documents, la chronologie des faits et l'état financier de l'affaire.
-- **Bouton *Importer* (dans l'onglet Documents)** : Cette commande permet de télécharger des pièces depuis votre ordinateur vers le serveur sécurisé du cabinet. Résultat attendu : le fichier est automatiquement analysé par l'IA pour en extraire le texte intégral (OCR).
+- **Bouton *Importer* (dans l'onglet Documents)** : Cette commande est désormais boostée par le **Moteur OCR Neural**.
+    - *Révolution Zéro Papier* : Chargez un scan ou une photo de 50 pages (conclusions, contrats, preuves).
+    - *Résultat* : Le système "lit" le texte intégral. Vous pouvez ensuite copier-coller des extraits ou rechercher des mots-clés dans l'image.
+- **NOUVEAU - Signer Électroniquement** :
+    - Sélectionnez un document, cliquez sur *Actions > Signer (Élec.)*.
+    - Tracez votre signature à la souris ou sur tablette.
+    - Le document est verrouillé, horodaté et marqué comme "SIGNÉ". Idéal pour valider rapidement vos courriers ou contrats internes.
 - **Cliquer sur l'onglet *Chronologie (Timeline)*** : Vous affichez alors l'historique exhaustif de toutes les actions menées sur le dossier, des coups de téléphone enregistrés aux audiences passées, offrant une preuve irréfutable des diligences accomplies.
+- **NOUVEAU : Onglet *Procédure avec IA*** : 
+    - *Générer avec LexAI* : L'IA analyse votre dossier (type, étape actuelle) et génère automatiquement un calendrier prévisionnel des étapes clés (Assignations, Audiences, Délais de recours) adaptées au droit Sénégalais/OHADA.
+    - *Appliquer au dossier* : D'un simple clic, transformez ces prévisions en véritables Tâches et Événements dans votre agenda.
 
 ---
 
@@ -101,6 +121,10 @@ Ce module assure la rigueur financière nécessaire à la pérennité de votre c
 ### 5.2 Actions & Résultats Attendus
 - **Bouton *Saisir Écriture*** : Ouvre l'interface de saisie en partie double. Résultat attendu : une fois validée, l'écriture met à jour instantanément votre Grand Livre et votre Balance sans aucune autre manipulation.
 - **Bouton *Exporter Balance*** : Génère au format Excel l'intégralité de vos comptes. Résultat : un document prêt à être transmis à votre expert-comptable pour les états financiers de fin d'année.
+- **NOUVEAU : Module *Éditions Comptables*** : Générez et imprimez vos états financiers officiels en un clic :
+    - *Balance Générale* : L'état complet de tous vos comptes (6 colonnes).
+    - *Grand Livre* : Le détail chronologique de toutes les écritures par compte.
+    - *Bilan & Compte de Résultat* : Vos états de synthèse annuels formatés selon le SYSCOHADA Révisé.
 - **Cliquer sur l'onglet *Bilan (OHADA)*** : Le logiciel réorganise vos données comptables pour présenter une photographie fidèle de votre patrimoine, séparant ce que le cabinet possède (Actif) de ce qu'il doit (Passif).
 
 ---

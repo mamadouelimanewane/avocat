@@ -4,7 +4,7 @@ import { Bell, Menu, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MobileSidebar } from '@/components/layout/MobileSidebar';
 import { ThemeCustomizer } from '@/components/theme-customizer';
-import { CommandMenu } from '@/components/ui/command-menu';
+import { GlobalSearchModal } from '@/components/layout/GlobalSearchModal';
 import { NewTaskDialog } from '@/components/tasks/NewTaskDialog';
 import { NewNoteDialog } from '@/components/notes/NewNoteDialog';
 import { NotificationsPopover } from '@/components/layout/NotificationsPopover';
@@ -19,9 +19,9 @@ export function Header() {
                 </Button>
             </MobileSidebar>
 
-            {/* OmniSearch Command Menu */}
+            {/* OmniSearch Global Search */}
             <div className="flex-1 max-w-xl hidden md:block px-4">
-                <CommandMenu />
+                <GlobalSearchModal />
             </div>
 
             {/* Right Actions - With Quick Actions */}
@@ -52,9 +52,7 @@ export function Header() {
                         <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Me Dia</p>
                         <p className="text-xs text-slate-500">Associé Gérant</p>
                     </div>
-                    <div className="h-10 w-10 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold ring-2 ring-slate-100 ring-offset-2 dark:ring-slate-800">
-                        MD
-                    </div>
+                    <UserAvatar name="Mamadou Dia" status="online" />
                 </div>
             </div>
         </header>

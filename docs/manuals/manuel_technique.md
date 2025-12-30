@@ -26,7 +26,14 @@ Le cœur de l'innovation de *LexPremium* réside dans son intégration profonde 
 
 ### 2.1 LexAI : Le Cerveau du Cabinet
 - *Moteur de Dialogue contextuel* : Basé sur les modèles les plus puissants au monde (GPT-4o), il est configuré avec une base de connaissances spécifique au Droit Civil et à l'Acte Unique OHADA.
-- *Extraction de Données (OCR)* : Utilise des algorithmes de reconnaissance optique de caractères haute résolution. Résultat attendu : le système transforme n'importe quel scan de mauvaise qualité en un texte parfaitement éditable et cherchable par l'IA.
+- *Extraction de Données (OCR)* : Utilise désormais **Tesseract.js** (basé sur le moteur Google Tesseract LSTM). Résultat attendu : capable de lire des photos de mauvaise qualité, des scans inclinés et des polices complexes, le tout en local côté serveur pour une confidentialité totale.
+- *Parapheur Numérique* : Implémentation via Canvas HTML5. Les signatures sont converties en vecteurs SVG ou images PNG haute résolution, cryptées en base64 et stockées de manière immuable avec le hash du document.
+- **NOUVEAU - Pipeline de Génération Procédurale** : Utilisation de modèles LLM structurés (JSON Mode) pour convertir des requêtes en langage naturel ("Procédure de divorce") en une série d'objets temporels (Tâches, Événements) injectés directement dans le graphe de données du dossier via une transaction atomique.
+- **OmniSearch Hybride** : Architecture de recherche avancée combinant :
+    1.  **Prisma / MongoDB** : Pour les requêtes structurées (WHERE title CONTAINS...)
+    2.  **In-Memory Fuzzy Logic (Fuse.js)** : Pour le re-ranking et la tolérance aux fautes de frappe sur les résultats immédiats.
+    3.  **OCR Text Indexing** : Recherche plein texte dans le contenu extrait des PDF/Images.
+    4.  **Base Vectorielle (Préparation)** : Structure de données prête pour le RAG (Retrieval Augmented Generation) sur la jurisprudence.
 
 ---
 

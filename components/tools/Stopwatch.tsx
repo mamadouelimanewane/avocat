@@ -12,6 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { saveTimeEntry } from '@/app/actions'
 
 export function Stopwatch() {
     const [isRunning, setIsRunning] = useState(false)
@@ -36,11 +37,14 @@ export function Stopwatch() {
         return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
     }
 
-    const handleStop = () => {
+    const handleStop = async () => {
         setIsRunning(false)
-        // In a real app, save this to the DB via server action
-        console.log("Time saved:", time, description, dossierId)
-        alert(`Temps enregistré: ${formatTime(time)} sur le dossier.`)
+        await saveTimeEntry({ description, duration: time })
+
+        // toast not imported or used here, using alert as in original but let's improve if possible. 
+        // Original used alert.
+        alert(`Temps enregistré: ${formatTime(time)} (Facturable).`)
+
         setTime(0)
         setDescription('')
     }

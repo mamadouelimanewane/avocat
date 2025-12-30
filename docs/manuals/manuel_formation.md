@@ -3,6 +3,8 @@
 
 ## AVANT-PROPOS : LA PHILOSOPHIE DE L'EXCELLENCE
 Ce guide n'est pas une simple notice, c'est un parcours initiatique. Sa pédagogie progressive est conçue pour transformer n'importe quel membre du cabinet, même le plus réticent à la technologie, en un utilisateur d'élite capable de piloter le Cabinet *Dia & Associés* vers de nouveaux sommets d'efficacité.
+- *Extraction de Données (OCR)* : Utilise des algorithmes de reconnaissance optique de caractères haute résolution. Résultat attendu : le système transforme n'importe quel scan de mauvaise qualité en un texte parfaitement éditable et cherchable par l'IA.
+- *Génération Procédurale Structurée* : Un pipeline IA spécifique analyse les métadonnées du dossier (Juridiction, Nature) pour construire dynamiquement des objets JSON représentant les étapes de procédure, garantissant la conformité avec les délais légaux stricts (OHADA).
 
 ---
 
@@ -49,7 +51,13 @@ Imaginez que vous cherchiez un point précis du droit OHADA.
 2. Tapez votre question comme si vous parliez à un confrère expert.
 3. Résultat attendu : L'IA fouille dans les milliers de pages de codes et de jurisprudence et vous répond en citant les sources en *Marron*.
 
-### 3.2 Le Scanner Adverse : Votre bouclier stratégique
+### 3.2 Générer vos Procédures automatiquement
+Plus besoin de calculer vos délais ou de lister vos étapes à la main.
+1. Dans un dossier, allez sur l'onglet *Procédure*.
+2. Cliquez sur *Générer avec LexAI*.
+3. Résultat attendu : L'IA vous propose le plan de bataille complet (Assignation, Enrôlement, Audiences) avec les délais. Validez pour tout ajouter à votre agenda.
+
+### 3.3 Le Scanner Adverse : Votre bouclier stratégique
 Vous recevez 60 pages de conclusions de la partie adverse à 18h pour une audience le lendemain.
 1. Téléchargez le document dans le module *Scanner Adverse*.
 2. Cliquez sur *Analyser*.
@@ -66,7 +74,13 @@ Un grand cabinet est un cabinet qui facture bien et qui encaisse vite.
 3. Le système vous propose d'importer automatiquement toutes les heures enregistrées par le *Chronomètre*.
 4. Résultat attendu : Une facture parfaite, avec le logo du cabinet et le détail des prestations, est générée en PDF.
 
-### 4.2 La CARPA et les Fonds Tiers
+### 4.2 La Maîtrise des États Financiers
+Ne dépendez plus de votre comptable pour connaître votre santé financière.
+1. Allez dans *Comptabilité > Éditions*.
+2. Cliquez sur *Bilan & Compte de Résultat*.
+3. Résultat attendu : Le système génère instantanément vos états de synthèse (Actif/Passif, Bénéfice/Perte) selon le plan SYSCOHADA. Vous pouvez les imprimer pour votre banque ou vos associés.
+
+### 4.3 La CARPA et les Fonds Tiers
 Pour chaque mouvement de fonds ne vous appartenant pas, utilisez systématiquement le module *CARPA*. 
 1. Cliquez sur *Nouveau Dépôt*.
 2. Éditez l'*Attestation de Dépôt*.

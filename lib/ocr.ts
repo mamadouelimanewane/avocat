@@ -18,7 +18,7 @@ export interface OCRResult {
  * Extrait le texte d'une image (JPG, PNG) via Tesseract.js
  */
 export async function extractTextFromImage(
-    imageFile: File | Blob,
+    imageFile: File | Blob | Buffer,
     language: string = 'fra+eng' // Français + Anglais
 ): Promise<OCRResult> {
     try {
@@ -59,59 +59,57 @@ export async function extractTextFromImage(
 /**
  * Extrait le texte d'un PDF (navigateur uniquement)
  */
-export async function extractTextFromPDF(pdfFile: File): Promise<OCRResult> {
+/**
+ * Extrait le texte d'un PDF (Compatible Serveur)
+ */
+export async function extractTextFromPDF(pdfFile: File | Buffer): Promise<OCRResult> {
     try {
-        console.log('📄 PDF: Démarrage extraction...')
+        console.log('📄 PDF: Démarrage extraction (Serveur)...')
 
-        // Utiliser pdf-parse côté serveur OU pdf.js côté client
-        // Pour Next.js, on va utiliser une approche hybride
-
-        const arrayBuffer = await pdfFile.arrayBuffer()
-        const uint8Array = new Uint8Array(arrayBuffer)
-
-        // Import dynamique pour éviter erreurs SSR
-        const pdfjsLib = await import('pdfjs-dist')
-
-        // Configuration worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
-
-        const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise
-        const numPages = pdf.numPages
-
-        let fullText = ''
-
-        for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-            const page = await pdf.getPage(pageNum)
-            const textContent = await page.getTextContent()
-
-            const pageText = textContent.items
-                .map((item: any) => item.str)
-                .join(' ')
-
-            fullText += pageText + '\n\n'
-
-            console.log(`📄 Page ${pageNum}/${numPages} extraite`)
+        let buffer: Buffer
+        if (pdfFile instanceof Buffer) {
+            buffer = pdfFile
+        } else {
+            const arrayBuffer = await pdfFile.arrayBuffer()
+            buffer = Buffer.from(arrayBuffer)
         }
 
-        console.log(`✅ PDF extrait: ${numPages} pages, ${fullText.length} caractères`)
+        // @ts-ignore
+        const pdfParse = (await import('pdf-parse')).default
+
+        const data = await pdfParse(buffer)
+        const fullText = data.text
+
+        console.log(`✅ PDF extrait: ${data.numpages} pages, ${fullText.length} caractères`)
+
+        // Check if text is too short (likely scanned image-only PDF)
+        if (fullText.trim().length < 50) {
+            console.warn("⚠️ PDF semble être une image scannée (peu de texte extrait).")
+            return {
+                success: false,
+                text: "⚠️ Ce document semble être un scan (image). L'OCR simulé ne peut pas lire les images dans les PDF pour l'instant. Veuillez convertir en JPG/PNG pour utiliser Tesseract.",
+                confidence: 10,
+                language: 'fra',
+                pages: data.numpages,
+                error: "SCANNED_PDF_DETECTED"
+            }
+        }
 
         return {
             success: true,
             text: fullText.trim(),
-            confidence: 100, // PDF text extraction is exact
+            confidence: 100, // Text layer is exact
             language: 'fra',
-            pages: numPages
+            pages: data.numpages
         }
     } catch (error) {
         console.error('❌ Erreur extraction PDF:', error)
-
-        // Fallback: OCR sur chaque page du PDF si extraction texte échoue
         return {
             success: false,
             text: '',
             confidence: 0,
             language: 'fra',
-            error: 'PDF extraction failed. Try converting to images first.'
+            error: error instanceof Error ? error.message : 'Erreur inconnue'
         }
     }
 }

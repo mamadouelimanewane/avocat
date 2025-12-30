@@ -4,9 +4,11 @@ import OpenAI from 'openai';
 // Initialize OpenAI client compatible with DeepSeek
 export let openai: OpenAI | null = null;
 
-if (process.env.OPENAI_API_KEY) {
+const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
+
+if (apiKey) {
     openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
+        apiKey: apiKey,
         baseURL: 'https://api.deepseek.com'
     });
 }
@@ -317,5 +319,101 @@ export async function classifyDocument(text: string) {
     } catch (error) {
         console.error("Classification Error:", error);
         return { category: 'AUTRE', folder: '/', tags: [] };
+    }
+}
+
+/**
+ * Uses DeepSeek to predict legal case outcome based on description and jurisdiction.
+ * Returns structured prediction data.
+ */
+export async function predictCaseOutcome(description: string, jurisdiction: string) {
+    if (!openai) return null;
+
+    try {
+        const systemPrompt = `Tu est LexAI, expert jurimétrique (Justice Prédictive) pour l'Afrique de l'Ouest (OHADA/Sénégal).
+        
+        TA MISSION :
+        Analyser une description de litige sommaire et prédire l'issue judiciaire la plus probable.
+        
+        JURIDICTION : ${jurisdiction}
+        
+        FORMAT JSON REQUIS :
+        {
+            "successProbability": number (0-100),
+            "riskLevel": "FAIBLE" | "MODÉRÉ" | "ÉLEVÉ" | "CRITIQUE",
+            "avgDuration": "string (ex: 3 à 6 mois)",
+            "similarCases": number (estimation, ex: 12),
+            "winningFactors": ["facteur 1", "facteur 2"],
+            "riskFactors": ["risque 1", "risque 2"],
+            "recommendedStrategy": "Conseil stratégique précis et direct"
+        }
+        
+        Sois réaliste et prudent. Base-toi sur la jurisprudence commerciale OHADA.
+        Si les preuves semblent faibles dans la description, baisse le score.
+        `;
+
+        const completion = await openai.chat.completions.create({
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: `LITIGE : ${description}` }
+            ],
+            model: "deepseek-chat",
+            temperature: 0.2, // Low temp for more consistent analysis
+            response_format: { type: "json_object" }
+        });
+
+        const result = completion.choices[0].message.content;
+        return result ? JSON.parse(result) : null;
+    } catch (error) {
+        console.error("DeepSeek Prediction Error:", error);
+        return null; // Will trigger fallback in UI or Action
+    }
+}
+
+/**
+ * Uses DeepSeek to analyze an opposing party's document content and suggest defense strategy.
+ */
+export async function analyzeAdverseDocumentStrategy(text: string) {
+    if (!openai) return null;
+
+    try {
+        const systemPrompt = `Tu es un avocat de la défense redoutable (Expert OHADA).
+        Ton client vient de recevoir ce document adverse (conclusions, assignation, courrier).
+        
+        TA MISSION :
+        Disséquer le texte et préparer la contre-attaque.
+        
+        FORMAT JSON REQUIS :
+        {
+            "summary": "Résumé de la demande adverse en 2 phrases",
+            "docType": "Assignation" | "Conclusions" | "Mise en demeure" | "Autre",
+            "adverseClaims": [
+                { "claim": "Réclame 10M FCFA", "legalBasis": "Art 1134", "weakness": "Prescription possible ?" }
+            ],
+            "defenseStrategy": {
+                "mainArgument": "L'argument principal à plaider",
+                "counterClaims": ["Demande reconventionnelle possible 1", "Demande 2"],
+                "requiredEvidence": ["Preuve A à réunir", "Preuve B"]
+            },
+            "relevantLaws": ["Article X AUDCG", "Article Y CCJA"],
+            "draftPleading": "Un début de projet de conclusions en réponse (2-3 paragraphes tres percutants)"
+        }
+        `;
+
+        const completion = await openai.chat.completions.create({
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: `DOCUMENT ADVERSE :\n${text.substring(0, 10000)}` }
+            ],
+            model: "deepseek-chat",
+            temperature: 0.3,
+            response_format: { type: "json_object" }
+        });
+
+        const result = completion.choices[0].message.content;
+        return result ? JSON.parse(result) : null;
+    } catch (error) {
+        console.error("DeepSeek Defense Strategy Error:", error);
+        return null;
     }
 }

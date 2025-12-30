@@ -44,6 +44,10 @@ Le module *Dossiers* constitue le cœur battant de votre pratique juridique, où
 - **Cliquer sur *Ouvrir* dans le tableau** : Vous pénétrez dans l'espace de travail dédié au dossier sélectionné, où sont regroupés tous les documents, la chronologie des faits et l'état financier de l'affaire.
 - **Bouton *Importer* (dans l'onglet Documents)** : Cette commande permet de télécharger des pièces depuis votre ordinateur vers le serveur sécurisé du cabinet. Résultat attendu : le fichier est automatiquement analysé par l'IA pour en extraire le texte intégral (OCR).
 - **Cliquer sur l'onglet *Chronologie (Timeline)*** : Vous affichez alors l'historique exhaustif de toutes les actions menées sur le dossier, des coups de téléphone enregistrés aux audiences passées, offrant une preuve irréfutable des diligences accomplies.
+- **NOUVEAU - Utiliser l'Onglet *Procédure avec IA*** : 
+    - *Bouton "Générer avec LexAI"* : En cliquant ici, vous activez l'IA juriste qui va analyser le contexte du dossier (ex: "Licenciement abusif" ou "Recouvrement de créance") et l'étape procédurale actuelle.
+    - *Résultat* : Une liste chronologique des prochaines étapes obligatoires apparaît (ex: "Signifier conclusions sous 15 jours", "Audience de mise en état").
+    - *Action "Appliquer"* : Transforme instantanément ces prévisions en événements concrets dans votre agenda et en tâches assignées aux collaborateurs.
 
 ---
 
@@ -87,6 +91,11 @@ Ce module assure la rigueur financière nécessaire à la pérennité de votre c
 ### 5.2 Actions & Résultats Attendus
 - **Bouton *Saisir Écriture*** : Ouvre l'interface de saisie en partie double. Résultat attendu : une fois validée, l'écriture met à jour instantanément votre Grand Livre et votre Balance sans aucune autre manipulation.
 - **Bouton *Exporter Balance*** : Génère au format Excel l'intégralité de vos comptes. Résultat : un document prêt à être transmis à votre expert-comptable pour les états financiers de fin d'année.
+- **NOUVEAU - Module *Éditions Comptables Complètes*** :
+    - Accessible via le bouton "Éditions" ou le menu contextuel.
+    - *Balance Générale PDF* : Génère un document officiel à 6 colonnes, prêt pour l'administration fiscale.
+    - *Grand Livre PDF* : Produit un livret détaillant chaque mouvement compte par compte, essentiel pour les audits.
+    - *Bilan & Compte de Résultat* : Le système compile automatiquement tous les soldes pour produire les états de synthèse annuels au format strict du *SYSCOHADA Révisé*.
 - **Cliquer sur l'onglet *Bilan (OHADA)*** : Le logiciel réorganise vos données comptables pour présenter une photographie fidèle de votre patrimoine, séparant ce que le cabinet possède (Actif) de ce qu'il doit (Passif).
 
 ---

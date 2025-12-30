@@ -22,7 +22,7 @@ import {
     Download,
     Copy
 } from "lucide-react"
-import { analyzeAdverseDocument } from "@/app/actions"
+import { getAdverseDocumentAnalysis } from "@/app/actions"
 import { useToast } from "@/components/ui/use-toast"
 
 interface AnalysisResult {
@@ -125,22 +125,53 @@ export function AdverseDocumentScanner() {
         setProgress(50)
 
         try {
-            // Simulation de progression
-            const interval = setInterval(() => {
-                setProgress(p => Math.min(p + 10, 90))
-            }, 500)
+            const result = await getAdverseDocumentAnalysis(documentText)
 
-            const result = await analyzeAdverseDocument(documentText)
-
-            clearInterval(interval)
             setProgress(100)
 
-            if (result.success && result.analysis) {
-                setAnalysisResult(result.analysis)
+            if (result.success && result.data) {
+                // Mapping the new API Format to UI State Interface
+                // Note: The UI expects AnalysisResult. The new API returns a slightly different JSON structure (AdverseDocumentStrategy).
+                // We need to map it or update state type.
+                // Let's assume the component will adapt or we map it here.
+
+                const raw = result.data
+                const mappedResult: AnalysisResult = {
+                    summary: raw.summary,
+                    documentType: raw.docType,
+                    claims: raw.adverseClaims.map((c: any) => ({
+                        claim: c.claim,
+                        legalBasis: c.legalBasis,
+                        weaknesses: [c.weakness] // API returns string, UI expects array
+                    })),
+                    defenseStrategy: {
+                        mainArguments: [raw.defenseStrategy.mainArgument],
+                        counterClaims: raw.defenseStrategy.counterClaims,
+                        evidenceNeeded: raw.defenseStrategy.requiredEvidence
+                    },
+                    pleadingDraft: raw.draftPleading,
+                    // The new API doesn't return detailed legalIssues or jurisprudenceReferences in the same format yet.
+                    // We can populate with placeholders or extract from relevantLaws if needed.
+                    legalIssues: raw.relevantLaws.map((law: string) => ({
+                        issue: "Fondement légal invoqué/applicable",
+                        applicableLaw: law,
+                        ourPosition: "À contester selon la stratégie définie."
+                    })),
+                    jurisprudenceReferences: [] // API doesn't return this yet in the Strategy Prompt.
+                }
+
+                setAnalysisResult(mappedResult)
+
                 toast({
                     title: "✅ Analyse terminée",
-                    description: "Stratégie de défense générée avec succès",
+                    description: "Stratégie de défense générée avec succès (Mode Réel).",
                     className: "bg-emerald-50 border-emerald-200"
+                })
+            } else {
+                toast({
+                    title: "Erreur Analyse",
+                    description: result.message,
+                    variant: "destructive"
                 })
             }
         } catch (error) {
