@@ -957,6 +957,21 @@ export async function createTransaction(description: string, date: Date, lines: 
     }
 }
 
+export async function getJournalEntries(journalId: string, status?: 'DRAFT' | 'VALIDATED' | 'ALL') {
+    const where: any = { journalId }
+    if (status && status !== 'ALL') {
+        where.status = status
+    }
+    return await prisma.transaction.findMany({
+        where,
+        include: {
+            lines: { include: { account: true } },
+            journal: true
+        },
+        orderBy: { date: 'asc' }
+    })
+}
+
 export async function getDraftTransactions(journalId: string) {
     return await prisma.transaction.findMany({
         where: { journalId, status: 'DRAFT' },
