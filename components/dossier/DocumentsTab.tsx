@@ -134,8 +134,6 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
     const [isGenerating, setIsGenerating] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    import { SignatureDialog } from '../documents/SignatureDialog';
-
     // ...
 
     const [selectedDocForSigning, setSelectedDocForSigning] = useState<DocumentProps | null>(null);
