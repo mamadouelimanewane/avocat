@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog"
-import { initJurisprudenceLibrary, searchJurisprudence } from "@/app/actions"
+import { initJurisprudenceLibrary, searchJurisprudenceAdvanced as searchJurisprudence } from "@/app/actions"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { toast } from "@/components/ui/use-toast"
@@ -139,8 +139,13 @@ Signature numérique: VALIDÉ-#${Math.floor(Math.random() * 100000)}`
         const load = async () => {
             setIsLoading(true)
             await initJurisprudenceLibrary()
-            const data = await searchJurisprudence("")
-            setResults(data)
+            const response = await searchJurisprudence("")
+            if (response && response.success) {
+                setResults(response.results || [])
+            } else if (Array.isArray(response)) {
+                // Fallback if the alias points to the old function returning array directly (safety)
+                setResults(response)
+            }
             setIsLoading(false)
         }
         load()
@@ -148,8 +153,12 @@ Signature numérique: VALIDÉ-#${Math.floor(Math.random() * 100000)}`
 
     const handleSearch = async () => {
         setIsLoading(true)
-        const data = await searchJurisprudence(query)
-        setResults(data)
+        const response = await searchJurisprudence(query)
+        if (response && response.success) {
+            setResults(response.results || [])
+        } else if (Array.isArray(response)) {
+            setResults(response)
+        }
         setIsLoading(false)
     }
 

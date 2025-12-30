@@ -1,14 +1,14 @@
-
 "use client"
 
-import { useState } from 'react'
-import { Bot, X, Send, Sparkles, BookOpen, FileText } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Bot, X, Send, Sparkles, BookOpen, FileText, Mic, MicOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from '@/components/ui/badge'
 import { generateAIResponse } from '@/app/actions'
+import { VoiceDictation } from '@/components/tools/VoiceDictation'
 
 export function LexAIAssistant() {
     const [isOpen, setIsOpen] = useState(false)
@@ -17,7 +17,7 @@ export function LexAIAssistant() {
         { role: 'ai', content: 'Bonjour Maître. Je suis LexAI, votre assistant juridique expert en droit Sénégalais et OHADA. Comment puis-je vous aider ?' }
     ])
     const [isLoading, setIsLoading] = useState(false)
-    const [mode, setMode] = useState<'RESEARCH' | 'DRAFTING'>('RESEARCH')
+    const [mode, setMode] = useState<'RESEARCH' | 'DRAFTING' | 'SECRETARIAT'>('RESEARCH')
 
     const handleSubmit = async () => {
         if (!query.trim()) return
@@ -63,7 +63,7 @@ export function LexAIAssistant() {
                             Base de connaissances : J.O. Sénégal, Actes Uniformes OHADA.
                         </CardDescription>
 
-                        <div className="flex gap-2 mt-2">
+                        <div className="flex gap-2 mt-2 flex-wrap">
                             <Badge
                                 variant={mode === 'RESEARCH' ? 'secondary' : 'outline'}
                                 className="cursor-pointer bg-white/20 hover:bg-white/30 text-white border-transparent"
@@ -77,6 +77,13 @@ export function LexAIAssistant() {
                                 onClick={() => setMode('DRAFTING')}
                             >
                                 <FileText className="mr-1 h-3 w-3" /> Rédaction
+                            </Badge>
+                            <Badge
+                                variant={mode === 'SECRETARIAT' ? 'secondary' : 'outline'}
+                                className="cursor-pointer bg-white/20 hover:bg-white/30 text-white border-transparent"
+                                onClick={() => setMode('SECRETARIAT')}
+                            >
+                                <Bot className="mr-1 h-3 w-3" /> Secrétariat
                             </Badge>
                         </div>
                     </CardHeader>
@@ -120,7 +127,7 @@ export function LexAIAssistant() {
                                     <div className="flex justify-start">
                                         <div className="bg-white border border-slate-200 rounded-lg p-3 text-sm text-slate-500 flex items-center gap-2">
                                             <Sparkles className="h-4 w-4 animate-spin text-indigo-500" />
-                                            Analyse juridique en cours...
+                                            {mode === 'SECRETARIAT' ? 'Je traite votre demande...' : 'Analyse juridique en cours...'}
                                         </div>
                                     </div>
                                 )}
@@ -131,7 +138,7 @@ export function LexAIAssistant() {
                             <div className="relative">
                                 <Input
                                     className="pr-12 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500"
-                                    placeholder={mode === 'RESEARCH' ? "Posez une question de droit..." : "Décrivez la clause à rédiger..."}
+                                    placeholder={mode === 'SECRETARIAT' ? "Demandez-moi quelque chose (agenda, factures)..." : mode === 'RESEARCH' ? "Posez une question de droit..." : "Décrivez la clause à rédiger..."}
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -144,6 +151,9 @@ export function LexAIAssistant() {
                                 >
                                     <Send className="h-4 w-4" />
                                 </Button>
+                                <div className="absolute right-10 top-1">
+                                    <VoiceDictation onTranscript={(text) => setQuery(text)} className="h-8 w-8 text-slate-400 hover:text-indigo-600" />
+                                </div>
                             </div>
                         </div>
                     </CardContent>

@@ -2,7 +2,7 @@
 import OpenAI from 'openai';
 
 // Initialize OpenAI client compatible with DeepSeek
-let openai: OpenAI | null = null;
+export let openai: OpenAI | null = null;
 
 if (process.env.OPENAI_API_KEY) {
     openai = new OpenAI({

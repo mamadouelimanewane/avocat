@@ -10,6 +10,7 @@ import DocumentsTab from '@/components/dossier/DocumentsTab'
 import FinanceTab from '@/components/dossier/FinanceTab'
 import ExpensesTab from '@/components/dossier/ExpensesTab'
 import DossierOverview from '@/components/dossier/DossierOverview'
+import ProcedureTab from '@/components/dossier/ProcedureTab'
 
 export default async function DossierDetailPage({ params }: { params: { id: string } }) {
     const dossier = await prisma.dossier.findUnique({
@@ -107,9 +108,11 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                         </TabsContent>
 
                         <TabsContent value="procedure">
-                            <div className="p-4 bg-white border border-slate-200 rounded-lg h-64 flex items-center justify-center text-slate-400">
-                                Calendrier de procédure...
-                            </div>
+                            <ProcedureTab
+                                dossierId={dossier.id}
+                                currentStage={dossier.stage || 'SAISINE'}
+                                procedureType={dossier.procedureType || 'CIVIL'}
+                            />
                         </TabsContent>
 
                         <TabsContent value="billing">

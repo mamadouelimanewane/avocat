@@ -170,6 +170,40 @@
     background: hsl(var(--muted-foreground) / 0.5);
 }
 
+@layer utilities {
+    .animate-scan-up-down {
+        animation: scan-up-down 3s linear infinite;
+    }
+
+    .animate-wiggle {
+        animation: wiggle 1s ease-in-out infinite;
+    }
+
+    @keyframes scan-up-down {
+
+        0%,
+        100% {
+            top: 0%
+        }
+
+        50% {
+            top: 100%
+        }
+    }
+
+    @keyframes wiggle {
+
+        0%,
+        100% {
+            transform: rotate(-5deg)
+        }
+
+        50% {
+            transform: rotate(5deg)
+        }
+    }
+}
+
 
 
 @layer base {

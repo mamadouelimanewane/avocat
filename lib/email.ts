@@ -141,6 +141,7 @@ export function appointmentEmailTemplate(clientName: string, eventTitle: string,
     </html>
     `
 }
+
 export function deadlineAlertEmailTemplate(lawyerName: string, docName: string, deadlineType: string, deadlineDate: string, reason: string, dossierTitle: string) {
     return `
     <!DOCTYPE html>
@@ -182,6 +183,58 @@ export function deadlineAlertEmailTemplate(lawyerName: string, docName: string, 
             <div class="footer">
                 LexPremium Intelligence Artificielle<br>
                 Service de surveillance automatique du cabinet.
+            </div>
+        </div>
+    </body>
+    </html>
+    `
+}
+
+export function procedureStepEmailTemplate(lawyerName: string, dossierTitle: string, stepTitle: string, stepDescription: string, date: string) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }
+            .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1); border-top: 6px solid #4f46e5; }
+            .header { background: #4f46e5; padding: 20px; text-align: center; color: white; }
+            .header h1 { margin: 0; font-size: 20px; }
+            .content { padding: 30px; }
+            .step-card { background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #4f46e5; }
+            .step-card h2 { margin: 0 0 10px 0; color: #1e293b; font-size: 18px; }
+            .step-card p { margin: 5px 0; color: #475569; }
+            .date-badge { display: inline-block; background: #e0e7ff; color: #4338ca; padding: 4px 12px; border-radius: 9999px; font-weight: 600; font-size: 12px; }
+            .btn { display: inline-block; background: #4f46e5; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 20px; }
+            .footer { text-align: center; padding: 20px; color: #94a3b8; font-size: 12px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>📝 Nouvelle Étape de Procédure</h1>
+            </div>
+            <div class="content">
+                <p>Maître <strong>${lawyerName}</strong>,</p>
+                <p>Une nouvelle étape a été planifiée pour le dossier : <strong>${dossierTitle}</strong>.</p>
+                
+                <div class="step-card">
+                    <div class="date-badge">🗓️ Échéance : ${date}</div>
+                    <h2 style="margin-top:15px;">${stepTitle}</h2>
+                    <p>${stepDescription}</p>
+                </div>
+                
+                <p style="text-align: center;">
+                    <a href="https://avocatos.app/dossiers" class="btn">Voir le Dossier</a>
+                </p>
+                
+                <p style="font-size: 13px; color: #64748b; margin-top: 30px;">
+                    Note : Cette étape a été suggérée par LexAI et validée par vous-même.
+                </p>
+            </div>
+            <div class="footer">
+                LexPremium - Gestion de Cabinet<br>
+                Système de rappel automatisé.
             </div>
         </div>
     </body>

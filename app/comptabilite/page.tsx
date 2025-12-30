@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save, FileText, Users, Search, Printer } from "lucide-react"
+import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save, FileText, Users, Search, Printer, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -29,6 +29,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals, createAccount } from "@/app/actions"
 import Link from "next/link"
 import { ExportButton } from "@/components/ui/ExportButton"
+import { AccountingAssistantDialog } from "@/components/comptabilite/AccountingAssistantDialog"
 
 export default function AccountingPage() {
     const [accounts, setAccounts] = useState<any[]>([])
@@ -87,6 +88,24 @@ export default function AccountingPage() {
         }
     }
 
+    const handleArtificialIntelligenceApply = (data: { debitAccount: string, creditAccount: string, explanation: string, description: string }) => {
+        // AI returns "CODE - Name", e.g. "6044 - Achats..."
+        // We need to find the matching ID in our accounts list.
+        // Simple fuzzy match strategy: starts with the code
+
+        const debitCode = data.debitAccount.split(' - ')[0].trim()
+        const creditCode = data.creditAccount.split(' - ')[0].trim()
+
+        const debitAcc = accounts.find(a => a.code.startsWith(debitCode))
+        const creditAcc = accounts.find(a => a.code.startsWith(creditCode))
+
+        if (debitAcc) setLine1({ accountId: debitAcc.id, debit: 0, credit: 0 })
+        if (creditAcc) setLine2({ accountId: creditAcc.id, debit: 0, credit: 0 })
+
+        setDesc(data.description)
+        setIsTransactionOpen(true)
+    }
+
     const totalActif = accounts.filter(a => a.type === 'ACTIF').reduce((s, a) => s + a.balance, 0)
     const totalPassif = accounts.filter(a => a.type === 'PASSIF').reduce((s, a) => s + a.balance, 0)
     const totalProduit = accounts.filter(a => a.type === 'PRODUIT').reduce((s, a) => s + a.balance, 0)
@@ -136,6 +155,7 @@ export default function AccountingPage() {
                     />
 
                     {/* Add Account Dialog */}
+                    <AccountingAssistantDialog onApply={handleArtificialIntelligenceApply} />
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="secondary"><Building className="mr-2 h-4 w-4" /> Nouveau Compte</Button>

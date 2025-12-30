@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { cookies } from 'next/headers'
-import { generateCompletion, analyzeCrawledContent, filterRelevantLinks, findTargetUrls, extractSearchFilters, interpretVoiceCommand, classifyDocument } from '@/lib/openai'
+import { generateCompletion, analyzeCrawledContent, filterRelevantLinks, findTargetUrls, extractSearchFilters, interpretVoiceCommand, classifyDocument, openai } from '@/lib/openai'
 import { sendEmail, invoiceEmailTemplate, deadlineAlertEmailTemplate } from '@/lib/email'
 import { sendWhatsApp, formatDeadlineWhatsAppMessage } from '@/lib/whatsapp'
 import { writeFile, mkdir, readFile } from 'fs/promises'
@@ -952,6 +952,876 @@ export async function generateAIResponse(prompt: string, mode: string = 'RESEARC
     } catch (e) {
         console.error("AI Gen Error", e)
         return { success: false, text: "Une erreur interne est survenue lors de la génération." }
+    }
+}
+
+export async function generateProcedureStrategy(dossierId: string, procedureType: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { documents: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        // Construction du prompt pour l'expert en procédure
+        const prompt = `En tant qu'expert juridique en procédure ${procedureType} au Sénégal (Droit Civil/OHADA), analyse ce dossier et propose les 3 à 5 prochaines étapes stratégiques.
+        Titre du dossier: ${dossier.title}
+        Étape actuelle: ${dossier.stage || 'Saisine'}
+        Documents déjà au dossier: ${dossier.documents.map(d => d.name).join(', ') || 'Aucun'}
+        
+        IMPORTANT: Retourne uniquement un tableau JSON valide (pas de texte avant ou après) sous ce format :
+        [
+            { "id": "uuid1", "title": "Nom de l'acte", "description": "Explication courte du délai et de l'action", "priority": "HIGH", "date": "2025-01-15" }
+        ]`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const responseText = await generateCompletion(prompt, [], 'PROCEDURE')
+
+        let steps = []
+        try {
+            if (responseText) {
+                // Nettoyage des balises markdown si l'IA en a ajouté
+                const jsonStr = responseText.includes('```')
+                    ? responseText.split('```')[1].replace('json', '').trim()
+                    : responseText.trim()
+                steps = JSON.parse(jsonStr)
+            }
+        } catch (err) {
+            console.error("JSON Parse Error on AI steps", err)
+            // Fallback mock si l'IA échoue
+            steps = [
+                { id: 'f-1', title: "Signification de l'acte", description: "Faire signifier l'assignation par voie d'huissier.", priority: 'HIGH', date: '2025-01-15' },
+                { id: 'f-2', title: "Enrôlement", description: "Déposer l'acte au greffe pour enrôlement de l'affaire.", priority: 'MEDIUM', date: '2025-01-20' }
+            ]
+        }
+
+        return { success: true, steps }
+
+    } catch (error) {
+        console.error('Error generating procedure:', error)
+        return { success: false, message: "Erreur lors de la génération" }
+    }
+}
+
+export async function planProcedureStep(dossierId: string, step: { title: string, description: string, date: string }) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { assignedTo: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        // 1. Création effective de la tâche
+        const task = await prisma.task.create({
+            data: {
+                title: step.title,
+                description: step.description,
+                dueDate: new Date(step.date),
+                dossierId: dossierId,
+                assignedToId: dossier.assignedToId,
+                priority: 'HAUTE'
+            }
+        })
+
+        // 2. Envoi de l'email de rappel
+        if (dossier.assignedTo?.email) {
+            const { sendEmail, procedureStepEmailTemplate } = await import('@/lib/email')
+            const html = procedureStepEmailTemplate(
+                dossier.assignedTo.name || 'Avocat',
+                dossier.title,
+                step.title,
+                step.description,
+                new Date(step.date).toLocaleDateString('fr-FR')
+            )
+
+            await sendEmail({
+                to: dossier.assignedTo.email,
+                subject: `📅 Nouvelle échéance : ${step.title} - ${dossier.reference}`,
+                html
+            })
+        }
+
+        revalidatePath(`/dossiers/${dossierId}`)
+        return { success: true, message: "Étape planifiée et rappel envoyé." }
+
+    } catch (error) {
+        console.error('Error planning procedure step:', error)
+        return { success: false, message: "Erreur lors de la planification" }
+    }
+}
+
+export async function generateStepDraft(dossierId: string, stepTitle: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: {
+                client: true,
+                assignedTo: true,
+                documents: { take: 5, orderBy: { updatedAt: 'desc' } }
+            }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `En tant qu'avocat expert au cabinet LexPremium (Sénégal), rédige un PROJET D'ACTE JURIDIQUE professionnel.
+        TYPE D'ACTE SOUHAITÉ : ${stepTitle}
+        
+        INFOS DOSSIER :
+        - Titre : ${dossier.title}
+        - Client : ${dossier.client.name} (${dossier.client.type})
+        - Juridiction : ${dossier.jurisdiction || 'Tribunal compétent'}
+        - Partie adverse : ${dossier.opposingParty || 'Inconnue'}
+        - Référence interne : ${dossier.reference}
+        
+        DOCUMENTS RÉCENTS POUR CONTEXTE :
+        ${dossier.documents.map(d => d.name).join(', ')}
+
+        CONSIGNES :
+        1. Utilise le formalisme juridique sénégalais/OHADA.
+        2. Inclus les mentions obligatoires (L'an deux mille..., À la requête de..., etc.).
+        3. Structure le texte avec Titre, Faits, Procédure, Discussion (Moyens) et "Par Ces Motifs".
+        4. Retourne le texte au format HTML propre pour un éditeur de texte.
+        5. Sois très précis et professionnel.`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const draftContent = await generateCompletion(prompt, [], 'DRAFTING')
+
+        return {
+            success: true,
+            draft: draftContent,
+            suggestionTitle: `Projet - ${stepTitle}`
+        }
+
+    } catch (error) {
+        console.error('Error generating draft:', error)
+        return { success: false, message: "Erreur lors de la génération du projet." }
+    }
+}
+
+export async function analyzeOpposingDocument(dossierId: string, documentId: string) {
+    try {
+        const doc = await prisma.document.findUnique({
+            where: { id: documentId },
+            include: { versions: { take: 1, orderBy: { version: 'desc' } } }
+        })
+
+        if (!doc) return { success: false, message: "Document introuvable" }
+
+        const documentText = doc.ocrContent || "Contenu du document adverse à analyser..."
+
+        const prompt = `Tu es une IA stratège juridique expert en droit sénégalais et OHADA. Analyse ces CONCLUSIONS ADVERSES et produis un rapport de riposte.
+        
+        TEXTE DU DOCUMENT :
+        ${documentText}
+
+        RETOURNE EXCLUSIVEMENT UN JSON VALIDE sous ce format (pas de texte avant ou après) :
+        {
+            "vices": ["vice 1", "vice 2"],
+            "argumentsCles": ["argument 1", "argument 2"],
+            "failles": ["faille 1", "faille 2"],
+            "riposteGagnante": "Texte explicatif de la stratégie",
+            "jurisprudences": ["Réf 1", "Réf 2"]
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const analysis = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = {
+            vices: [], argumentsCles: [], failles: [], riposteGagnante: "Analyse en attente...", jurisprudences: []
+        }
+
+        try {
+            if (analysis) {
+                const jsonStr = analysis.includes('```') ? analysis.split('```')[1].replace('json', '').trim() : analysis.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error", e)
+        }
+
+        return { success: true, analysis: result }
+
+    } catch (error) {
+        console.error('Error analyzing document:', error)
+        return { success: false, message: "Erreur lors de l'analyse stratégique." }
+    }
+}
+
+export async function generateClientSynthesis(dossierId: string, language: 'FR' | 'WO' = 'FR') {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: {
+                client: true,
+                tasks: { where: { completed: false }, take: 3 }
+            }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Tu es un avocat pédagogue et stratège de haut vol. Rédige une note de synthèse pour le client ${dossier.client.name} concernant son dossier "${dossier.title}".
+        
+        LANGUE : ${language === 'WO' ? 'Wolof (Sénégal)' : 'Français'}
+        ÉTAPE ACTUELLE : ${dossier.stage || 'Saisine'}
+        PROCHAINES ÉCHÉANCES : ${dossier.tasks.map(t => t.title).join(', ')}
+
+        CONSIGNES :
+        1. Ne pas utiliser de jargon juridique complexe. Expliquer simplement ce qui se passe.
+        2. Être rassurant mais factuel.
+        3. Structure : État actuel -> Ce que nous faisons -> Prochaine étape -> Ce que nous attendons de lui (si besoin).
+        4. Si c'est en Wolof, utilise un ton respectueux et professionnel (ndax teggine).
+        
+        AJOUTE UNE DIMENSION STRATÉGIQUE (Optionnel si pertinent) :
+        - Explique si l'adversaire semble être en difficulté technique ou s'il essaie de bluffer (en restant professionnel).
+        - Donne au client un "Indice de confiance" sur la solidité globale du dossier actuel.`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const synthesis = await generateCompletion(prompt, [], 'RESEARCH')
+
+        return {
+            success: true,
+            synthesis,
+            clientPhone: dossier.client.phone || null
+        }
+
+    } catch (error) {
+        console.error('Error generating synthesis:', error)
+        return { success: false, message: "Erreur lors de la génération de la synthèse." }
+    }
+}
+
+export async function getStrategicInsights(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { tasks: true, documents: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Analyse l'état actuel de ce dossier juridique ("${dossier.title}", Étape: ${dossier.stage}) et génère des indicateurs stratégiques AVANT-GARDE.
+        
+        DONNÉES :
+        - Type de procédure : ${dossier.procedureType}
+        - Tâches réalisées : ${dossier.tasks.filter(t => t.completed).length}/${dossier.tasks.length}
+        - Pièces au dossier : ${dossier.documents.length}
+        
+        RETOURNE EXCLUSIVEMENT UN JSON :
+        {
+            "successProbability": (nombre entre 0 et 100),
+            "strategicStrength": (nombre entre 0 et 100),
+            "nextBestMove": "Une phrase courte et percutante",
+            "riskLevel": "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
+            "adversaryPressure": (nombre entre 0 et 100),
+            "timelineHealth": (nombre entre 0 et 100)
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const insights = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = {
+            successProbability: 50, strategicStrength: 50, nextBestMove: "Analyse en cours...", riskLevel: "MEDIUM", adversaryPressure: 30, timelineHealth: 80
+        }
+
+        try {
+            if (insights) {
+                const jsonStr = insights.includes('```') ? insights.split('```')[1].replace('json', '').trim() : insights.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Insights", e)
+        }
+
+        return { success: true, insights: result }
+
+    } catch (error) {
+        console.error('Error getting insights:', error)
+        return { success: false, message: "Erreur d'analyse prédictive." }
+    }
+}
+
+export async function getNeuralArgumentMap(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { documents: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Tu es une IA de visualisation stratégique. Analyse ce dossier juridique et crée une carte neuronale des arguments.
+        
+        DONNÉES :
+        - Titre : ${dossier.title}
+        - Type : ${dossier.procedureType}
+        
+        RETOURNE EXCLUSIVEMENT UN JSON :
+        {
+            "nodes": [
+                {"id": 1, "label": "Point d'ancrage principal", "type": "FACT", "strength": 80},
+                {"id": 2, "label": "Moyen de droit A", "type": "LAW", "strength": 65},
+                {"id": 3, "label": "Faille adverse identifiée", "type": "RISK", "strength": 40}
+            ],
+            "links": [
+                {"source": 1, "target": 2, "label": "Soutient"},
+                {"source": 2, "target": 3, "label": "Contre" }
+            ],
+            "strategicVision": "Une analyse synthétique ultra-percutante sur le pivot du dossier."
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const mapData = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = {
+            nodes: [], links: [], strategicVision: "Vision neuronale indisponible."
+        }
+
+        try {
+            if (mapData) {
+                const jsonStr = mapData.includes('```') ? mapData.split('```')[1].replace('json', '').trim() : mapData.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Neural Map", e)
+        }
+
+        return { success: true, neuralMap: result }
+
+    } catch (error) {
+        console.error('Error getting neural map:', error)
+        return { success: false, message: "Erreur de cartographie neuronale." }
+    }
+}
+
+export async function emulateRedTeam(dossierId: string, currentArgument: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Tu es l'AVOCAT ADVERSE le plus agressif et brillant. Ton but est de détruire l'argument suivant : "${currentArgument}".
+        
+        CONTEXTE DU DOSSIER : "${dossier.title}" (${dossier.procedureType})
+        
+        RETOURNE UN JSON :
+        {
+            "attackPoints": [
+                {"point": "Lien de causalité non prouvé", "severity": "HIGH"},
+                {"point": "Prescription possible de l'action", "severity": "CRITICAL"}
+            ],
+            "counterStrategy": "Une explication de comment l'adversaire va nous attaquer.",
+            "shieldSuggestion": "Comment nous devons renforcer notre argument POUR ANTICIPER."
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const emulation = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = {
+            attackPoints: [], counterStrategy: "Émulation échouée.", shieldSuggestion: "Renforcer les bases factuelles."
+        }
+
+        try {
+            if (emulation) {
+                const jsonStr = emulation.includes('```') ? emulation.split('```')[1].replace('json', '').trim() : emulation.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Red Team", e)
+        }
+
+        return { success: true, emulation: result }
+
+    } catch (error) {
+        console.error('Error in Red Team emulation:', error)
+        return { success: false, message: "Erreur d'émulation adverse." }
+    }
+}
+
+export async function getPredictiveScenarios(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Génère 3 scénarios futurs pour le dossier "${dossier.title}" (${dossier.procedureType}).
+        
+        RETOURNE UN JSON :
+        [
+            {
+                "path": "Optimiste",
+                "probability": 70,
+                "outcome": "Le juge valide notre exception de procédure.",
+                "nextSteps": ["Enrôlement immédiat", "Demande d'indemnités"]
+            },
+            {
+                "path": "Risqué",
+                "probability": 30,
+                "outcome": "L'adversaire obtient un renvoi pour communication de pièces.",
+                "nextSteps": ["Préparer les bordereaux", "Fixation nouvelle date"]
+            }
+        ]`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const scenariosData = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = []
+        try {
+            if (scenariosData) {
+                const jsonStr = scenariosData.includes('```') ? scenariosData.split('```')[1].replace('json', '').trim() : scenariosData.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Scenarios", e)
+        }
+
+        return { success: true, scenarios: result }
+
+    } catch (error) {
+        console.error('Error in Scenarios:', error)
+        return { success: false, message: "Erreur de prédiction de scénarios." }
+    }
+}
+
+export async function getTacticalGapAnalysis(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { documents: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Analyse les pièces actuelles de ce dossier ("${dossier.title}") et identifie les LACUNES TACTIQUES.
+        
+        PIÈCES PRÉSENTES : ${dossier.documents.map(d => d.name).join(', ')}
+        
+        RETOURNE UN JSON :
+        {
+            "missingPieces": [
+                {"title": "PV de Constat d'Huissier", "impact": 25, "reason": "Augmenterait la force probante du préjudice."},
+                {"title": "Mise en demeure préalable", "impact": 15, "reason": "Nécessaire pour la recevabilité sous peine d'irrecevabilité."}
+            ],
+            "globalAssessment": "Une phrase sur l'état de complétude stratégique."
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const gapData = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = { missingPieces: [], globalAssessment: "Analyse des lacunes indisponible." }
+        try {
+            if (gapData) {
+                const jsonStr = gapData.includes('```') ? gapData.split('```')[1].replace('json', '').trim() : gapData.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Gap Analysis", e)
+        }
+
+        return { success: true, gapAnalysis: result }
+
+    } catch (error) {
+        console.error('Error in Gap Analysis:', error)
+        return { success: false, message: "Erreur d'analyse des lacunes." }
+    }
+}
+
+export async function getSemanticJurisprudence(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        // Simulation d'une recherche sémantique basée sur les mots-clés du titre et du type
+        const prompt = `Trouve 2 arrêts de jurisprudence (réels ou types) qui s'appliquent parfaitement à "${dossier.title}" (${dossier.procedureType}).
+        
+        RETOURNE UN JSON :
+        [
+            {
+                "reference": "Cour Suprême, 2022, Arrêt n°45",
+                "relevance": 95,
+                "summary": "Sur la force probante du constat d'huissier non contesté.",
+                "application": "Utiliser pour valider le point de preuve n°1."
+            },
+            {
+                "reference": "Cour d'Appel de Dakar, 2021",
+                "relevance": 82,
+                "summary": "Sur l'irrecevabilité des conclusions tardives.",
+                "application": "Sert de bouclier contre les écritures de l'adversaire."
+            }
+        ]`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const jurisData = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = []
+        try {
+            if (jurisData) {
+                const jsonStr = jurisData.includes('```') ? jurisData.split('```')[1].replace('json', '').trim() : jurisData.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Semantic Juris", e)
+        }
+
+        return { success: true, matches: result }
+
+    } catch (error) {
+        console.error('Error in Semantic Juris:', error)
+        return { success: false, message: "Erreur de matching jurisprudence." }
+    }
+}
+
+export async function analyzeOpposingSentiment(dossierId: string, text: string) {
+    try {
+        const prompt = `Analyse le ton et la psychologie derrière ces écrits de l'adversaire : "${text}".
+        
+        DÉTECTE :
+        - Niveau d'agressivité (0-100)
+        - Probabilité de bluff (0-100)
+        - Ouverture à la négociation (0-100)
+        - Points de stress détectés dans leur ton.
+        
+        RETOURNE UN JSON :
+        {
+            "agressionScore": 85,
+            "bluffProbability": 20,
+            "negotiationOpening": 10,
+            "psychologicalDetection": "L'adversaire semble très confiant mais évite bizarrement le sujet de la prescription.",
+            "recommendedTone": "Rester ferme et technique, ne pas entrer dans le jeu émotionnel."
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const analysis = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = { agressionScore: 50, bluffProbability: 50, negotiationOpening: 50, psychologicalDetection: "Analyse en cours...", recommendedTone: "Neutre." }
+        try {
+            if (analysis) {
+                const jsonStr = analysis.includes('```') ? analysis.split('```')[1].replace('json', '').trim() : analysis.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Sentiment", e)
+        }
+
+        return { success: true, sentiment: result }
+
+    } catch (error) {
+        return { success: false, message: "Erreur d'analyse psychologique." }
+    }
+}
+
+export async function getCourtTendencies(courtName: string) {
+    try {
+        const prompt = `Donne les tendances cognitives générales pour le tribunal : "${courtName}".
+        S'il s'agit d'un tribunal au Sénégal (Dakar, etc.), prends en compte la pratique locale.
+        
+        RETOURNE UN JSON :
+        {
+            "rigorScore": 75,
+            "speedScore": 40,
+            "proClientBias": 55,
+            "tacticalAdvice": "Ce tribunal privilégie les preuves écrites aux témoignages oraux. Soyez très procédurier."
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const data = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = { rigorScore: 50, speedScore: 50, proClientBias: 50, tacticalAdvice: "Pratique standard." }
+        try {
+            if (data) {
+                const jsonStr = data.includes('```') ? data.split('```')[1].replace('json', '').trim() : data.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Court Tendencies", e)
+        }
+
+        return { success: true, tendencies: result }
+
+    } catch (error) {
+        return { success: false, message: "Erreur d'analyse de juridiction." }
+    }
+}
+
+export async function generateHearingNotes(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { documents: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Prépare des NOTES DE PLAIDOIRIE STRATÉGIQUES pour le dossier "${dossier.title}".
+        
+        CONTEXTE : ${dossier.procedureType}
+        PIÈCES : ${dossier.documents.map(d => d.name).join(', ')}
+        
+        RETOURNE UN JSON :
+        {
+            "intro": "L'ouverture choc pour captiver le juge.",
+            "keyPoints": [
+                {"anchor": "La preuve du préjudice", "content": "Développement sur le PV de constat..."},
+                {"anchor": "Le fond du droit", "content": "Application de l'article X du code civil..."}
+            ],
+            "adversaryWeaknesses": [
+                {"point": "Absence de mise en demeure", "impact": "Irrecevabilité totale"},
+                {"point": "Contradiction dans leurs dates", "impact": "Perte de crédibilité"}
+            ],
+            "closingStatement": "La conclusion percutante."
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const notesData = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = { intro: "", keyPoints: [], adversaryWeaknesses: [], closingStatement: "" }
+        try {
+            if (notesData) {
+                const jsonStr = notesData.includes('```') ? notesData.split('```')[1].replace('json', '').trim() : notesData.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Hearing Notes", e)
+        }
+
+        return { success: true, hearingNotes: result }
+
+    } catch (error) {
+        return { success: false, message: "Erreur de génération des notes d'audience." }
+    }
+}
+
+export async function simulateConfrontation(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { documents: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" }
+
+        const prompt = `Tu es une IA de simulation tactique. Prépare un "ENTRAINEMENT AU FEU" pour l'avocat dans le dossier "${dossier.title}".
+        
+        CONTEXTE : ${dossier.procedureType}
+        
+        RETOURNE UN JSON :
+        {
+            "traps": [
+                {
+                    "source": "LE JUGE",
+                    "question": "Mais si la pièce X n'est pas authentifiée, comment maintenez-vous votre demande ?",
+                    "recommendedAnswer": "Invoquer la théorie de l'apparence et la bonne foi contractuelle.",
+                    "dangerLevel": "HIGH"
+                },
+                {
+                    "source": "L'ADVERSAIRE",
+                    "question": "Pourquoi n'avez-vous pas agi dans le délai de 30 jours ?",
+                    "recommendedAnswer": "Démontrer que le délai n'était pas préfixe mais de prescription, suspendu par la médiation.",
+                    "dangerLevel": "CRITICAL"
+                }
+            ]
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const data = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = { traps: [] }
+        try {
+            if (data) {
+                const jsonStr = data.includes('```') ? data.split('```')[1].replace('json', '').trim() : data.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Confrontation", e)
+        }
+
+        return { success: true, confrontation: result }
+
+    } catch (error) {
+        return { success: false, message: "Erreur de simulation de confrontation." }
+    }
+}
+
+export async function generateInvoiceItems(description: string) {
+    try {
+        const prompt = `Tu es un expert en facturation juridique (Cabinet d'Avocats au Sénégal). Analyse la description des travaux suivants : "${description}".
+        
+        Génère une liste d'éléments de facturation professionnels et chiffrés (en FCFA).
+        Utilise des montants réalistes pour un cabinet d'affaires premium.
+        
+        RETOURNE UN JSON :
+        {
+            "items": [
+                {"description": "Rédaction d'assignation en référé", "quantity": 1, "unitPrice": 150000, "totalPrice": 150000},
+                {"description": "Vacations (3h)", "quantity": 3, "unitPrice": 50000, "totalPrice": 150000}
+            ]
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const data = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = { items: [] }
+        try {
+            if (data) {
+                const jsonStr = data.includes('```') ? data.split('```')[1].replace('json', '').trim() : data.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Invoice Gen", e)
+        }
+
+        return { success: true, items: result.items }
+
+    } catch (error) {
+        return { success: false, message: "Erreur de génération de facture." }
+    }
+}
+
+export async function searchJurisprudenceAdvanced(query: string) {
+    try {
+        const prompt = `Tu es un expert en recherche juridique (Droit OHADA & Sénégalais). Trouve des textes de loi, articles, ou jurisprudences pertinents pour : "${query}".
+        
+        RETOURNE UN JSON :
+        [
+            {
+                "id": "jur-adv-1",
+                "title": "Arrêt n° 005/2021 CCJA",
+                "reference": "CCJA, 3e Ch., 15 janvier 2021",
+                "court": "CCJA",
+                "date": "2021-01-15",
+                "type": "JURISPRUDENCE",
+                "summary": "Sur l'interprétation de l'article 13 de l'Acte Uniforme portant recouvrement...",
+                "content": "La Cour a statué que...",
+                "relevance": 95
+            },
+            {
+                "id": "jur-adv-2",
+                "title": "Code des Obligations Civiles et Commerciales (Sénégal)",
+                "reference": "Article 118 et suivants",
+                "court": "SENEGAL",
+                "date": "2020-01-01",
+                "type": "LOI",
+                "summary": "Dispositions relatives à la responsabilité contractuelle.",
+                "content": "Article 118 : Le contrat est la convention...",
+                "relevance": 88
+            }
+        ]`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const data = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = []
+        try {
+            if (data) {
+                const jsonStr = data.includes('```') ? data.split('```')[1].replace('json', '').trim() : data.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Juris Search", e)
+        }
+
+        return { success: true, results: result }
+
+    } catch (error) {
+        return { success: false, message: "Erreur de recherche jurisprudentielle." }
+    }
+}
+
+export async function classifyTransaction(description: string) {
+    try {
+        const prompt = `Tu es un expert comptable SYSCOHADA.
+        Analyse l'opération suivante : "${description}".
+        Propose l'écriture comptable la plus appropriée (Compte Débit, Compte Crédit) selon le plan comptable SYSCOHADA révisé.
+        
+        RETOURNE UN JSON :
+        {
+            "debitAccount": "6053 - Achats de fournitures de bureau",
+            "creditAccount": "5211 - Banque",
+            "explanation": "Il s'agit d'une charge d'exploitation par caisse/banque."
+        }`
+
+        const { generateCompletion } = await import('@/lib/ai')
+        const data = await generateCompletion(prompt, [], 'RESEARCH')
+
+        let result = { debitAccount: "", creditAccount: "", explanation: "" }
+        try {
+            if (data) {
+                const jsonStr = data.includes('```') ? data.split('```')[1].replace('json', '').trim() : data.trim()
+                result = JSON.parse(jsonStr)
+            }
+        } catch (e) {
+            console.error("JSON Parse error in Accounting AI", e)
+        }
+
+        return { success: true, classification: result }
+
+    } catch (error) {
+        return { success: false, message: "Erreur de classification." }
+    }
+}
+
+export async function getGrandLivreData(startDate?: Date, endDate?: Date) {
+    try {
+        // Fetch all transaction lines with their associated account and transaction header
+        // This is a simplified fetch. In production, use meaningful date filters.
+        const lines = await prisma.transactionLine.findMany({
+            include: {
+                account: true,
+                transaction: {
+                    include: { journal: true }
+                }
+            },
+            orderBy: [
+                { account: { code: 'asc' } },
+                { transaction: { date: 'asc' } }
+            ]
+        })
+
+        // Group by account
+        const grouped: any = {}
+        for (const line of lines) {
+            const accId = line.accountId
+            if (!grouped[accId]) {
+                grouped[accId] = {
+                    account: line.account,
+                    lines: [],
+                    totalDebit: 0,
+                    totalCredit: 0
+                }
+            }
+            grouped[accId].lines.push({
+                date: line.transaction.date,
+                journal: line.transaction.journal.code,
+                ref: `ECR-${line.transactionId.substring(0, 6)}`, // Mock ref
+                libelle: line.transaction.description,
+                debit: line.debit,
+                credit: line.credit
+            })
+            grouped[accId].totalDebit += line.debit
+            grouped[accId].totalCredit += line.credit
+        }
+
+        // Convert to array
+        const result = Object.values(grouped).map((g: any) => ({
+            ...g,
+            finalBalance: g.totalDebit - g.totalCredit // Debit is positive in this simple model? Or logic depends on account type. 
+            // Usually Assets/Expenses: Dr - Cr. Liabilities/Income: Cr - Dr.
+            // For Grand Livre display, we usually show Solde Debiteur or Crediteur.
+        }))
+
+        return result
+
+    } catch (error) {
+        console.error("Error getting Grand Livre:", error)
+        return []
     }
 }
 
@@ -2723,3 +3593,87 @@ export async function createCarpaTransaction(data: {
 }
 
 
+export async function generateProcedureSteps(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { client: true }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier non trouvé" }
+
+        const prompt = `Génère un calendrier de procédure juridique détaillé pour le dossier suivant au Sénégal/OHADA :
+        Titre : ${dossier.title}
+        Type de procédure : ${dossier.procedureType || 'CIVIL'}
+        Étape actuelle : ${dossier.stage || 'SAISINE'}
+        Client : ${dossier.client.name}
+
+        Ta mission : Lister les étapes clés à venir (étapes de procédure, délais légaux, actes à signifier, audiences types) pour ce type de dossier.
+        
+        FORMAT JSON ATTENDU :
+        {
+            "steps": [
+                {
+                    "title": "Nom de l'étape",
+                    "description": "Explication de ce qu'il faut faire",
+                    "estimatedTime": "Délai estimé (ex: +15 jours)",
+                    "type": "ACTION" | "AUDIENCE" | "ECHEANCE"
+                }
+            ]
+        }
+        `;
+
+        const completion = await openai?.chat.completions.create({
+            messages: [
+                { role: "system", content: "Tu es un expert en procédure civile et pénale sénégalaise (Code de Procédure Civile, Code de Procédure Pénale, Actes Uniformes OHADA)." },
+                { role: "user", content: prompt }
+            ],
+            model: "deepseek-chat",
+            temperature: 0.3,
+            response_format: { type: "json_object" }
+        });
+
+        const result = completion?.choices[0].message.content;
+        const parsed = result ? JSON.parse(result) : { steps: [] };
+
+        return { success: true, steps: parsed.steps };
+    } catch (e) {
+        console.error("Procedure generation error:", e);
+        return { success: false, message: "Erreur lors de la génération de la procédure" };
+    }
+}
+
+export async function applyProcedureSteps(dossierId: string, steps: any[]) {
+    try {
+        for (const step of steps) {
+            if (step.type === 'ACTION' || step.type === 'ECHEANCE') {
+                await prisma.task.create({
+                    data: {
+                        title: step.title,
+                        description: step.description + (step.estimatedTime ? ` (Délai estimé : ${step.estimatedTime})` : ''),
+                        dossierId: dossierId,
+                        priority: 'NORMAL'
+                    }
+                })
+            } else if (step.type === 'AUDIENCE') {
+                // For audiences, we create an event but since we don't have a fixed date from AI, 
+                // we set it as a milestone or a task to fix the date.
+                await prisma.event.create({
+                    data: {
+                        title: `[A VENIR] ${step.title}`,
+                        description: step.description,
+                        startDate: new Date(), // Placeholder
+                        endDate: new Date(new Date().getTime() + 3600000),
+                        type: 'AUDIENCE',
+                        dossierId: dossierId
+                    }
+                })
+            }
+        }
+        revalidatePath(`/dossiers/${dossierId}`)
+        return { success: true, message: `${steps.length} étapes ajoutées au dossier.` }
+    } catch (e) {
+        console.error("Apply steps error:", e)
+        return { success: false, message: "Erreur lors de l'application des étapes" }
+    }
+}
