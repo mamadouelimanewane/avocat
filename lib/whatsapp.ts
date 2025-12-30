@@ -63,3 +63,18 @@ Maître *${lawyerName}*, une échéance critique a été détectée dans le doss
 
 Veuillez consulter votre interface pour plus de détails.`;
 }
+
+export function formatClientAccessWhatsAppMessage(clientName: string, accessCode: string, portalUrl: string) {
+    return `🔐 *Votre Espace Client LEXAPP* ⚖️
+
+Bonjour *${clientName}*,
+
+Votre cabinet d'avocats a activé votre espace sécurisé.
+
+📍 *Accès :* ${portalUrl}
+🔑 *Code PIN :* ${accessCode}
+
+Utilisez votre adresse email et ce code pour suivre vos dossiers, signer vos documents et régler vos factures en toute sécurité.
+
+À bientôt !`;
+}

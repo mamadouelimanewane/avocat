@@ -1,7 +1,21 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CalendarDays, Gavel, Scale, UserMinus, ShieldAlert } from "lucide-react"
+import { CalendarDays, Gavel, Scale, UserMinus, ShieldAlert, Archive } from "lucide-react"
+import { archiveDossier, getRoles } from "@/app/actions"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "@/components/ui/use-toast"
+import { useEffect, useState } from "react"
+import { prisma } from "@/lib/prisma"
 import { EditDossierDialog } from "./EditDossierDialog"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
@@ -89,7 +103,7 @@ export default function DossierOverview({ dossier }: { dossier: any }) {
                         </span>
                     </div>
 
-                    <div className="pt-4">
+                    <div className="pt-4 space-y-3">
                         <div className="bg-blue-50 p-3 rounded-lg flex items-start">
                             <ShieldAlert className="w-5 h-5 text-blue-600 mr-2 mt-0.5" />
                             <div>
@@ -99,9 +113,81 @@ export default function DossierOverview({ dossier }: { dossier: any }) {
                                 </p>
                             </div>
                         </div>
+
+                        {dossier.status !== 'ARCHIVE' && (
+                            <ArchiveDossierDialog dossierId={dossier.id} />
+                        )}
                     </div>
                 </CardContent>
             </Card>
         </div>
+    )
+}
+
+function ArchiveDossierDialog({ dossierId }: { dossierId: string }) {
+    const [boxes, setBoxes] = useState<any[]>([])
+    const [selectedBoxId, setSelectedBoxId] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+
+    // In a real app, we'd fetch this from a server action
+    // Simulating fetching boxes
+    useEffect(() => {
+        if (isOpen) {
+            // This is a bit hacky to fetch inside a client component without a dedicated hook, 
+            // but for the demo it works.
+            fetch('/api/archives/boxes').then(res => res.json()).then(data => setBoxes(data))
+        }
+    }, [isOpen])
+
+    async function handleArchive() {
+        if (!selectedBoxId) return
+        setLoading(true)
+        const res = await archiveDossier(dossierId, selectedBoxId)
+        setLoading(false)
+        if (res.success) {
+            toast({ title: "Dossier Archivé", description: "Le dossier et ses documents ont été déplacés vers les archives." })
+            window.location.reload()
+        }
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline" className="w-full border-slate-200 text-slate-600 hover:bg-slate-50">
+                    <Archive className="w-4 h-4 mr-2" /> Archiver le Dossier
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Archivage du Dossier</DialogTitle>
+                    <DialogDescription>
+                        Pour archiver ce dossier, vous devez l'attribuer à une boîte d'archives physique.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Sélectionner une Boîte d'Archives</label>
+                        <Select onValueChange={setSelectedBoxId}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Choisir une boîte..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {boxes.map(box => (
+                                    <SelectItem key={box.id} value={box.id}>{box.code} ({box.location})</SelectItem>
+                                ))}
+                                {boxes.length === 0 && <p className="p-2 text-xs text-slate-400">Aucune boîte disponible. Créez-en une dans le module Archives.</p>}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="ghost" onClick={() => setIsOpen(false)}>Annuler</Button>
+                    <Button onClick={handleArchive} disabled={loading || !selectedBoxId} className="bg-slate-900 text-white">
+                        {loading ? 'Archivage...' : 'Confirmer l\'archivage'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

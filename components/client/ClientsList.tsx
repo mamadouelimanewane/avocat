@@ -3,8 +3,10 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { Search, Building2, User, Phone, MapPin, MoreHorizontal, Share2 } from 'lucide-react'
+import { Search, Building2, User, Phone, MapPin, MoreHorizontal, Share2, ShieldCheck, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { sendClientPortalAccess } from '@/app/actions'
+import { toast } from '@/components/ui/use-toast'
 import {
     Table,
     TableBody,
@@ -133,13 +135,16 @@ export function ClientsList({ initialClients }: ClientsListProps) {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem onClick={() => {
-                                                const url = `https://avocatos.app/portal/login?email=${encodeURIComponent(client.email || '')}`
-                                                const text = `Bonjour ${client.name},\n\nVoici votre accès sécurisé au portail du cabinet :\n🔗 ${url}\n\n🔑 Code d'accès : ${client.accessCode || 'Non défini'}`
-                                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+                                            <DropdownMenuItem onClick={async () => {
+                                                const res = await sendClientPortalAccess(client.id)
+                                                if (res.success) {
+                                                    toast({ title: "Accès envoyés", description: "Email et WhatsApp transmis avec succès." })
+                                                } else {
+                                                    toast({ title: "Erreur", description: res.message, variant: "destructive" })
+                                                }
                                             }}>
-                                                <Share2 className="mr-2 h-4 w-4" />
-                                                Envoyer accès WhatsApp
+                                                <ShieldCheck className="mr-2 h-4 w-4" />
+                                                Envoyer accès Portal (Auto)
                                             </DropdownMenuItem>
                                             <DropdownMenuItem className="text-red-600">
                                                 Supprimer

@@ -30,6 +30,7 @@ export function InvoiceActions({ facture }: { facture: any }) {
     const [isPaymentOpen, setIsPaymentOpen] = useState(false)
     const [amount, setAmount] = useState(facture.amountTTC - (facture.payments?.reduce((s: number, p: any) => s + p.amount, 0) || 0))
     const [method, setMethod] = useState("VIREMENT")
+    const [applyBRS, setApplyBRS] = useState(false)
 
     const handleValidate = async () => {
         if (!confirm("Voulez-vous vraiment valider cette facture ? Elle ne sera plus modifiable.")) return
@@ -44,6 +45,7 @@ export function InvoiceActions({ facture }: { facture: any }) {
             factureId: facture.id,
             amount,
             method,
+            applyBRS,
             date: new Date()
         })
         if (res.success) {
@@ -108,6 +110,23 @@ export function InvoiceActions({ facture }: { facture: any }) {
                                     </SelectContent>
                                 </Select>
                             </div>
+                            <div className="flex items-center space-x-2 pt-2">
+                                <input
+                                    type="checkbox"
+                                    id="brs"
+                                    checked={applyBRS}
+                                    onChange={e => setApplyBRS(e.target.checked)}
+                                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <Label htmlFor="brs" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                    Appliquer la retenue BRS (5%)
+                                </Label>
+                            </div>
+                            {applyBRS && (
+                                <p className="text-xs text-slate-500 italic">
+                                    Déduction de {formatCurrency(facture.amountHT * 0.05)} (5% de l'HT) sur le versement client.
+                                </p>
+                            )}
                         </div>
 
                         <DialogFooter>

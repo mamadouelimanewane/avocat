@@ -58,6 +58,27 @@ Le système effectue des sauvegardes automatiques quotidiennes. Résultat attend
 Cette fonction permet de masquer les dossiers clos de la vue active. Résultat attendu : une interface toujours rapide et une attention concentrée sur les affaires génératrices de revenus, tout en gardant un accès aux archives juridiques.
 
 ---
+
+## CHAPITRE 5 : PILOTAGE STRATÉGIQUE ET ANALYTICS
+L'administrateur et les associés disposent d'outils d'aide à la décision avancés.
+
+- **Configuration des Taux Externes vs Internes** : 
+    - *Taux Externe* : Ce que vous facturez au client.
+    - *Taux Interne (Coût de revient)* : Ce que le collaborateur coûte au cabinet par heure.
+    - *Résultat* : Le module **Pilotage** utilise ces variables pour calculer la marge nette réelle par dossier.
+- **Supervision du Recouvrement** : Accédez à la balance agée globale pour identifier les clients chroniquement en retard et adapter la stratégie commerciale.
+
+---
+
+## CHAPITRE 6 : GESTION DU PORTAIL ET DES ARCHIVES
+- **Sécurité du Portail Client** :
+    - Génération des codes PIN : Assurez-vous que chaque client reçoit son code d'accès de manière sécurisée (Remis en main propre ou via SMS crypté).
+    - Contrôle des publications : Seuls les documents marqués comme "SIGNÉS" sont visibles par le client.
+- **Gestion du Cycle de Vie des Archives** :
+    - Définissez les emplacements physiques (Salles, Rayons).
+    - Gérez les droits de "Désarchivage" pour limiter la manipulation des dossiers clos.
+
+---
 **LexPremium - Propulsé par l'IA pour l'Excellence Juridique.**
 *Documentation mise à jour : Décembre 2025*
 *SCP d'Avocats Dia & Associés*

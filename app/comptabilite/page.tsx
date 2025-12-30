@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save, FileText, Users, Search, Printer, Sparkles } from "lucide-react"
+import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save, FileText, Users, Search, Printer, Sparkles, Link as LinkIcon, CheckCircle, BarChart3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -26,14 +26,16 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals, createAccount } from "@/app/actions"
+import { initSyscohadaAccounts, getAccounts, createTransaction, getJournals, createAccount, getDossiers } from "@/app/actions"
 import Link from "next/link"
 import { ExportButton } from "@/components/ui/ExportButton"
 import { AccountingAssistantDialog } from "@/components/comptabilite/AccountingAssistantDialog"
+import { AccountingOCRDialog } from "@/components/comptabilite/AccountingOCRDialog"
 
 export default function AccountingPage() {
     const [accounts, setAccounts] = useState<any[]>([])
     const [journals, setJournals] = useState<any[]>([])
+    const [dossiers, setDossiers] = useState<any[]>([])
     const [isTransactionOpen, setIsTransactionOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
 
@@ -41,6 +43,7 @@ export default function AccountingPage() {
     const [desc, setDesc] = useState("")
     const [date, setDate] = useState(new Date().toISOString().split('T')[0])
     const [selectedJournal, setSelectedJournal] = useState("")
+    const [selectedDossier, setSelectedDossier] = useState("")
     const [line1, setLine1] = useState({ accountId: "", debit: 0, credit: 0 })
     const [line2, setLine2] = useState({ accountId: "", debit: 0, credit: 0 })
 
@@ -50,7 +53,7 @@ export default function AccountingPage() {
 
     const loadData = async () => {
         setIsLoading(true)
-        const [accRes, jnlRes] = await Promise.all([getAccounts(), getJournals()])
+        const [accRes, jnlRes, dosRes] = await Promise.all([getAccounts(), getJournals(), getDossiers()])
 
         if (accRes.length === 0) {
             await initSyscohadaAccounts()
@@ -60,6 +63,7 @@ export default function AccountingPage() {
             setAccounts(accRes)
         }
         setJournals(jnlRes)
+        setDossiers(dosRes)
         setIsLoading(false)
     }
 
@@ -70,10 +74,10 @@ export default function AccountingPage() {
         }
 
         const lines = []
-        if (line1.debit || line1.credit) lines.push(line1)
-        if (line2.debit || line2.credit) lines.push(line2)
+        if (line1.accountId && (line1.debit || line1.credit)) lines.push(line1)
+        if (line2.accountId && (line2.debit || line2.credit)) lines.push(line2)
 
-        const res = await createTransaction(desc, new Date(date), lines, selectedJournal)
+        const res = await createTransaction(desc, new Date(date), lines, selectedJournal, 'DRAFT', (selectedDossier && selectedDossier !== 'NONE') ? selectedDossier : undefined)
         if (res.success) {
             setIsTransactionOpen(false)
             loadData() // Refresh balances
@@ -81,6 +85,7 @@ export default function AccountingPage() {
             // Reset form
             setDesc("")
             setSelectedJournal("")
+            setSelectedDossier("")
             setLine1({ accountId: "", debit: 0, credit: 0 })
             setLine2({ accountId: "", debit: 0, credit: 0 })
         } else {
@@ -106,10 +111,10 @@ export default function AccountingPage() {
         setIsTransactionOpen(true)
     }
 
-    const totalActif = accounts.filter(a => a.type === 'ACTIF').reduce((s, a) => s + a.balance, 0)
-    const totalPassif = accounts.filter(a => a.type === 'PASSIF').reduce((s, a) => s + a.balance, 0)
-    const totalProduit = accounts.filter(a => a.type === 'PRODUIT').reduce((s, a) => s + a.balance, 0)
-    const totalCharge = accounts.filter(a => a.type === 'CHARGE').reduce((s, a) => s + a.balance, 0)
+    const totalActif = accounts.filter(a => a.type === 'ACTIF').reduce((s: number, a: any) => s + a.balance, 0)
+    const totalPassif = accounts.filter(a => a.type === 'PASSIF').reduce((s: number, a: any) => s + a.balance, 0)
+    const totalProduit = accounts.filter(a => a.type === 'PRODUIT').reduce((s: number, a: any) => s + a.balance, 0)
+    const totalCharge = accounts.filter(a => a.type === 'CHARGE').reduce((s: number, a: any) => s + a.balance, 0)
     const resultat = totalProduit - totalCharge
 
     return (
@@ -140,6 +145,22 @@ export default function AccountingPage() {
                             <Printer className="mr-2 h-4 w-4" /> Éditions
                         </Button>
                     </Link>
+                    <Link href="/comptabilite/lettrage">
+                        <Button variant="secondary" className="bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200" title="Lettrage">
+                            <LinkIcon className="mr-2 h-4 w-4" /> Lettrage
+                        </Button>
+                    </Link>
+                    <Link href="/comptabilite/rapprochement">
+                        <Button variant="secondary" className="bg-orange-50 text-orange-700 hover:bg-orange-100 border border-orange-200" title="Rapprochement">
+                            <CheckCircle className="mr-2 h-4 w-4" /> Rapprochement
+                        </Button>
+                    </Link>
+                    <Link href="/comptabilite/analytique">
+                        <Button variant="secondary" className="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200" title="Analytique">
+                            <BarChart3 className="mr-2 h-4 w-4" /> Analytique
+                        </Button>
+                    </Link>
+                    <AccountingOCRDialog />
                     <Button variant="outline" onClick={loadData}><RefreshCcw className="mr-2 h-4 w-4" /> Actualiser</Button>
                     <ExportButton
                         data={accounts.map(a => ({
@@ -232,6 +253,20 @@ export default function AccountingPage() {
                                 <div>
                                     <Label>Libellé de l'opération</Label>
                                     <Input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Ex: Paiement Facture F2024-001" />
+                                </div>
+                                <div>
+                                    <Label>Affectation Analytique (Dossier)</Label>
+                                    <Select onValueChange={setSelectedDossier} value={selectedDossier}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Sénlectionner un dossier (optionnel)" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="NONE">Aucun</SelectItem>
+                                            {dossiers.map(d => (
+                                                <SelectItem key={d.id} value={d.id}>{d.reference} - {d.title}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
 
                                 {/* Line 1 */}

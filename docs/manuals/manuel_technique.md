@@ -48,6 +48,20 @@ Dans une profession où le secret est la règle, la technique se doit d'être au
 Le déploiement est assuré par l'infrastructure mondiale de **Vercel**. Résultat attendu : le logiciel bénéficie d'une disponibilité de 99,9%, avec des serveurs stratégiquement placés pour offrir une latence minimale en Afrique.
 
 ---
+
+## CHAPITRE 4 : ARCHITECTURE DU PORTAIL ET ANALYTICS
+- **Portail Client (Isolé)** : Le portail est conçu comme une application "Read-Only" sécurisée. L'authentification repose sur un couple Email / AccessCode (PIN) vérifié en temps réel via Prisma. La session est maintenue localement pour une réactivité maximale.
+- **Engine d'Analytics de Rentabilité** : Les indicateurs de pilotage sont calculés à la volée via des agrégations complexes regroupant `Factures`, `Payments`, `Expenses` et `TimeEntries`. La formule de marge incorpore le `internalHourlyRate` défini globalement dans les paramètres du cabinet.
+
+---
+
+## CHAPITRE 5 : GESTION DE L'ARCHIVAGE ET CYCLE DE VIE
+- **Module d'Archivage Physique et Numérique** : L'archivage d'un dossier déclenche une double action :
+    1.  Mise à jour du statut du `Dossier` vers `ARCHIVE`.
+    2.  Migration des `Documents` liés vers un `ArchiveBoxId` spécifique, avec horodatage immuable de l'archivage.
+- **Registre Technique** : Une table `ArchiveBox` centralise les méta-données de localisation physique, permettant un lien direct entre le coffre-fort physique et le document numérique.
+
+---
 **LexPremium - L'Ingénierie de pointe au service du Droit.**
 *Documentation mise à jour : Décembre 2025*
 *SCP d'Avocats Dia & Associés*

@@ -120,25 +120,27 @@ Ce module assure la rigueur financière nécessaire à la pérennité de votre c
 
 ### 5.2 Actions & Résultats Attendus
 - **Bouton *Saisir Écriture*** : Ouvre l'interface de saisie en partie double. Résultat attendu : une fois validée, l'écriture met à jour instantanément votre Grand Livre et votre Balance sans aucune autre manipulation.
-- **Bouton *Exporter Balance*** : Génère au format Excel l'intégralité de vos comptes. Résultat : un document prêt à être transmis à votre expert-comptable pour les états financiers de fin d'année.
-- **NOUVEAU : Module *Éditions Comptables*** : Générez et imprimez vos états financiers officiels en un clic :
-    - *Balance Générale* : L'état complet de tous vos comptes (6 colonnes).
-    - *Grand Livre* : Le détail chronologique de toutes les écritures par compte.
-    - *Bilan & Compte de Résultat* : Vos états de synthèse annuels formatés selon le SYSCOHADA Révisé.
-- **Cliquer sur l'onglet *Bilan (OHADA)*** : Le logiciel réorganise vos données comptables pour présenter une photographie fidèle de votre patrimoine, séparant ce que le cabinet possède (Actif) de ce qu'il doit (Passif).
+- **NOUVEAU - Gestion des Débours** : 
+    - Enregistrez un "Frais" en précisant le type **Débours**.
+    - *Automatisme* : Le système génère l'écriture comptable (Crédit Banque / Débit Compte 461) et marque le frais comme "À Facturer".
+    - *Refacturation* : Dans le dossier, un bouton **Refacturer** permet de générer une facture client incluant le débours en un clic.
+- **NOUVEAU - Balance Agée & Relances** : 
+    - Visualisez l'ancienneté de vos créances clients (0-30j, 30-60j, etc.).
+    - Cliquez sur **Relancer** : Un email professionnel est envoyé au client avec le récapitulatif de ses factures impayées.
+- **NOUVEAU - Rapport TVA (Sénégal/OHADA)** : Calculez automatiquement votre TVA collectée et déductible pour vos déclarations mensuelles.
 
 ---
 
 ## CHAPITRE 6 : CARPA ET FONDS TIERS
-La gestion des fonds de tiers est une obligation déontologique que LexPremium simplifie et sécurise.
+La gestion des fonds de tiers est une obligation déontologique que LexPremium simplifie et sécurise grâce à une intégration comptable totale.
 
 ### 6.1 Informations Affichées
-- *Solde CARPA Global* : Affiche le montant total des fonds clients actuellement sous votre responsabilité, offrant une vue transparente pour les audits du Bâtonnat.
+- *Solde CARPA Global* : Affiche le montant total des fonds clients actuellement sous votre responsabilité.
 - *Registre des Dépôts* : Liste chronologique de tous les mouvements de fonds rattachés à chaque dossier.
 
 ### 6.2 Actions & Résultats Attendus
-- **Bouton *Nouveau Dépôt*** : Enregistre l'encaissement d'un chèque ou d'un virement destiné à un tiers. Résultat : les fonds sont isolés du patrimoine du cabinet et liés exclusivement au dossier bénéficiaire.
-- **Bouton *Générer Attestation*** : Produit un document PDF officiel de confirmation de dépôt. Résultat : vous disposez d'une preuve formelle à remettre à votre client ou à une autorité judiciaire.
+- **NOUVEAU - Journalisation Automatique** : Tout mouvement (Dépôt ou Retrait) enregistré dans le module CARPA d'un dossier génère **instantanément** une écriture dans votre journal de banque (Compte 521). Plus besoin de double saisie.
+- **Bouton *Générer Attestation*** : Produit un document PDF officiel de confirmation de dépôt.
 
 ---
 
@@ -165,6 +167,34 @@ Situé en permanence en bas de votre menu latéral, cet outil capture la valeur 
 ### 8.2 Actions & Résultats Attendus
 - **Cliquer sur le bouton *Play*** : Démarre le décompte du temps. Vous pouvez alors effectuer votre recherche ou votre rédaction sereinement.
 - **Cliquer sur le bouton *Stop*** : Met fin à l'enregistrement et ouvre une fenêtre de validation. Résultat attendu : le temps est automatiquement comptabilisé comme "élément facturable" dans la fiche du client, prêt à être converti en honoraires sur la prochaine facture.
+
+---
+
+## CHAPITRE 9 : PORTAIL CLIENT SÉCURISÉ
+Offrez à vos clients une expérience moderne et transparente grâce à leur espace dédié.
+
+- **Accès Sécurisé** : Vos clients se connectent via leur email et un **Code PIN unique** généré par le cabinet.
+- **Suivi en temps réel** : Ils consultent l'état d'avancement de leurs dossiers et les prochaines audiences.
+- **GED Client** : Ils téléchargent uniquement les documents que vous avez marqués comme "SIGNÉS".
+- **Paiement en ligne** : Ils visualisent leurs factures et peuvent procéder au règlement (via intégration mobile money/carte).
+
+---
+
+## CHAPITRE 10 : DASHBOARD DE PILOTAGE (POUR ASSOCIÉS)
+Le module *Pilotage* transforme vos données en décisions stratégiques.
+
+- **Analyse de Rentabilité** : Visualisez la marge nette par dossier (CA encaissé vs Coût du temps + Débours).
+- **KPI Financiers** : Suivez le taux de recouvrement, la valeur moyenne de l'heure travaillée et l'évolution mensuelle de la marge globale.
+- **Top 10 Rentabilité** : Identifiez immédiatement les dossiers les plus profitables et ceux nécessitant une réévaluation de vos honoraires.
+
+---
+
+## CHAPITRE 11 : ARCHIVAGE LÉGAL ET PHYSIQUE
+Assurez la conservation de vos dossiers clôturés conformément aux exigences légales.
+
+- **Boîtes d'Archives** : Créez des boîtes numériques correspondant à vos boîtes physiques (Code, Emplacement).
+- **Archivage en 1 clic** : Clôturez un dossier et liez-le à une boîte d'archive. Tous les documents sont verrouillés et localisés.
+- **Registre de Destruction** : Programmez et suivez les dates de destruction légale de vos archives.
 
 ---
 **LexPremium - Le Droit, la Technologie et l'IA réunis pour l'excellence.**

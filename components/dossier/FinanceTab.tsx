@@ -25,6 +25,20 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import { createCarpaTransaction, reInvoiceExpense } from '@/app/actions'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { toast } from '@/components/ui/use-toast'
+import { Loader2 } from 'lucide-react'
 
 interface FinanceTabProps {
     dossierId: string
@@ -50,12 +64,16 @@ export default function FinanceTab({ dossierId, carpaTransactions = [], expenses
                         <p className="text-sm text-slate-500">Solde actuel: <span className={`font-bold ${carpaBalance >= 0 ? 'text-slate-900' : 'text-red-600'}`}>{formatCurrency(carpaBalance)}</span></p>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                            <TrendingDown className="mr-2 h-4 w-4 text-red-600" /> Retrait
-                        </Button>
-                        <Button variant="default" size="sm" className="bg-indigo-600 hover:bg-indigo-700">
-                            <TrendingUp className="mr-2 h-4 w-4" /> Dépôt
-                        </Button>
+                        <CarpaActionDialog
+                            dossierId={dossierId}
+                            type="RETRAIT"
+                            onSuccess={() => window.location.reload()}
+                        />
+                        <CarpaActionDialog
+                            dossierId={dossierId}
+                            type="DEPOT"
+                            onSuccess={() => window.location.reload()}
+                        />
                     </div>
                 </div>
 
@@ -145,7 +163,23 @@ export default function FinanceTab({ dossierId, carpaTransactions = [], expenses
                                         {formatCurrency(exp.amount)}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        {exp.status === 'TO_BILL' && exp.type === 'DEBOURS' && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="h-8 text-[10px] border-amber-200 text-amber-700 hover:bg-amber-50"
+                                                onClick={async () => {
+                                                    const res = await reInvoiceExpense(exp.id)
+                                                    if (res.success) {
+                                                        toast({ title: "Succès", description: "Débours refacturé." })
+                                                        window.location.reload()
+                                                    }
+                                                }}
+                                            >
+                                                Refacturer
+                                            </Button>
+                                        )}
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 ml-1">
                                             <MoreHorizontal className="h-4 w-4 text-slate-400" />
                                         </Button>
                                     </TableCell>
@@ -156,5 +190,79 @@ export default function FinanceTab({ dossierId, carpaTransactions = [], expenses
                 </div>
             </div>
         </div>
+    )
+}
+
+function CarpaActionDialog({ dossierId, type, onSuccess }: { dossierId: string, type: 'DEPOT' | 'RETRAIT', onSuccess: () => void }) {
+    const [loading, setLoading] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+
+    async function handleAction(formData: FormData) {
+        const amount = parseFloat(formData.get('amount') as string)
+        if (isNaN(amount) || amount <= 0) return
+
+        setLoading(true)
+        const res = await createCarpaTransaction({
+            dossierId,
+            amount: type === 'DEPOT' ? amount : -amount,
+            type,
+            description: formData.get('description') as string,
+            beneficiary: formData.get('beneficiary') as string || undefined,
+            reference: formData.get('reference') as string || undefined
+        })
+        setLoading(false)
+
+        if (res.success) {
+            toast({ title: "Succès", description: `Transaction CARPA de ${type} enregistrée.` })
+            setIsOpen(false)
+            onSuccess()
+        } else {
+            toast({ title: "Erreur", description: res.message, variant: "destructive" })
+        }
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button variant={type === 'RETRAIT' ? "outline" : "default"} size="sm" className={type === 'DEPOT' ? "bg-indigo-600 hover:bg-indigo-700" : ""}>
+                    {type === 'RETRAIT' ? <TrendingDown className="mr-2 h-4 w-4 text-red-600" /> : <TrendingUp className="mr-2 h-4 w-4" />}
+                    {type === 'RETRAIT' ? 'Retrait' : 'Dépôt'}
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{type === 'DEPOT' ? 'Dépôt de Fonds Tiers' : 'Retrait / Paiement CARPA'}</DialogTitle>
+                    <DialogDescription>
+                        Cette opération sera enregistrée dans le compte fonds tiers du dossier et journalisée en comptabilité.
+                    </DialogDescription>
+                </DialogHeader>
+                <form action={handleAction} className="space-y-4 py-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="amount">Montant (FCFA)</Label>
+                        <Input id="amount" name="amount" type="number" placeholder="0" required />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="description">Libellé de l'opération</Label>
+                        <Input id="description" name="description" placeholder="Ex: Consignation pour expertise" required />
+                    </div>
+                    {type === 'RETRAIT' && (
+                        <div className="grid gap-2">
+                            <Label htmlFor="beneficiary">Bénéficiaire</Label>
+                            <Input id="beneficiary" name="beneficiary" placeholder="Nom de la partie ou du tiers" required />
+                        </div>
+                    )}
+                    <div className="grid gap-2">
+                        <Label htmlFor="reference">Référence (Chèque, Virement...)</Label>
+                        <Input id="reference" name="reference" placeholder="Optionnel" />
+                    </div>
+                    <DialogFooter>
+                        <Button type="submit" disabled={loading} className={type === 'DEPOT' ? "bg-indigo-600" : "bg-red-600 hover:bg-red-700"}>
+                            {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
+                            Confirmer le {type.toLowerCase()}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     )
 }

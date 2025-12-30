@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Save } from 'lucide-react'
+import { Save, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -23,7 +23,8 @@ export default function AdminSettingsPage({ settings }: { settings: any }) {
         legalForm: settings?.legalForm || 'INDIVIDUEL',
         tradeRegister: settings?.tradeRegister || '',
         ninea: settings?.ninea || '',
-        capital: settings?.capital || ''
+        capital: settings?.capital || '',
+        internalHourlyRate: settings?.internalHourlyRate || 50
     })
 
     const [taxConfig, setTaxConfig] = useState({
@@ -131,12 +132,22 @@ export default function AdminSettingsPage({ settings }: { settings: any }) {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label>Taux Horaire Standard (FCFA/h)</Label>
-                            <Input type="number" value={formData.defaultHourlyRate} onChange={e => setFormData({ ...formData, defaultHourlyRate: e.target.value })} />
+                            <Input type="number" value={formData.defaultHourlyRate} onChange={e => setFormData({ ...formData, defaultHourlyRate: parseFloat(e.target.value) })} />
                         </div>
                         <div className="grid gap-2">
                             <Label>TVA Globale (%)</Label>
-                            <Input type="number" value={formData.tvaRate} onChange={e => setFormData({ ...formData, tvaRate: e.target.value })} />
+                            <Input type="number" value={formData.tvaRate} onChange={e => setFormData({ ...formData, tvaRate: parseFloat(e.target.value) })} />
                         </div>
+                    </div>
+                    <div className="grid gap-2 pt-2 border-t text-indigo-700">
+                        <Label className="font-bold flex items-center"><TrendingUp className="mr-2 h-3 w-3" /> Taux Horaire Interne (Analytique)</Label>
+                        <Input
+                            type="number"
+                            value={formData.internalHourlyRate}
+                            onChange={e => setFormData({ ...formData, internalHourlyRate: parseFloat(e.target.value) })}
+                            className="border-indigo-200"
+                        />
+                        <p className="text-[10px] text-slate-500 italic">Ce taux est utilisé pour calculer la rentabilité des dossiers (Coût du temps passé).</p>
                     </div>
                 </CardContent>
             </Card>

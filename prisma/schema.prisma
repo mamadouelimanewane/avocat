@@ -108,6 +108,7 @@ model Dossier {
   
   events      Event[]
   documents   Document[]
+  accountingLines TransactionLine[]
   factures    Facture[]
   tasks       Task[]
   timeEntries TimeEntry[]
@@ -116,7 +117,6 @@ model Dossier {
   meetings    Meeting[]
   communications CommunicationLog[]
   
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -382,6 +382,7 @@ model CabinetSettings {
   
   defaultHourlyRate Float @default(200.0)
   tvaRate           Float @default(18.0) // 18% Senegal
+  internalHourlyRate Float @default(50.0) // Internal cost for analytics
   
 
   updatedAt DateTime @updatedAt
@@ -437,6 +438,26 @@ model TransactionLine {
   
   accountId     String   @db.ObjectId
   account       Account     @relation(fields: [accountId], references: [id])
+
+  letter        String?  // For lettrage (e.g. "AA")
+  reconciled    Boolean  @default(false)
+  reconciledAt  DateTime?
+  
+  dossierId     String?  @db.ObjectId
+  dossier       Dossier? @relation(fields: [dossierId], references: [id])
+}
+
+model BankStatementLine {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  date        DateTime
+  description String
+  amount      Float    // Positive for credit/deposit, Negative for debit/withdrawal
+  reference   String?
+  reconciled  Boolean  @default(false)
+  
+  transactionLineId String? @db.ObjectId
+  
+  createdAt   DateTime @default(now())
 }
 
 model FiscalYear {

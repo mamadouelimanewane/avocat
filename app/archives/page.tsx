@@ -1,128 +1,115 @@
 
-import { PrismaClient } from '@prisma/client'
-import { ArchiveSearch } from '@/components/archives/ArchiveSearch'
-import { ArchiveStats } from '@/components/archives/ArchiveStats'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Archive, Box, Search, FileText } from 'lucide-react'
-import { Suspense } from 'react'
+import { prisma } from '@/lib/prisma'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Archive, Box, MapPin, Search, Plus, ExternalLink } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { NewArchiveBoxDialog } from '@/components/archives/NewArchiveBoxDialog'
 
-const prisma = new PrismaClient()
-
-async function getArchiveData(query: string = '') {
-    // Basic stats
-    const totalBoxes = await prisma.archiveBox.count()
-    const archivedDocs = await prisma.document.count({ where: { status: 'ARCHIVED' } })
-
-    // Search logic (mocking "Solr" power with Prisma filters for now)
-    const filters: any = { status: 'ARCHIVED' }
-    if (query) {
-        filters.OR = [
-            { name: { contains: query, mode: 'insensitive' } },
-            { ocrContent: { contains: query, mode: 'insensitive' } },
-            { archiveBox: { code: { contains: query, mode: 'insensitive' } } },
-            { dossier: { title: { contains: query, mode: 'insensitive' } } }
-        ]
-    }
-
-    const results = await prisma.document.findMany({
-        where: filters,
-        include: {
-            dossier: { select: { reference: true, client: { select: { name: true } } } },
-            archiveBox: true
-        },
-        take: 20
+export default async function ArchivesPage() {
+    const boxes = await prisma.archiveBox.findMany({
+        include: { _count: { select: { documents: true } } },
+        orderBy: { code: 'asc' }
     })
-
-    return { totalBoxes, archivedDocs, results }
-}
-
-export default async function ArchivesPage({ searchParams }: { searchParams: { q?: string } }) {
-    const query = searchParams.q || ''
-    const { totalBoxes, archivedDocs, results } = await getArchiveData(query)
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-3">
-                        <Archive className="h-8 w-8 text-amber-600" />
-                        Système d'Archivage
+                    <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
+                        <Archive className="h-8 w-8 text-slate-700" /> Gestion des Archives
                     </h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">
-                        Gestion physique et numérique avec recherche FullText (IA).
-                    </p>
+                    <p className="text-slate-500">Traçabilité physique et numérique des dossiers clôturés.</p>
                 </div>
+                <NewArchiveBoxDialog />
             </div>
 
-            <ArchiveStats totalBoxes={totalBoxes} totalDocs={archivedDocs} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="border-slate-200">
+                    <CardHeader className="pb-2">
+                        <CardDescription className="text-xs uppercase font-bold">Total Boîtes</CardDescription>
+                        <CardTitle className="text-3xl">{boxes.length}</CardTitle>
+                    </CardHeader>
+                </Card>
+                <Card className="border-slate-200">
+                    <CardHeader className="pb-2">
+                        <CardDescription className="text-xs uppercase font-bold">Localisation Principale</CardDescription>
+                        <CardTitle className="text-3xl flex items-center gap-2">
+                            <MapPin className="h-6 w-6 text-rose-500" /> Salle A
+                        </CardTitle>
+                    </CardHeader>
+                </Card>
+                <Card className="border-indigo-100 bg-indigo-50/30">
+                    <CardHeader className="pb-2">
+                        <CardDescription className="text-xs uppercase font-bold text-indigo-600">Prochaine Destruction</CardDescription>
+                        <CardTitle className="text-3xl text-indigo-700">31/12/2030</CardTitle>
+                    </CardHeader>
+                </Card>
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Search Sidebar */}
-                <div className="lg:col-span-1 space-y-4">
-                    <Card className="bg-slate-50 dark:bg-slate-900 border-indigo-200/50">
-                        <CardHeader>
-                            <CardTitle className="text-base flex items-center gap-2">
-                                <Search className="h-4 w-4" /> Moteur de Recherche
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-xs text-slate-500 mb-4">
-                                Indexation Lucene/Solr active. Recherche sémantique disponible.
-                            </p>
-                            <Suspense fallback={<div className="h-20 animate-pulse bg-slate-100 dark:bg-slate-800 rounded" />}>
-                                <ArchiveSearch />
-                            </Suspense>
-                        </CardContent>
-                    </Card>
-                </div>
+            <Card className="border-slate-200 shadow-sm overflow-hidden">
+                <CardHeader className="bg-slate-50 border-b flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle className="text-sm font-bold uppercase text-slate-500">Inventaire des boîtes</CardTitle>
+                    </div>
+                    <div className="relative w-64">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+                        <Input placeholder="Rechercher une boîte..." className="pl-9 h-9 text-xs" />
+                    </div>
+                </CardHeader>
+                <Table>
+                    <TableHeader className="bg-slate-50/50">
+                        <TableRow>
+                            <TableHead className="w-[150px]">Code Boîte</TableHead>
+                            <TableHead>Emplacement</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead>Contenu</TableHead>
+                            <TableHead>Statut</TableHead>
+                            <TableHead className="text-right">Action</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {boxes.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={6} className="h-40 text-center">
+                                    <Box className="h-12 w-12 text-slate-200 mx-auto mb-2" />
+                                    <p className="text-slate-400">Aucune boîte d'archives enregistrée.</p>
+                                </TableCell>
+                            </TableRow>
+                        ) : boxes.map((box: any) => (
+                            <TableRow key={box.id} className="hover:bg-slate-50 transition-colors">
+                                <TableCell className="font-mono font-bold text-indigo-600">{box.code}</TableCell>
+                                <TableCell className="text-sm flex items-center gap-1">
+                                    <MapPin className="h-3 w-3 text-slate-400" /> {box.location}
+                                </TableCell>
+                                <TableCell className="text-xs text-slate-500 italic max-w-xs truncate">{box.description}</TableCell>
+                                <TableCell>
+                                    <Badge variant="secondary" className="bg-slate-100">{box._count.documents} actes / documents</Badge>
+                                </TableCell>
+                                <TableCell>
+                                    <Badge variant={box.status === 'OPEN' ? 'success' : 'default'}>{box.status}</Badge>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    <Button variant="ghost" size="sm" className="h-8 text-xs">
+                                        Voir Contenu <ExternalLink className="ml-2 h-3 w-3" />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </Card>
 
-                {/* Results Area */}
-                <div className="lg:col-span-3 space-y-4">
-                    <Card>
-                        <CardHeader className="border-b pb-3">
-                            <CardTitle className="text-sm font-medium">
-                                Résultats pertinents ({results.length})
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            {!results.length ? (
-                                <div className="p-10 text-center text-slate-400">
-                                    <Search className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                                    Aucun document archivé ne correspond à votre recherche.
-                                </div>
-                            ) : (
-                                <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                                    {results.map(doc => (
-                                        <div key={doc.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors flex items-start gap-4">
-                                            <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded">
-                                                <FileText className="h-5 w-5 text-slate-500" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex justify-between">
-                                                    <h4 className="font-medium text-blue-700 dark:text-blue-400 hover:underline cursor-pointer">
-                                                        {doc.name}
-                                                    </h4>
-                                                    <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full flex items-center gap-1">
-                                                        <Box className="h-3 w-3" />
-                                                        {doc.archiveBox?.code || 'En attente de boîte'}
-                                                    </span>
-                                                </div>
-                                                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                                                    Dossier: <span className="font-semibold">{doc.dossier.reference}</span> • Client: {doc.dossier.client.name}
-                                                </p>
-                                                {/* Simulated Content Snippet (Highlight) */}
-                                                {query && doc.ocrContent && (
-                                                    <div className="mt-2 text-xs text-slate-500 bg-yellow-50 dark:bg-yellow-900/10 p-2 rounded border border-yellow-100 dark:border-yellow-900/30">
-                                                        ...{doc.ocrContent.substring(0, 150)}...
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+                <Box className="h-5 w-5 text-amber-600 mt-0.5" />
+                <div>
+                    <p className="text-sm font-bold text-amber-800">Note de procédure</p>
+                    <p className="text-xs text-amber-700 italic">
+                        Lorsqu'un dossier est clôturé, n'oubliez pas d'imprimer l'inventaire des pièces et de le placer dans une boîte physique.
+                        Scannez ensuite le code de la boîte pour lier le dossier numériquement.
+                    </p>
                 </div>
             </div>
         </div>

@@ -241,3 +241,108 @@ export function procedureStepEmailTemplate(lawyerName: string, dossierTitle: str
     </html>
     `
 }
+
+export function paymentReminderEmailTemplate(clientName: string, invoiceNumber: string, remainingAmount: number, dueDate: string) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #fef2f2; margin: 0; padding: 20px; }
+            .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1); border-top: 6px solid #dc2626; }
+            .header { padding: 30px; text-align: center; }
+            .header h1 { margin: 0; font-size: 24px; color: #dc2626; }
+            .content { padding: 30px; }
+            .reminder-box { background: #fff1f2; border: 1px solid #fecdd3; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
+            .reminder-box h2 { margin: 0 0 10px 0; color: #9f1239; font-size: 20px; }
+            .reminder-box p { margin: 5px 0; color: #475569; }
+            .amount { font-size: 28px; font-weight: bold; color: #dc2626; margin: 10px 0; }
+            .btn { display: inline-block; background: #dc2626; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 20px; }
+            .footer { text-align: center; padding: 20px; color: #94a3b8; font-size: 12px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🔔 RAPPEL DE PAIEMENT</h1>
+            </div>
+            <div class="content">
+                <p>Bonjour <strong>${clientName}</strong>,</p>
+                <p>Sauf erreur de notre part, le paiement de la facture suivante n'a pas encore été intégralement reçu par notre cabinet :</p>
+                
+                <div class="reminder-box">
+                    <h2>Facture N° ${invoiceNumber}</h2>
+                    <p>Échéance initiale : ${dueDate}</p>
+                    <p>Solde restant à régler :</p>
+                    <div class="amount">${remainingAmount.toLocaleString()} FCFA</div>
+                </div>
+                
+                <p>Nous vous remercions de bien vouloir régulariser cette situation dans les meilleurs délais.</p>
+                
+                <p style="text-align: center;">
+                    <a href="https://avocatos.app/portal/login" class="btn">Régler en ligne</a>
+                </p>
+                
+                <p style="margin-top: 30px; font-size: 14px; color: #64748b;">
+                    Si votre règlement a été envoyé récemment, merci de ne pas tenir compte de ce rappel.
+                </p>
+            </div>
+            <div class="footer">
+                LexPremium - Cabinet d'Avocats<br>
+                Service de recouvrement amiable.
+            </div>
+        </div>
+    </body>
+    </html>
+    `
+}
+
+export function clientAccessEmailTemplate(clientName: string, accessCode: string, portalUrl: string) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }
+            .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1); border-top: 6px solid #0f172a; }
+            .header { background: #0f172a; padding: 20px; text-align: center; color: white; }
+            .header h1 { margin: 0; font-size: 20px; }
+            .content { padding: 30px; }
+            .access-box { background: #f1f5f9; border-radius: 8px; padding: 25px; margin: 20px 0; border: 1px dashed #cbd5e1; text-align: center; }
+            .pin-code { font-size: 32px; font-weight: 800; color: #0f172a; letter-spacing: 4px; margin: 15px 0; }
+            .btn { display: inline-block; background: #0f172a; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 20px; }
+            .footer { text-align: center; padding: 20px; color: #94a3b8; font-size: 12px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🔐 Accès à votre Espace Client</h1>
+            </div>
+            <div class="content">
+                <p>Bonjour <strong>${clientName}</strong>,</p>
+                <p>Votre cabinet d'avocats a le plaisir de vous informer que votre espace client personnel est désormais activé.</p>
+                
+                <div class="access-box">
+                    <p style="margin:0; font-size: 14px; color: #64748b;">Votre Code de Connexion Unique :</p>
+                    <div class="pin-code">${accessCode}</div>
+                    <p style="margin:0; font-size: 12px; color: #94a3b8;">Utilisez votre adresse email et ce code pour vous connecter.</p>
+                </div>
+                
+                <p style="text-align: center;">
+                    <a href="${portalUrl}" class="btn">Accéder au Portail</a>
+                </p>
+                
+                <p style="font-size: 13px; color: #64748b; margin-top: 30px;">
+                    Cet espace vous permet de suivre vos dossiers, télécharger vos documents signés et régler vos factures en toute sécurité.
+                </p>
+            </div>
+            <div class="footer">
+                LexPremium - Solution de Gestion Juridique<br>
+                Service sécurisé pour les clients du cabinet.
+            </div>
+        </div>
+    </body>
+    </html>
+    `
+}
