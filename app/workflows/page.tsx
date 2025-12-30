@@ -3,8 +3,8 @@ export const dynamic = 'force-dynamic'
 
 import { PrismaClient } from '@prisma/client'
 import { KanbanBoard } from '@/components/workflow/KanbanBoard'
-import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { AddColumnButton } from '@/components/workflow/AddColumnButton'
+import { getClients } from '@/app/actions'
 
 const prisma = new PrismaClient()
 
@@ -22,7 +22,10 @@ async function getData() {
 }
 
 export default async function WorkflowPage() {
-    const columns = await getData()
+    const columnsData = getData()
+    const clientsData = getClients()
+
+    const [columns, clients] = await Promise.all([columnsData, clientsData])
 
     return (
         <div className="h-[calc(100vh-8rem)] flex flex-col">
@@ -31,13 +34,11 @@ export default async function WorkflowPage() {
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workflow Dossiers</h1>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">Vue Kanban interactive pour le suivi des affaires.</p>
                 </div>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" /> Nouvelle Colonne
-                </Button>
+                <AddColumnButton />
             </div>
 
             <div className="flex-1 overflow-x-auto overflow-y-hidden pb-4">
-                <KanbanBoard initialColumns={columns} />
+                <KanbanBoard initialColumns={columns} clients={clients} />
             </div>
         </div>
     )

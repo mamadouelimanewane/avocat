@@ -2459,6 +2459,47 @@ export async function updateDossierStatus(dossierId: string, columnId: string) {
     }
 }
 
+export async function createKanbanColumn(title: string) {
+    try {
+        const lastCol = await prisma.kanbanColumn.findFirst({
+            orderBy: { order: 'desc' }
+        })
+        const newOrder = (lastCol?.order ?? -1) + 1
+
+        await prisma.kanbanColumn.create({
+            data: {
+                title,
+                order: newOrder,
+                color: '#4f46e5'
+            }
+        })
+        revalidatePath('/workflows')
+        return { success: true }
+    } catch (e) {
+        console.error('Create column error:', e)
+        return { success: false }
+    }
+}
+
+export async function deleteKanbanColumn(columnId: string) {
+    try {
+        // Move dossiers back to no column or first column? 
+        // For safety, we just disconnect them
+        await prisma.dossier.updateMany({
+            where: { columnId },
+            data: { columnId: null }
+        })
+
+        await prisma.kanbanColumn.delete({
+            where: { id: columnId }
+        })
+        revalidatePath('/workflows')
+        return { success: true }
+    } catch (e) {
+        return { success: false }
+    }
+}
+
 export async function analyzeContract(text: string) {
     try {
         // Use real AI-powered contract analysis
