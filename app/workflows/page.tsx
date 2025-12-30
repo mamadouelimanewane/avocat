@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic'
 
 import { PrismaClient } from '@prisma/client'
-import { KanbanBoard } from '@/components/workflow/KanbanBoard'
+import { WorkflowBoard } from '@/components/workflow/KanbanBoard'
 import { AddColumnButton } from '@/components/workflow/AddColumnButton'
 import { getClients } from '@/app/actions'
 
@@ -32,13 +32,13 @@ export default async function WorkflowPage() {
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workflow Dossiers</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">Vue Kanban interactive pour le suivi des affaires.</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Vue processus interactive pour le suivi des affaires.</p>
                 </div>
                 <AddColumnButton />
             </div>
 
             <div className="flex-1 overflow-x-auto overflow-y-hidden pb-4">
-                <KanbanBoard initialColumns={columns} clients={clients} />
+                <WorkflowBoard initialColumns={columns} clients={clients} />
             </div>
         </div>
     )

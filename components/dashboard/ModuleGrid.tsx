@@ -1,7 +1,7 @@
 
 import Link from 'next/link'
 import { Card, CardContent } from "@/components/ui/card"
-import { Briefcase, Users, Calendar, Wallet, Receipt, Files, Scale, KanbanSquare, Settings } from "lucide-react"
+import { Briefcase, Users, Calendar, Wallet, Receipt, Files, Scale, Columns, Settings } from "lucide-react"
 
 const modules = [
     { name: "Dossiers", href: "/dossiers", icon: Briefcase, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-100 dark:bg-blue-900/40" },
@@ -11,7 +11,7 @@ const modules = [
     { name: "Facturation", href: "/factures", icon: Receipt, color: "text-rose-600 dark:text-rose-400", bg: "bg-rose-100 dark:bg-rose-900/40" },
     { name: "GED / Fichiers", href: "/documents", icon: Files, color: "text-cyan-600 dark:text-cyan-400", bg: "bg-cyan-100 dark:bg-cyan-900/40" },
     { name: "Bibliothèque", href: "/jurisprudence", icon: Scale, color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-100 dark:bg-indigo-900/40" },
-    { name: "Workflow", href: "/workflows", icon: KanbanSquare, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-100 dark:bg-orange-900/40" },
+    { name: "Workflow", href: "/workflows", icon: Columns, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-100 dark:bg-orange-900/40" },
 ]
 
 export function ModuleGrid() {

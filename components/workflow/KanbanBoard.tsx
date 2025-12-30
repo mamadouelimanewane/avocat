@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MoreHorizontal, Plus, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { updateDossierStatus, createKanbanColumn, deleteKanbanColumn } from '@/app/actions'
+import { updateDossierStatus, createWorkflowColumn, deleteWorkflowColumn } from '@/app/actions'
 import {
     Dialog,
     DialogContent,
@@ -40,7 +40,7 @@ interface Column {
     dossiers: Dossier[]
 }
 
-export function KanbanBoard({ initialColumns }: { initialColumns: Column[] }) {
+export function WorkflowBoard({ initialColumns, clients }: { initialColumns: Column[], clients: any[] }) {
     const [columns, setColumns] = useState(initialColumns)
     const [isAddColumnOpen, setIsAddColumnOpen] = useState(false)
     const [newColumnTitle, setNewColumnTitle] = useState('')
@@ -84,7 +84,7 @@ export function KanbanBoard({ initialColumns }: { initialColumns: Column[] }) {
     const handleAddColumn = async () => {
         if (!newColumnTitle.trim()) return
         setLoading(true)
-        const res = await createKanbanColumn(newColumnTitle)
+        const res = await createWorkflowColumn(newColumnTitle)
         if (res.success) {
             setIsAddColumnOpen(false)
             setNewColumnTitle('')
@@ -95,7 +95,7 @@ export function KanbanBoard({ initialColumns }: { initialColumns: Column[] }) {
 
     const handleDeleteColumn = async (columnId: string) => {
         if (confirm('Voulez-vous vraiment supprimer cette étape ?')) {
-            await deleteKanbanColumn(columnId)
+            await deleteWorkflowColumn(columnId)
             window.location.reload()
         }
     }
@@ -173,7 +173,7 @@ export function KanbanBoard({ initialColumns }: { initialColumns: Column[] }) {
             <Dialog open={isAddColumnOpen} onOpenChange={setIsAddColumnOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Nouvelle Étape du Workflow</DialogTitle>
+                        <DialogTitle>Nouvelle Étape du Processus</DialogTitle>
                         <DialogDescription>
                             Ajoutez une nouvelle phase à votre pipeline de dossiers.
                         </DialogDescription>

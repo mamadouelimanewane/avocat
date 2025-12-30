@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { createKanbanColumn } from '@/app/actions'
+import { createWorkflowColumn } from '@/app/actions'
 import {
     Dialog,
     DialogContent,
@@ -23,7 +23,7 @@ export function AddColumnButton() {
     const handleAdd = async () => {
         if (!title.trim()) return
         setLoading(true)
-        const res = await createKanbanColumn(title)
+        const res = await createWorkflowColumn(title)
         if (res.success) {
             setOpen(false)
             setTitle('')
@@ -35,13 +35,13 @@ export function AddColumnButton() {
     return (
         <>
             <Button onClick={() => setOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" /> Nouvelle Colonne
+                <Plus className="mr-2 h-4 w-4" /> Nouvelle Étape
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Nouvelle Colonne</DialogTitle>
+                        <DialogTitle>Nouvelle Étape</DialogTitle>
                         <DialogDescription>
                             Ajoutez une nouvelle étape à votre processus de suivi.
                         </DialogDescription>
@@ -51,7 +51,7 @@ export function AddColumnButton() {
                             <Label htmlFor="title-header">Titre</Label>
                             <Input
                                 id="title-header"
-                                placeholder="Nom de la colonne"
+                                placeholder="Nom de l'étape"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleAdd()}

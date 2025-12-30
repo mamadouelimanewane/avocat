@@ -2459,7 +2459,7 @@ export async function updateDossierStatus(dossierId: string, columnId: string) {
     }
 }
 
-export async function createKanbanColumn(title: string) {
+export async function createWorkflowColumn(title: string) {
     try {
         const lastCol = await prisma.kanbanColumn.findFirst({
             orderBy: { order: 'desc' }
@@ -2481,7 +2481,7 @@ export async function createKanbanColumn(title: string) {
     }
 }
 
-export async function deleteKanbanColumn(columnId: string) {
+export async function deleteWorkflowColumn(columnId: string) {
     try {
         // Move dossiers back to no column or first column? 
         // For safety, we just disconnect them
