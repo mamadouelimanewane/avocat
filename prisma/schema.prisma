@@ -360,22 +360,6 @@ model CommunicationLog {
   updatedAt   DateTime @updatedAt
 }
 
-model CommunicationLog {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  type      String   // EMAIL, WHATSAPP, SMS, CALL
-  direction String   // INBOUND, OUTBOUND
-  content   String?
-  date      DateTime @default(now())
-  
-  clientId  String?  @db.ObjectId
-  client    Client?  @relation(fields: [clientId], references: [id])
-  
-  dossierId String?  @db.ObjectId
-  dossier   Dossier? @relation(fields: [dossierId], references: [id])
-  
-  createdAt DateTime @default(now())
-}
-
 model CabinetSettings {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @default("Cabinet Avocats Associés")
