@@ -76,7 +76,7 @@ export default async function PortalDossierDetailPage({ params }: { params: { id
                                 <CardContent className="space-y-4">
                                     <p className="text-slate-600 leading-relaxed">
                                         Ce dossier est actuellement en phase de {dossier.stage || 'préparation'}.
-                                        {dossier.instructions ? dossier.instructions : "L'instruction suit son cours conformément au calendrier établi."}
+                                        L'instruction suit son cours conformément au calendrier établi.
                                     </p>
 
                                     {/* Vertical Timeline */}
