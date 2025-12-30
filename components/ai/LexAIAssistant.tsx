@@ -40,24 +40,24 @@ export function LexAIAssistant() {
     }
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 pointer-events-none">
+        <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 flex flex-col items-end gap-2 md:gap-4 pointer-events-none">
             {/* Toggle Button */}
             <div className="pointer-events-auto">
                 <Button
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`h-14 w-14 rounded-full shadow-xl transition-all duration-300 ${isOpen ? 'bg-red-500 hover:bg-red-600 rotate-90' : 'bg-indigo-600 hover:bg-indigo-700 animate-pulse'}`}
+                    className={`h-12 w-12 md:h-14 md:w-14 rounded-full shadow-xl transition-all duration-300 ${isOpen ? 'bg-red-500 hover:bg-red-600 rotate-90' : 'bg-indigo-600 hover:bg-indigo-700 animate-pulse'}`}
                 >
-                    {isOpen ? <X className="h-6 w-6" /> : <Bot className="h-8 w-8" />}
+                    {isOpen ? <X className="h-6 w-6" /> : <Bot className="h-6 w-6 md:h-8 md:w-8" />}
                 </Button>
             </div>
 
             {/* Chat Interface */}
             <div className={`pointer-events-auto transition-all duration-300 transform origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 h-0 w-0 overflow-hidden'}`}>
-                <Card className="w-[400px] h-[600px] flex flex-col shadow-2xl border-indigo-200">
-                    <CardHeader className="bg-indigo-600 text-white rounded-t-xl p-4">
+                <Card className="w-[calc(100vw-2rem)] md:w-[400px] h-[500px] md:h-[600px] flex flex-col shadow-2xl border-indigo-200">
+                    <CardHeader className="bg-indigo-600 text-white rounded-t-xl p-3 md:p-4">
                         <div className="flex items-center gap-2">
-                            <Sparkles className="h-5 w-5 text-amber-300" />
-                            <CardTitle className="text-lg">LexAI - Assistant Juridique</CardTitle>
+                            <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-amber-300" />
+                            <CardTitle className="text-base md:text-lg">LexAI - Assistant Juridique</CardTitle>
                         </div>
                         <CardDescription className="text-indigo-100 text-xs">
                             Base de connaissances : J.O. Sénégal, Actes Uniformes OHADA.
@@ -88,12 +88,12 @@ export function LexAIAssistant() {
                         </div>
                     </CardHeader>
 
-                    <CardContent className="flex-1 p-0 flex flex-col overflow-hidden bg-slate-50">
-                        <ScrollArea className="flex-1 p-4">
+                    <CardContent className="flex-1 p-0 flex flex-col overflow-hidden bg-slate-50 overscroll-contain">
+                        <ScrollArea className="flex-1 p-3 md:p-4">
                             <div className="space-y-4">
                                 {messages.map((m, i) => (
                                     <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} gap-1 w-full`}>
-                                        <div className={`max-w-[90%] rounded-lg p-3 text-sm whitespace-pre-wrap ${m.role === 'user' ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm'}`}>
+                                        <div className={`max-w-[90%] rounded-lg p-3 text-sm whitespace-pre-wrap shadow-sm ${m.role === 'user' ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none'}`}>
                                             {m.content}
                                         </div>
 
@@ -137,8 +137,8 @@ export function LexAIAssistant() {
                         <div className="p-3 bg-white border-t border-slate-200">
                             <div className="relative">
                                 <Input
-                                    className="pr-12 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500"
-                                    placeholder={mode === 'SECRETARIAT' ? "Demandez-moi quelque chose (agenda, factures)..." : mode === 'RESEARCH' ? "Posez une question de droit..." : "Décrivez la clause à rédiger..."}
+                                    className="pr-20 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500 text-sm md:text-base"
+                                    placeholder={mode === 'SECRETARIAT' ? "Action..." : mode === 'RESEARCH' ? "Question?" : "Texte?"}
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}

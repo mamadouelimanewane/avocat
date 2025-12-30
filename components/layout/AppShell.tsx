@@ -29,12 +29,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Header />
                 <main className="flex-1 p-6 md:p-8 animate-in fade-in duration-500 pb-20 md:pb-8">
                     {children}
-                    {/* Les assistants sont montés après le contenu principal */}
-                    <div className="relative z-50">
-                        <LexAIAssistant />
-                        {/* <VoiceCommander /> */}
-                    </div>
                 </main>
+                <div className="relative z-[100]">
+                    <LexAIAssistant />
+                    {/* <VoiceCommander /> */}
+                </div>
                 <MobileBottomNav />
             </div>
         </>
