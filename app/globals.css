@@ -151,6 +151,33 @@
     --secondary-foreground: 0 0% 100%;
 }
 
+/* Theme: Noir OLED */
+[data-theme='black'] {
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 0 0% 0%;
+}
+
+.dark[data-theme='black'] {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 100%;
+}
+
 /* Custom Scrollbar for a cleaner look */
 ::-webkit-scrollbar {
     width: 8px;

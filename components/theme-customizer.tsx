@@ -22,6 +22,7 @@ const themes = [
     { name: "Navy Premium", value: "navy", color: "#1e293b" },
     { name: "Bordeaux Élégance", value: "rose", color: "#e11d48" },
     { name: "Vert Nature", value: "green", color: "#16a34a" },
+    { name: "Noir OLED", value: "black", color: "#000000" },
 ]
 
 export function ThemeCustomizer() {
