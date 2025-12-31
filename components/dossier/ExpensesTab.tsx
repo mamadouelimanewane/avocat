@@ -61,7 +61,7 @@ export default function ExpensesTab({ dossierId, expenses = [] }: { dossierId: s
             description: formData.get('description') as string,
             amount: parseFloat(formData.get('amount') as string),
             category: formData.get('category') as string,
-            type: formData.get('type') as string,
+            type: formData.get('type') as 'FRAIS' | 'DEBOURS',
             billable: isBillable,
             date: new Date()
         }

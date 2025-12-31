@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { getJournalEntries, getJournalStats } from "@/app/actions"
 import { JournalPDF } from "@/components/documents/JournalPDF"
@@ -15,7 +15,7 @@ const PDFViewer = dynamic(() => import("@react-pdf/renderer").then(mod => mod.PD
     </div>,
 })
 
-export default function JournalEditionPage() {
+function JournalContent() {
     const searchParams = useSearchParams()
     const journalId = searchParams.get('id')
 
@@ -59,5 +59,13 @@ export default function JournalEditionPage() {
                 </PDFViewer>
             </div>
         </div>
+    )
+}
+
+export default function JournalEditionPage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen">Chargement...</div>}>
+            <JournalContent />
+        </Suspense>
     )
 }

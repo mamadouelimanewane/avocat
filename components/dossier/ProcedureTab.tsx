@@ -94,7 +94,7 @@ export default function ProcedureTab({ dossierId, currentStage, procedureType }:
         setEmulatingRedTeam(true)
         try {
             const result = await emulateRedTeam(dossierId, argument)
-            if (result.success) {
+            if (result.success && result.emulation) {
                 setRedTeamResult(result.emulation)
                 toast({ title: "Attaque simulée", description: "L'IA a identifié les points de rupture." })
             }
@@ -121,12 +121,12 @@ export default function ProcedureTab({ dossierId, currentStage, procedureType }:
                 getCourtTendencies("Tribunal Hors Classe de Dakar"),
                 analyzeOpposingSentiment(dossierId, "L'adversaire conteste formellement tout lien de causalité et menace de procédure abusive.")
             ])
-            if (insightsRes.success) setInsights(insightsRes.insights)
-            if (mapRes.success) setNeuralMap(mapRes.neuralMap)
-            if (gapRes.success) setGapAnalysis(gapRes.gapAnalysis)
-            if (jurisRes.success) setJurisMatches(jurisRes.matches)
-            if (courtRes.success) setCourtTendencies(courtRes.tendencies)
-            if (sentimentRes.success) setAdversarySentiment(sentimentRes.sentiment)
+            if (insightsRes.success && insightsRes.insights) setInsights(insightsRes.insights)
+            if (mapRes.success && mapRes.neuralMap) setNeuralMap(mapRes.neuralMap)
+            if (gapRes.success && gapRes.gapAnalysis) setGapAnalysis(gapRes.gapAnalysis)
+            if (jurisRes.success && jurisRes.matches) setJurisMatches(jurisRes.matches)
+            if (courtRes.success && courtRes.tendencies) setCourtTendencies(courtRes.tendencies)
+            if (sentimentRes.success && sentimentRes.sentiment) setAdversarySentiment(sentimentRes.sentiment)
         }
         fetchData()
     }, [dossierId])

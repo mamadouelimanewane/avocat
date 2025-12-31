@@ -20,7 +20,7 @@ export function SmartInvoiceGenerator({ onInvoiceGenerated }: { onInvoiceGenerat
         setGenerating(true)
         try {
             const result = await generateInvoiceItems(description)
-            if (result.success) {
+            if (result.success && result.items) {
                 setGeneratedItems(result.items)
                 toast({
                     title: "Facture intelligente générée",

@@ -49,9 +49,9 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
         prisma.dossier.findMany({
             where: {
                 OR: [
-                    { title: { contains: query, mode: 'insensitive' } },
-                    { reference: { contains: query, mode: 'insensitive' } },
-                    { client: { name: { contains: query, mode: 'insensitive' } } }
+                    { title: { contains: query } },
+                    { reference: { contains: query } },
+                    { client: { name: { contains: query } } }
                 ]
             },
             include: { client: true },
@@ -60,9 +60,9 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
         prisma.client.findMany({
             where: {
                 OR: [
-                    { name: { contains: query, mode: 'insensitive' } },
-                    { email: { contains: query, mode: 'insensitive' } },
-                    { phone: { contains: query, mode: 'insensitive' } }
+                    { name: { contains: query } },
+                    { email: { contains: query } },
+                    { phone: { contains: query } }
                 ]
             },
             take: 10
@@ -70,11 +70,11 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
         prisma.document.findMany({
             where: {
                 OR: [
-                    { name: { contains: query, mode: 'insensitive' } },
+                    { name: { contains: query } },
                     // Deep Search in OCR Content (The "Google" effect)
                     // Note: In heavy production, this needs a specific Atlas Search Index or dedicated engine.
                     // For standard usage, MongoDB text search is fine.
-                    { ocrContent: { contains: query, mode: 'insensitive' } }
+                    { ocrContent: { contains: query } }
                 ]
             },
             include: { dossier: true },
@@ -83,9 +83,9 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
         prisma.jurisprudence.findMany({
             where: {
                 OR: [
-                    { title: { contains: query, mode: 'insensitive' } },
-                    { summary: { contains: query, mode: 'insensitive' } },
-                    { keywords: { contains: query, mode: 'insensitive' } }
+                    { title: { contains: query } },
+                    { summary: { contains: query } },
+                    { keywords: { contains: query } }
                 ]
             },
             take: 10

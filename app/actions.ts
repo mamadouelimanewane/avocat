@@ -4414,7 +4414,7 @@ export async function loginClientPortal(email: string, accessCode: string) {
     try {
         const client = await prisma.client.findFirst({
             where: {
-                email: { equals: email, mode: 'insensitive' },
+                email: { equals: email },
                 accessCode
             }
         })

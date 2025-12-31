@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { CalendarDays, Gavel, Scale, UserMinus, ShieldAlert, Archive } from "lucide-react"
 import { archiveDossier, getRoles } from "@/app/actions"
+import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
