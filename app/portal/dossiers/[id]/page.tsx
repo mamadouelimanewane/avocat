@@ -209,7 +209,7 @@ export default async function PortalDossierDetailPage({ params }: { params: { id
                         <CardContent className="space-y-4 text-sm">
                             <div className="flex justify-between items-center py-2 border-b border-slate-50">
                                 <span className="text-slate-500">Nature</span>
-                                <span className="font-medium text-slate-900">{dossier.type || 'Contentieux'}</span>
+                                <span className="font-medium text-slate-900">Contentieux</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-slate-50">
                                 <span className="text-slate-500">Juridiction</span>
