@@ -37,7 +37,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Stopwatch } from '@/components/tools/Stopwatch';
-export function Sidebar({ className }: { className?: string }) {
+export function Sidebar({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
     const pathname = usePathname();
 
     const translatedNavigation = [
@@ -95,6 +95,7 @@ export function Sidebar({ className }: { className?: string }) {
                             <Link
                                 key={item.name}
                                 href={item.href}
+                                onClick={() => onNavigate?.()}
                                 className={cn(
                                     "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 group",
                                     isActive

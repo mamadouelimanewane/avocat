@@ -1,11 +1,15 @@
+"use client"
 
+import { useState } from "react";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 export const MobileSidebar = ({ children }: { children?: React.ReactNode }) => {
+    const [open, setOpen] = useState(false);
+
     return (
-        <Sheet>
+        <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
                 {children || (
                     <button className="md:hidden pr-4 hover:opacity-75 transition">
@@ -14,7 +18,10 @@ export const MobileSidebar = ({ children }: { children?: React.ReactNode }) => {
                 )}
             </SheetTrigger>
             <SheetContent side="left" className="p-0 bg-white border-r border-slate-200 w-72">
-                <Sidebar className="relative h-full w-full border-none shadow-none" />
+                <Sidebar
+                    className="relative h-full w-full border-none shadow-none"
+                    onNavigate={() => setOpen(false)}
+                />
             </SheetContent>
         </Sheet>
     );
