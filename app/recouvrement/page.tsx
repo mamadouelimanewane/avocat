@@ -17,7 +17,7 @@ export default async function RecouvrementPage() {
         where: {
             OR: [
                 { procedureType: 'RECOUVREMENT' },
-                { title: { contains: 'Recouvrement', mode: 'insensitive' } }
+                { title: { contains: 'Recouvrement' } }
             ]
         },
         include: { client: true },

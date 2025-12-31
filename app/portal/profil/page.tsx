@@ -46,19 +46,19 @@ export default async function PortalProfilePage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label>Nom Complet</Label>
-                                    <Input defaultValue={client.name} />
+                                    <Input defaultValue={client.name ?? ""} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Email</Label>
-                                    <Input defaultValue={client.email} readOnly className="bg-slate-50" />
+                                    <Input defaultValue={client.email ?? ""} readOnly className="bg-slate-50" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Téléphone</Label>
-                                    <Input defaultValue={client.phone || "+221 77 ..."} />
+                                    <Input defaultValue={client.phone ?? "+221 77 ..."} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Adresse</Label>
-                                    <Input defaultValue={client.address || "Dakar, Sénégal"} />
+                                    <Input defaultValue={client.address ?? "Dakar, Sénégal"} />
                                 </div>
                             </div>
                             <Button className="bg-indigo-600 hover:bg-indigo-700 mt-4">Enregistrer les modifications</Button>

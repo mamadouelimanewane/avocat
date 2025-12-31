@@ -67,7 +67,7 @@ export async function extractTextFromPDF(pdfFile: File | Buffer): Promise<OCRRes
         console.log('📄 PDF: Démarrage extraction (Serveur)...')
 
         let buffer: Buffer
-        if (pdfFile instanceof Buffer) {
+        if (Buffer.isBuffer(pdfFile)) {
             buffer = pdfFile
         } else {
             const arrayBuffer = await pdfFile.arrayBuffer()

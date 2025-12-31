@@ -6,36 +6,36 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   email     String   @unique
   name      String?
   role      String   @default("AVOCAT") // legacy role string
-  roleId    String?  @db.ObjectId
+  roleId    String?
   userRole  Role?    @relation(fields: [roleId], references: [id])
-  password  String?  // In real app, this should be hashed
+  password  String?
   hourlyRate Float?  @default(200.0)
   signatureUrl String?
   active    Boolean  @default(true)
   avatarUrl String?
-  permissions String? @default("[]") // JSON Array of granular permissions
+  permissions String? @default("[]")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  dossiers  Dossier[]
-  events    Event[]
-  tasks     Task[]
-  documentVersions DocumentVersion[]
-  leaveRequests LeaveRequest[]
+  dossiers          Dossier[]         @relation("AssignedTo")
+  events            Event[]           @relation("AssignedEvent")
+  tasks             Task[]            @relation("AssignedTask")
+  documentVersions  DocumentVersion[] @relation("UploadedBy")
+  leaveRequests     LeaveRequest[]    @relation("UserLeaveRequest")
 }
 
 model Role {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   name        String   @unique
   description String?
   permissions String   @default("[]") // JSON Array of default permissions for this role
@@ -45,22 +45,22 @@ model Role {
 }
 
 model LeaveRequest {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   type        String   @default("CONGE_PAYE") // CONGE_PAYE, MALADIE, RECUP, SANS_SOLDE
   startDate   DateTime
   endDate     DateTime
   reason      String?
   status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
   
-  userId      String   @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  user        User     @relation("UserLeaveRequest", fields: [userId], references: [id])
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Client {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   type      String   @default("PARTICULIER") // PARTICULIER, ENTREPRISE
   status    String   @default("CLIENT")      // PROSPECT, CLIENT, ARCHIVE
   name      String   // Nom ou Raison sociale
@@ -82,7 +82,7 @@ model Client {
 }
 
 model Dossier {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   reference   String   @unique // Internal ref
   title       String
   description String?
@@ -97,13 +97,13 @@ model Dossier {
   nextHearingDate   DateTime?
   stage             String? @default("SAISINE") // SAISINE, MISE_EN_ETAT, PLAIDOIRIE, DELIBERE, EXECUTION
   
-  clientId    String   @db.ObjectId
+  clientId    String
   client      Client   @relation(fields: [clientId], references: [id])
   
-  assignedToId String? @db.ObjectId
-  assignedTo   User?    @relation(fields: [assignedToId], references: [id])
+  assignedToId String?
+  assignedTo   User?    @relation("AssignedTo", fields: [assignedToId], references: [id])
 
-  columnId     String?  @db.ObjectId
+  columnId     String?
   column       KanbanColumn? @relation(fields: [columnId], references: [id])
   
   events      Event[]
@@ -122,7 +122,7 @@ model Dossier {
 }
 
 model Event {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   title       String
   description String?
   startDate   DateTime
@@ -131,61 +131,62 @@ model Event {
   location    String?
   result      String?  // Outcome of hearing (e.g. "Renvoyé", "Gagné")
   
-  dossierId   String?  @db.ObjectId
+  dossierId   String?
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
-  userId      String?  @db.ObjectId
-  user        User?    @relation(fields: [userId], references: [id])
-  
+  userId      String?
+  user        User?    @relation("AssignedEvent", fields: [userId], references: [id])
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Document {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  type        String?  // PDF, DOCX, etc.
-  category    String?  // ACTE, PREUVE, CORRESPONDANCE
-  tags        String?  // JSON string for tags
-  status      String   @default("DRAFT") // DRAFT, REVIEW, SIGNED, ARCHIVED
-  ocrStatus   String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
-  ocrContent  String?  // For full-text search simulation
-  
-  dossierId   String   @db.ObjectId
-  dossier     Dossier  @relation(fields: [dossierId], references: [id])
+  id        String   @id @default(uuid())
+  name      String
+  path      String?  // Path to storage (nullable for older schema compat)
+  type      String?  // PDF, DOCX, etc.
+  category  String?  // ACTE, PREUVE, CORRESPONDANCE
+  tags      String?  // JSON string for tags
+  status    String   @default("DRAFT") // DRAFT, REVIEW, SIGNED, ARCHIVED
+  ocrStatus String?  @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  ocrContent String? // For full-text search simulation
   
   folder      String   @default("/") 
   
   // Archiving
-  archiveBoxId String?  @db.ObjectId
+  archiveBoxId String?
   archiveBox   ArchiveBox? @relation(fields: [archiveBoxId], references: [id])
   archivedAt   DateTime?
   retention    Int?      // Years to keep
+
+  dossierId String
+  dossier   Dossier  @relation(fields: [dossierId], references: [id])
   
-  versions    DocumentVersion[]
+  versions  DocumentVersion[]
   
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model DocumentVersion {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   version     Int
   path        String   // Path to storage
   size        Int      // Bytes
   comment     String?  // "Initial version", "Correction coquilles"
   
-  uploadedById String? @db.ObjectId
-  uploadedBy   User?    @relation(fields: [uploadedById], references: [id])
+  uploadedById String?
+  uploadedBy   User?    @relation("UploadedBy", fields: [uploadedById], references: [id])
   
-  documentId  String   @db.ObjectId
+  documentId  String
   document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime @default(now())
 }
 
 model ArchiveBox {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   code        String   @unique // e.g. "BOX-2024-A01"
   location    String   // e.g. "Salle Archives 2, Rayon 4"
   status      String   @default("OPEN") // OPEN, FULL, DESTROYED
@@ -200,7 +201,7 @@ model ArchiveBox {
 }
 
 model KanbanColumn {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   title       String
   order       Int
   color       String?  // hex code
@@ -208,7 +209,7 @@ model KanbanColumn {
 }
 
 model Template {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   name        String
   category    String?  // CONTRAT, LETTRE, ASSIGNATION
   content     String   // HTML content for rich text editor
@@ -219,7 +220,7 @@ model Template {
 }
 
 model Facture {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   number      String   @unique
   type        String   @default("FACTURE") // FACTURE, PROVISION, AVOIR
   status      String   @default("BROUILLON") // BROUILLON, EMISE, PAYEE, ANNULEE, PARTIELLE
@@ -231,10 +232,10 @@ model Facture {
   currency    String   @default("XOF") // FCFA by default
 
   
-  clientId    String   @db.ObjectId
+  clientId    String
   client      Client   @relation(fields: [clientId], references: [id])
   
-  dossierId   String?  @db.ObjectId
+  dossierId   String?
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
   items       InvoiceItem[]
@@ -245,54 +246,54 @@ model Facture {
 }
 
 model InvoiceItem {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   description String
   quantity    Float
   unitPrice   Float
   totalPrice  Float
   
-  factureId   String   @db.ObjectId
+  factureId   String
   facture     Facture  @relation(fields: [factureId], references: [id])
 }
 
 model Payment {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   amount      Float
   date        DateTime @default(now())
   method      String   // VIREMENT, CHEQUE, ESPECES, MOBILE_MONEY
   reference   String?
   
-  factureId   String   @db.ObjectId
+  factureId   String
   facture     Facture  @relation(fields: [factureId], references: [id])
 }
 
 model Task {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   title       String
   description String?
   completed   Boolean  @default(false)
   dueDate     DateTime?
   priority    String   @default("NORMAL") // BASSE, NORMAL, HAUTE, URGENT
   
-  dossierId   String?  @db.ObjectId
+  dossierId   String?
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
-  assignedToId String? @db.ObjectId
-  assignedTo   User?    @relation(fields: [assignedToId], references: [id])
+  assignedToId String?
+  assignedTo   User?    @relation("AssignedTask", fields: [assignedToId], references: [id])
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model TimeEntry {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   description String?
   date        DateTime @default(now())
   duration    Int      // In minutes
   rate        Float?   // Hourly rate
   billable    Boolean  @default(true)
   
-  dossierId   String   @db.ObjectId
+  dossierId   String
   dossier     Dossier  @relation(fields: [dossierId], references: [id])
   
   createdAt   DateTime @default(now())
@@ -300,7 +301,7 @@ model TimeEntry {
 }
 
 model Expense {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   description String
   amount      Float
   category    String   // DEPLACEMENT, REPAS, GREFFE, HUISSIER
@@ -310,7 +311,7 @@ model Expense {
   status      String   @default("TO_BILL") // TO_BILL, BILLED, PAID
   receiptUrl  String?  // Path to uploaded receipt
   
-  dossierId   String   @db.ObjectId
+  dossierId   String
   dossier     Dossier  @relation(fields: [dossierId], references: [id])
 
   createdAt   DateTime @default(now())
@@ -318,7 +319,7 @@ model Expense {
 }
 
 model CarpaTransaction {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   reference   String   @unique
   date        DateTime @default(now())
   amount      Float    // Positive for deposit, Negative for withdrawal
@@ -326,7 +327,7 @@ model CarpaTransaction {
   description String
   beneficiary String?
   
-  dossierId   String   @db.ObjectId
+  dossierId   String
   dossier     Dossier  @relation(fields: [dossierId], references: [id])
 
   createdAt   DateTime @default(now())
@@ -334,14 +335,14 @@ model CarpaTransaction {
 }
 
 model Meeting {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   title       String
   startTime   DateTime
   duration    Int      // Minutes
   platform    String   @default("ZOOM") // ZOOM, TEAMS, GOOGLE_MEET
   meetingUrl  String?
   
-  dossierId   String?  @db.ObjectId
+  dossierId   String?
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
   participants String? // JSON string: ["email1", "email2"]
@@ -351,16 +352,16 @@ model Meeting {
 }
 
 model CommunicationLog {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   type        String   // WHATSAPP, EMAIL, CALL, SMS
   direction   String   // INBOUND, OUTBOUND
   content     String?
   date        DateTime @default(now())
   
-  clientId    String?  @db.ObjectId
+  clientId    String?
   client      Client?  @relation(fields: [clientId], references: [id])
   
-  dossierId   String?  @db.ObjectId
+  dossierId   String?
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
 
   // Digital Signature
@@ -373,7 +374,7 @@ model CommunicationLog {
 }
 
 model CabinetSettings {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   name        String   @default("Cabinet Avocats Associés")
   address     String?
   phone       String?
@@ -400,7 +401,7 @@ model CabinetSettings {
 // --- SYSCOHADA General Accounting ---
 
 model Account {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   code        String   @unique
   name        String
   type        String   // ACTIF, PASSIF, CHARGE, PRODUIT
@@ -410,16 +411,16 @@ model Account {
 }
 
 model Transaction {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   date        DateTime @default(now())
   description String
   reference   String?  // Piece comptable
   status      String   @default("DRAFT") // DRAFT, VALIDATED
   
-  journalId   String?   @db.ObjectId
+  journalId   String?
   journal     Journal?  @relation(fields: [journalId], references: [id])
   
-  fiscalYearId String?   @db.ObjectId
+  fiscalYearId String?
   fiscalYear   FiscalYear? @relation(fields: [fiscalYearId], references: [id])
   
   lines       TransactionLine[]
@@ -429,39 +430,39 @@ model Transaction {
 }
 
 model TransactionLine {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String   @id @default(uuid())
   debit         Float    @default(0)
   credit        Float    @default(0)
   
-  transactionId String   @db.ObjectId
+  transactionId String
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
   
-  accountId     String   @db.ObjectId
+  accountId     String
   account       Account     @relation(fields: [accountId], references: [id])
 
   letter        String?  // For lettrage (e.g. "AA")
   reconciled    Boolean  @default(false)
   reconciledAt  DateTime?
   
-  dossierId     String?  @db.ObjectId
+  dossierId     String?
   dossier       Dossier? @relation(fields: [dossierId], references: [id])
 }
 
 model BankStatementLine {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   date        DateTime
   description String
   amount      Float    // Positive for credit/deposit, Negative for debit/withdrawal
   reference   String?
   reconciled  Boolean  @default(false)
   
-  transactionLineId String? @db.ObjectId
+  transactionLineId String?
   
   createdAt   DateTime @default(now())
 }
 
 model FiscalYear {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   name      String   @unique // e.g. "2024"
   startDate DateTime
   endDate   DateTime
@@ -475,7 +476,7 @@ model FiscalYear {
 }
 
 model Journal {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   code      String   @unique // VE, AC, BQ, CA, OD
   name      String
   type      String   // VENTE, ACHAT, TRESORERIE, GENERAL
@@ -483,11 +484,8 @@ model Journal {
   transactions Transaction[]
 }
 
-
-
-
 model Jurisprudence {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   title       String
   type        String   @default("JURISPRUDENCE") // JURISPRUDENCE, LOI, ARRETE, ACTE_UNIFORME
   court       String   // CCJA, COUR_SUPREME, TRIBUNAL_COMMERCE
@@ -501,7 +499,7 @@ model Jurisprudence {
   category    String?  // COMMERCIAL, SOCIAL, PENAL, FONCIER
   keywords    String?  // JSON array
   
-  vector      Float[]  // Placeholder for Vector Embeddings (requires MongoDB Atlas Vector Search index)
+  // vector      Float[]  // Not supported in SQLite, managed externally
   
   fileUrl     String?  // Link to PDF
   sourceUrl   String?  // Link to original source (Crawler)
@@ -511,7 +509,7 @@ model Jurisprudence {
 }
 
 model DirectoryContact {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   name        String
   category    String   // HUISSIER, NOTAIRE, EXPERT, CONFRERE, GREFFE, JURIDICTION
   speciality  String?  // e.g. "Droit Maritime", "Expert Immobilier"

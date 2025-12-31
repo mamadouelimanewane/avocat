@@ -90,7 +90,7 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
             },
             take: 10
         })
-    ])
+    ]) as [any[], any[], any[], any[]]
 
     // 2. Unification & Scoring
     const results: SearchResult[] = []

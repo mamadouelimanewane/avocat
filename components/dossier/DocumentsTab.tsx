@@ -62,6 +62,7 @@ import { createDocumentFromTemplate, uploadDocument, generateAIDocument, runOCR,
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/navigation';
+import { SignatureDialog } from '@/components/documents/SignatureDialog';
 
 // Types
 interface DocumentProps {
