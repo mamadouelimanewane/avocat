@@ -6,16 +6,16 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   name      String?
   role      String   @default("AVOCAT") // legacy role string
-  roleId    String?
+  roleId    String?  @db.ObjectId
   userRole  Role?    @relation(fields: [roleId], references: [id])
   password  String?
   hourlyRate Float?  @default(200.0)
@@ -35,7 +35,7 @@ model User {
 }
 
 model Role {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique
   description String?
   permissions String   @default("[]") // JSON Array of default permissions for this role
@@ -45,14 +45,14 @@ model Role {
 }
 
 model LeaveRequest {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   type        String   @default("CONGE_PAYE") // CONGE_PAYE, MALADIE, RECUP, SANS_SOLDE
   startDate   DateTime
   endDate     DateTime
   reason      String?
   status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
   
-  userId      String
+  userId      String   @db.ObjectId
   user        User     @relation("UserLeaveRequest", fields: [userId], references: [id])
   
   createdAt   DateTime @default(now())
@@ -60,7 +60,7 @@ model LeaveRequest {
 }
 
 model Client {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   type      String   @default("PARTICULIER") // PARTICULIER, ENTREPRISE
   status    String   @default("CLIENT")      // PROSPECT, CLIENT, ARCHIVE
   name      String   // Nom ou Raison sociale
@@ -82,7 +82,7 @@ model Client {
 }
 
 model Dossier {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   reference   String   @unique // Internal ref
   title       String
   description String?
@@ -97,13 +97,13 @@ model Dossier {
   nextHearingDate   DateTime?
   stage             String? @default("SAISINE") // SAISINE, MISE_EN_ETAT, PLAIDOIRIE, DELIBERE, EXECUTION
   
-  clientId    String
+  clientId    String   @db.ObjectId
   client      Client   @relation(fields: [clientId], references: [id])
   
-  assignedToId String?
+  assignedToId String? @db.ObjectId
   assignedTo   User?    @relation("AssignedTo", fields: [assignedToId], references: [id])
 
-  columnId     String?
+  columnId     String? @db.ObjectId
   column       KanbanColumn? @relation(fields: [columnId], references: [id])
   
   events      Event[]
@@ -122,7 +122,7 @@ model Dossier {
 }
 
 model Event {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String?
   startDate   DateTime
@@ -131,10 +131,10 @@ model Event {
   location    String?
   result      String?  // Outcome of hearing (e.g. "Renvoyé", "Gagné")
   
-  dossierId   String?
+  dossierId   String?  @db.ObjectId
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
-  userId      String?
+  userId      String?  @db.ObjectId
   user        User?    @relation("AssignedEvent", fields: [userId], references: [id])
 
   createdAt   DateTime @default(now())
@@ -142,7 +142,7 @@ model Event {
 }
 
 model Document {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   path      String?  // Path to storage (nullable for older schema compat)
   type      String?  // PDF, DOCX, etc.
@@ -155,12 +155,12 @@ model Document {
   folder      String   @default("/") 
   
   // Archiving
-  archiveBoxId String?
+  archiveBoxId String? @db.ObjectId
   archiveBox   ArchiveBox? @relation(fields: [archiveBoxId], references: [id])
   archivedAt   DateTime?
   retention    Int?      // Years to keep
 
-  dossierId String
+  dossierId String     @db.ObjectId
   dossier   Dossier  @relation(fields: [dossierId], references: [id])
   
   versions  DocumentVersion[]
@@ -170,23 +170,23 @@ model Document {
 }
 
 model DocumentVersion {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   version     Int
   path        String   // Path to storage
   size        Int      // Bytes
   comment     String?  // "Initial version", "Correction coquilles"
   
-  uploadedById String?
+  uploadedById String? @db.ObjectId
   uploadedBy   User?    @relation("UploadedBy", fields: [uploadedById], references: [id])
   
-  documentId  String
+  documentId  String   @db.ObjectId
   document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime @default(now())
 }
 
 model ArchiveBox {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   code        String   @unique // e.g. "BOX-2024-A01"
   location    String   // e.g. "Salle Archives 2, Rayon 4"
   status      String   @default("OPEN") // OPEN, FULL, DESTROYED
@@ -201,7 +201,7 @@ model ArchiveBox {
 }
 
 model KanbanColumn {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   order       Int
   color       String?  // hex code
@@ -209,7 +209,7 @@ model KanbanColumn {
 }
 
 model Template {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   category    String?  // CONTRAT, LETTRE, ASSIGNATION
   content     String   // HTML content for rich text editor
@@ -220,7 +220,7 @@ model Template {
 }
 
 model Facture {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   number      String   @unique
   type        String   @default("FACTURE") // FACTURE, PROVISION, AVOIR
   status      String   @default("BROUILLON") // BROUILLON, EMISE, PAYEE, ANNULEE, PARTIELLE
@@ -232,10 +232,10 @@ model Facture {
   currency    String   @default("XOF") // FCFA by default
 
   
-  clientId    String
+  clientId    String   @db.ObjectId
   client      Client   @relation(fields: [clientId], references: [id])
   
-  dossierId   String?
+  dossierId   String?  @db.ObjectId
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
   items       InvoiceItem[]
@@ -246,39 +246,39 @@ model Facture {
 }
 
 model InvoiceItem {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   description String
   quantity    Float
   unitPrice   Float
   totalPrice  Float
   
-  factureId   String
+  factureId   String   @db.ObjectId
   facture     Facture  @relation(fields: [factureId], references: [id])
 }
 
 model Payment {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   amount      Float
   date        DateTime @default(now())
   method      String   // VIREMENT, CHEQUE, ESPECES, MOBILE_MONEY
   reference   String?
   
-  factureId   String
+  factureId   String   @db.ObjectId
   facture     Facture  @relation(fields: [factureId], references: [id])
 }
 
 model Task {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String?
   completed   Boolean  @default(false)
   dueDate     DateTime?
   priority    String   @default("NORMAL") // BASSE, NORMAL, HAUTE, URGENT
   
-  dossierId   String?
+  dossierId   String?  @db.ObjectId
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
-  assignedToId String?
+  assignedToId String? @db.ObjectId
   assignedTo   User?    @relation("AssignedTask", fields: [assignedToId], references: [id])
   
   createdAt   DateTime @default(now())
@@ -286,14 +286,14 @@ model Task {
 }
 
 model TimeEntry {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   description String?
   date        DateTime @default(now())
   duration    Int      // In minutes
   rate        Float?   // Hourly rate
   billable    Boolean  @default(true)
   
-  dossierId   String
+  dossierId   String   @db.ObjectId
   dossier     Dossier  @relation(fields: [dossierId], references: [id])
   
   createdAt   DateTime @default(now())
@@ -301,7 +301,7 @@ model TimeEntry {
 }
 
 model Expense {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   description String
   amount      Float
   category    String   // DEPLACEMENT, REPAS, GREFFE, HUISSIER
@@ -311,7 +311,7 @@ model Expense {
   status      String   @default("TO_BILL") // TO_BILL, BILLED, PAID
   receiptUrl  String?  // Path to uploaded receipt
   
-  dossierId   String
+  dossierId   String   @db.ObjectId
   dossier     Dossier  @relation(fields: [dossierId], references: [id])
 
   createdAt   DateTime @default(now())
@@ -319,7 +319,7 @@ model Expense {
 }
 
 model CarpaTransaction {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   reference   String   @unique
   date        DateTime @default(now())
   amount      Float    // Positive for deposit, Negative for withdrawal
@@ -327,7 +327,7 @@ model CarpaTransaction {
   description String
   beneficiary String?
   
-  dossierId   String
+  dossierId   String   @db.ObjectId
   dossier     Dossier  @relation(fields: [dossierId], references: [id])
 
   createdAt   DateTime @default(now())
@@ -335,14 +335,14 @@ model CarpaTransaction {
 }
 
 model Meeting {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   startTime   DateTime
   duration    Int      // Minutes
   platform    String   @default("ZOOM") // ZOOM, TEAMS, GOOGLE_MEET
   meetingUrl  String?
   
-  dossierId   String?
+  dossierId   String?  @db.ObjectId
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
   
   participants String? // JSON string: ["email1", "email2"]
@@ -352,16 +352,16 @@ model Meeting {
 }
 
 model CommunicationLog {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   type        String   // WHATSAPP, EMAIL, CALL, SMS
   direction   String   // INBOUND, OUTBOUND
   content     String?
   date        DateTime @default(now())
   
-  clientId    String?
+  clientId    String?  @db.ObjectId
   client      Client?  @relation(fields: [clientId], references: [id])
   
-  dossierId   String?
+  dossierId   String?  @db.ObjectId
   dossier     Dossier? @relation(fields: [dossierId], references: [id])
 
   // Digital Signature
@@ -374,7 +374,7 @@ model CommunicationLog {
 }
 
 model CabinetSettings {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @default("Cabinet Avocats Associés")
   address     String?
   phone       String?
@@ -401,7 +401,7 @@ model CabinetSettings {
 // --- SYSCOHADA General Accounting ---
 
 model Account {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   code        String   @unique
   name        String
   type        String   // ACTIF, PASSIF, CHARGE, PRODUIT
@@ -411,16 +411,16 @@ model Account {
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   date        DateTime @default(now())
   description String
   reference   String?  // Piece comptable
   status      String   @default("DRAFT") // DRAFT, VALIDATED
   
-  journalId   String?
+  journalId   String?   @db.ObjectId
   journal     Journal?  @relation(fields: [journalId], references: [id])
   
-  fiscalYearId String?
+  fiscalYearId String?  @db.ObjectId
   fiscalYear   FiscalYear? @relation(fields: [fiscalYearId], references: [id])
   
   lines       TransactionLine[]
@@ -430,39 +430,39 @@ model Transaction {
 }
 
 model TransactionLine {
-  id            String   @id @default(uuid())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   debit         Float    @default(0)
   credit        Float    @default(0)
   
-  transactionId String
+  transactionId String      @db.ObjectId
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
   
-  accountId     String
+  accountId     String      @db.ObjectId
   account       Account     @relation(fields: [accountId], references: [id])
 
   letter        String?  // For lettrage (e.g. "AA")
   reconciled    Boolean  @default(false)
   reconciledAt  DateTime?
   
-  dossierId     String?
-  dossier       Dossier? @relation(fields: [dossierId], references: [id])
+  dossierId     String?     @db.ObjectId
+  dossier       Dossier?    @relation(fields: [dossierId], references: [id])
 }
 
 model BankStatementLine {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   date        DateTime
   description String
   amount      Float    // Positive for credit/deposit, Negative for debit/withdrawal
   reference   String?
   reconciled  Boolean  @default(false)
   
-  transactionLineId String?
+  transactionLineId String? @db.ObjectId
   
   createdAt   DateTime @default(now())
 }
 
 model FiscalYear {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique // e.g. "2024"
   startDate DateTime
   endDate   DateTime
@@ -476,7 +476,7 @@ model FiscalYear {
 }
 
 model Journal {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   code      String   @unique // VE, AC, BQ, CA, OD
   name      String
   type      String   // VENTE, ACHAT, TRESORERIE, GENERAL
@@ -485,7 +485,7 @@ model Journal {
 }
 
 model Jurisprudence {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   type        String   @default("JURISPRUDENCE") // JURISPRUDENCE, LOI, ARRETE, ACTE_UNIFORME
   court       String   // CCJA, COUR_SUPREME, TRIBUNAL_COMMERCE
@@ -509,7 +509,7 @@ model Jurisprudence {
 }
 
 model DirectoryContact {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   category    String   // HUISSIER, NOTAIRE, EXPERT, CONFRERE, GREFFE, JURIDICTION
   speciality  String?  // e.g. "Droit Maritime", "Expert Immobilier"
