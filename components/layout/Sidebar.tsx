@@ -41,7 +41,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
     const pathname = usePathname();
 
     const translatedNavigation = [
-        { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
+        { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
         { name: 'Dossiers', href: '/dossiers', icon: Briefcase },
         { name: 'Clients', href: '/clients', icon: Users },
         { name: 'Agenda', href: '/agenda', icon: Calendar },
@@ -59,6 +59,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
         { name: 'Parapheur Numérique', href: '/parapheur', icon: PenTool },
         { name: 'Monitoring IA', href: '/monitoring-ia', icon: Activity },
         { name: 'Finance Stratégique', href: '/finance-strategique', icon: TrendingUp },
+        { name: 'Statistiques Associés', href: '/admin/statistiques', icon: BarChart3 },
         { name: 'Annuaire Pro', href: '/annuaire', icon: Contact },
         { name: 'International', href: '/international', icon: Globe },
         { name: 'Comptabilité', href: '/comptabilite', icon: Calculator },

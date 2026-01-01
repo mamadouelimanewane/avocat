@@ -8,6 +8,7 @@ export function middleware(request: NextRequest) {
     // 1. Protect Admin / Internal Routes
     // List of paths that require internal staff authentication
     const internalProtectedPaths = [
+        '/',
         '/dashboard',
         '/admin',
         '/clients',
@@ -16,7 +17,7 @@ export function middleware(request: NextRequest) {
         '/agenda',
     ]
 
-    const publicPaths = ['/', '/login', '/portal/login', '/public']
+    const publicPaths = ['/login', '/portal/login', '/public']
     const isPublic = publicPaths.some(p => path.startsWith(p))
     const isInternalProtected = internalProtectedPaths.some(p => path === p || (p !== '/' && path.startsWith(p))) && !isPublic;
 
