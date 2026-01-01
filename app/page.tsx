@@ -18,7 +18,13 @@ import {
     Sparkles,
     CheckCircle2,
     Quote,
-    HelpCircle
+    HelpCircle,
+    Calculator,
+    Calendar,
+    PenTool,
+    Users,
+    Activity,
+    FileSignature
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -32,13 +38,13 @@ export default function LandingPage() {
                     <span>LEX<span className="text-amber-500">PREMIUM</span></span>
                 </div>
                 <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-                    <a href="#features" className="hover:text-white transition-colors">Fonctionnalités</a>
-                    <a href="#ia" className="hover:text-white transition-colors">Intelligence Artificielle</a>
-                    <a href="#pricing" className="hover:text-white transition-colors">Tarification</a>
+                    <a href="#features" className="hover:text-white transition-colors">Expertise</a>
+                    <a href="#ia" className="hover:text-white transition-colors">IA & Outils</a>
+                    <a href="#pricing" className="hover:text-white transition-colors">Plans CFA</a>
                 </div>
                 <div className="flex items-center gap-4">
                     <Link href="/login">
-                        <Button variant="ghost" className="text-slate-300 hover:text-white">Connexion</Button>
+                        <Button variant="ghost" className="text-slate-300 hover:text-white">Accès Cabinet</Button>
                     </Link>
                     <Link href="/login">
                         <Button className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 border-none shadow-[0_0_20px_rgba(245,158,11,0.3)]">
@@ -49,39 +55,34 @@ export default function LandingPage() {
             </nav>
 
             {/* 2. HERO SECTION */}
-            <section className="relative pt-48 pb-32 px-6 overflow-hidden">
+            <section className="relative pt-48 pb-32 px-6 overflow-hidden text-center">
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 -z-10 w-[800px] h-[800px] bg-indigo-600/10 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2" />
                 <div className="absolute bottom-0 left-0 -z-10 w-[600px] h-[600px] bg-amber-500/5 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2" />
 
-                <div className="max-w-6xl mx-auto text-center">
+                <div className="max-w-6xl mx-auto">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-black tracking-widest text-amber-400 mb-8 animate-pulse uppercase">
                         <Sparkles className="h-3 w-3" />
-                        Propulsion IA Juridique Souveraine
+                        L'EXCELLENCE JURIDIQUE À L'ÈRE DE L'IA
                     </div>
                     <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-[0.85] mb-10">
-                        L'AVOCAT <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">AUGMENTÉ</span> <br /> EST ARRIVÉ.
+                        LE CABINET <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">SANS LIMITES.</span>
                     </h1>
                     <p className="max-w-3xl mx-auto text-slate-400 text-lg md:text-2xl font-light leading-relaxed mb-12">
-                        LexPremium fusionne l'excellence du droit avec la puissance de l'IA. Libérez votre temps, sécurisez vos actes et dominez vos dossiers.
+                        Comptabilité OHADA, Intelligence Artificielle, Finance et Mobilité. LexPremium est l'écosystème complet conçu pour les cabinets d'avocats d'élite.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                         <Link href="/login">
                             <Button className="h-16 px-12 text-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-2xl group transition-all shadow-2xl shadow-amber-500/20">
-                                Commencer l'aventure
+                                Lancer mon Cabinet Numérique
                                 <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                        </Link>
-                        <Link href="/login">
-                            <Button variant="outline" className="h-16 px-10 text-xl border-white/10 hover:bg-white/5 text-white rounded-2xl">
-                                Voir la démo
                             </Button>
                         </Link>
                     </div>
                 </div>
             </section>
 
-            {/* 3. PRODUCT PREVIEW SECTION (NEW) */}
+            {/* 3. PRODUCT PREVIEW SECTION */}
             <section className="py-12 px-6">
                 <div className="max-w-7xl mx-auto relative">
                     <div className="absolute inset-0 bg-indigo-500/10 blur-[150px] -z-10 rounded-full" />
@@ -95,56 +96,111 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* 4. BENTO GRID FEATURES */}
+            {/* 4. KEY MODULES SECTION (ACCOUNTING, FINANCE, TOOLS) */}
             <section id="features" className="py-32 px-6">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                        {/* FEATURE 1: IA COMPLEXE */}
-                        <div className="md:col-span-8 group relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/20 p-12 border border-white/5 hover:border-white/10 transition-all">
-                            <div className="relative z-10">
-                                <Cpu className="h-12 w-12 text-indigo-400 mb-8" />
-                                <h3 className="text-3xl font-black text-white mb-6">Intelligence sémantique</h3>
-                                <p className="text-slate-400 text-lg font-light leading-relaxed max-w-lg">
-                                    Notre IA ne se contente pas de chercher, elle comprend. Analyse de pièces adverses, détection de clauses abusives et recherche de jurisprudence en 0.1s.
-                                </p>
-                                <div className="mt-10 flex gap-4 text-xs font-bold text-indigo-300">
-                                    <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">Jurisprudence CCJA</span>
-                                    <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">OCR Haute Précision</span>
-                                </div>
-                            </div>
-                            <div className="absolute -right-20 -bottom-20 opacity-10 group-hover:opacity-20 transition-opacity rotate-12">
-                                <Gavel className="w-96 h-96 text-indigo-500" />
-                            </div>
+                    <div className="text-center mb-20">
+                        <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Une Solution, <span className="text-amber-500">Zéro Compromis.</span></h2>
+                        <p className="text-slate-500 text-lg font-light max-w-2xl mx-auto">
+                            Plus besoin de multiplier les logiciels. LexPremium centralise chaque aspect de votre métier.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* COMPTABILITÉ & FINANCE */}
+                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all">
+                            <Calculator className="h-12 w-12 text-indigo-400 mb-8" />
+                            <h3 className="text-2xl font-bold text-white mb-4">Comptabilité & Finance</h3>
+                            <p className="text-slate-400 font-light leading-relaxed mb-6">
+                                Gestion intégrale conforme aux normes **OHADA & SYSCOHADA**. Suivi des journaux, CARPA, et bilan de rentabilité automatique.
+                            </p>
+                            <ul className="space-y-3 text-sm text-slate-500">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Grand Livre & Balance</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Analyse de Trésorerie</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Facturation & Recouvrement</li>
+                            </ul>
                         </div>
 
-                        {/* FEATURE 2: MOBILE */}
-                        <div className="md:col-span-4 group relative overflow-hidden rounded-[3rem] bg-slate-900 p-12 border border-white/5">
-                            <div className="relative z-10">
-                                <Smartphone className="h-12 w-12 text-amber-500 mb-8" />
-                                <h3 className="text-3xl font-black text-white mb-6">Mobilité Palais</h3>
-                                <p className="text-slate-400 text-lg font-light leading-relaxed">
-                                    Vos dossiers, vos notes de plaidoirie et votre agenda disponibles partout, même au tribunal sans connexion.
-                                </p>
-                            </div>
+                        {/* OUTILS D'AIDE À L'AVOCAT */}
+                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all">
+                            <PenTool className="h-12 w-12 text-amber-500 mb-8" />
+                            <h3 className="text-2xl font-bold text-white mb-4">Aide à la Plaidoirie</h3>
+                            <p className="text-slate-400 font-light leading-relaxed mb-6">
+                                **Génération d'actes intelligente** et outils de rédaction. Chronomètre de plaidoirie pour une maîtrise totale de l'audience.
+                            </p>
+                            <ul className="space-y-3 text-sm text-slate-500">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Agenda Procédural Smart</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Bible des Modèles & Clauses</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Simulateur de Frais & Actes</li>
+                            </ul>
                         </div>
 
-                        {/* FEATURE 3: SECURE */}
-                        <div className="md:col-span-12 group relative overflow-hidden rounded-[3rem] bg-slate-900/50 p-12 border border-white/5 flex flex-col md:flex-row items-center gap-16">
-                            <div className="flex-1">
-                                <ShieldCheck className="h-12 w-12 text-emerald-500 mb-8" />
-                                <h3 className="text-3xl font-black text-white mb-6">Confidentialité de Niveau Militaire</h3>
-                                <p className="text-slate-400 text-lg font-light leading-relaxed">
-                                    Chaque octet de donnée est chiffré. LexPremium garantit le secret professionnel absolu grâce à une architecture distribuée et sécurisée.
-                                </p>
-                            </div>
-                            <div className="flex gap-6">
-                                <div className="bg-slate-800/50 p-8 rounded-3xl border border-white/5 text-center">
-                                    <Lock className="h-10 w-10 text-emerald-500 mx-auto mb-4" />
-                                    <div className="text-white font-bold">AES-256</div>
+                        {/* PORTAIL CLIENT EXTRANET */}
+                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all">
+                            <Users className="h-12 w-12 text-emerald-500 mb-8" />
+                            <h3 className="text-2xl font-bold text-white mb-4">Portail Client Sécurisé</h3>
+                            <p className="text-slate-400 font-light leading-relaxed mb-6">
+                                Offrez à vos clients un **Extranet dédié**. Consultation de l'avancement, dépôt de pièces et paiements sécurisés 24h/24.
+                            </p>
+                            <ul className="space-y-3 text-sm text-slate-500">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Suivi Temps Réel</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Coffre-fort Numérique</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Relation Client Optimisée</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 5. IA & INTELLIGENCE SECTION */}
+            <section id="ia" className="py-24 px-6 relative overflow-hidden bg-slate-950/50">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-20">
+                    <div className="flex-1">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold text-indigo-400 mb-6 uppercase tracking-widest">
+                            Futurisme Juridique
+                        </div>
+                        <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">L'Intelligence Artificielle <br /> <span className="text-amber-500">votre nouveau Collaborateur.</span></h2>
+                        <div className="space-y-8">
+                            <div className="flex gap-4">
+                                <div className="h-10 w-10 shrink-0 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                                    <Cpu className="h-5 w-5 text-amber-500" />
                                 </div>
-                                <div className="bg-slate-800/50 p-8 rounded-3xl border border-white/5 text-center">
-                                    <Globe className="h-10 w-10 text-indigo-400 mx-auto mb-4" />
-                                    <div className="text-white font-bold">Cloud Souverain</div>
+                                <div>
+                                    <h4 className="text-white font-bold mb-2">LexAI : Analyse de Pièces</h4>
+                                    <p className="text-slate-400 text-sm leading-relaxed text-balance">Extractions instantanées, résumés de conclusions et détection d'incohérences sémantiques.</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="h-10 w-10 shrink-0 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                                    <FileSignature className="h-5 w-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <h4 className="text-white font-bold mb-2">Aide à la Rédaction</h4>
+                                    <p className="text-slate-400 text-sm leading-relaxed text-balance">Saisie vocale intelligente et génération dynamique d'actes basés sur votre jurisprudence.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex-1 relative">
+                        <div className="absolute inset-0 bg-amber-500/10 blur-[120px] rounded-full animate-pulse" />
+                        <div className="bg-slate-900 border border-white/5 rounded-[3rem] p-12 relative z-10 shadow-3xl">
+                            <div className="flex items-center gap-3 mb-8">
+                                <Activity className="h-8 w-8 text-amber-500" />
+                                <div className="text-white font-bold text-2xl tracking-tight">LexMonitor</div>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                                    <div className="h-full bg-amber-500 animate-progress" style={{ width: '85%' }} />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                                        <div className="text-[10px] text-slate-500 uppercase font-black mb-1">Précision</div>
+                                        <div className="text-2xl text-white font-black">99.8%</div>
+                                    </div>
+                                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                                        <div className="text-[10px] text-slate-500 uppercase font-black mb-1">Temps Gain</div>
+                                        <div className="text-2xl text-white font-black">+14h<span className="text-xs text-slate-500">/sem</span></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -152,43 +208,78 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* 5. TESTIMONIALS (NEW) */}
-            <section className="py-24 px-6 bg-slate-950/30">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8">
-                        <div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">La voix de vos pairs.</h2>
-                            <p className="text-slate-500 text-lg font-light">Ils ont transformé leur cabinet avec LexPremium.</p>
-                        </div>
-                        <div className="flex gap-2">
-                            {[1, 2, 3, 4, 5].map(i => <Star key={i} className="h-6 w-6 text-amber-500 fill-amber-500" />)}
-                        </div>
+            {/* 6. PRICING SECTION - CFA FRANCS */}
+            <section id="pricing" className="py-32 px-6">
+                <div className="max-w-5xl mx-auto">
+                    <div className="text-center mb-20 text-white">
+                        <h2 className="text-5xl font-black mb-4">Tarification Locale.</h2>
+                        <p className="text-slate-500 text-xl font-light italic">L'excellence accessible à chaque Cabinet.</p>
                     </div>
 
+                    <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+                        {/* PLAN INDIVIDUEL - 50,000 CFA */}
+                        <div className="p-12 rounded-[4rem] bg-slate-900/40 border border-white/5 hover:border-white/20 transition-all flex flex-col items-center text-center">
+                            <div className="text-indigo-400 font-black tracking-widest text-xs mb-6 uppercase">Individuel Prestige</div>
+                            <div className="text-5xl font-black text-white mb-2">50.000 <span className="text-xl font-light text-slate-500 uppercase">F CFA</span></div>
+                            <div className="text-slate-500 mb-12 italic">par mois, sans engagement</div>
+                            <ul className="space-y-5 mb-12 text-left w-full text-slate-400">
+                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Dossiers & Clients Illimités</li>
+                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Assistant IA (Mode Standard)</li>
+                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Comptabilité OHADA Basique</li>
+                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Facturation & Recouvrement</li>
+                            </ul>
+                            <Link href="/login" className="w-full">
+                                <Button variant="outline" className="w-full h-16 rounded-[2rem] border-white/10 text-white text-lg">Choisir Solo</Button>
+                            </Link>
+                        </div>
+
+                        {/* PLAN CABINET - 100,000 CFA */}
+                        <div className="p-12 rounded-[4rem] bg-indigo-600/10 border-2 border-amber-500/50 flex flex-col items-center text-center relative shadow-2xl shadow-amber-500/10">
+                            <div className="absolute top-8 right-12 bg-amber-500 text-slate-950 px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase">Elite</div>
+                            <div className="text-amber-500 font-black tracking-widest text-xs mb-6 uppercase">Cabinet Associé</div>
+                            <div className="text-5xl font-black text-white mb-2">100.000 <span className="text-xl font-light text-amber-500/50 uppercase">F CFA</span></div>
+                            <div className="text-amber-200/50 mb-12 italic">Jusqu'à 10 collaborateurs</div>
+                            <ul className="space-y-5 mb-12 text-left w-full text-slate-300">
+                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> IA Illimitée & Red Teaming</li>
+                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Portail Client Extranet Inclus</li>
+                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Finance Stratégique & Budgets</li>
+                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Support Premium 24/7</li>
+                            </ul>
+                            <Link href="/login" className="w-full">
+                                <Button className="w-full h-16 rounded-[2rem] bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-lg shadow-2xl shadow-amber-500/20">Lancer le Cabinet</Button>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 7. TESTIMONIALS */}
+            <section className="py-24 px-6 bg-slate-950/30">
+                <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-2 gap-8">
                         <div className="p-12 rounded-[3.5rem] bg-slate-900/50 border border-white/5 relative">
                             <Quote className="h-12 w-12 text-indigo-500/20 absolute top-8 left-8" />
                             <p className="text-xl text-slate-300 italic font-light mb-8 relative z-10">
-                                "LexPremium a littéralement libéré mon cabinet. Ce que nous faisions en 2 jours de recherche juridique ne nous prend plus que 10 minutes avec LexAI."
+                                "LexPremium a transformé notre gestion des dossiers OHADA. La comptabilité intégrée et l'agenda smart nous font gagner une journée par semaine."
                             </p>
                             <div className="flex items-center gap-4">
                                 <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-indigo-500 to-indigo-800" />
                                 <div>
                                     <div className="text-white font-bold text-lg">Maître Mamadou Dia</div>
-                                    <div className="text-indigo-400 text-sm">Avocat à la Cour, Cabinet Dia & Associés</div>
+                                    <div className="text-indigo-400 text-sm">Associé Gérant, Cabinet Dia & Partners</div>
                                 </div>
                             </div>
                         </div>
                         <div className="p-12 rounded-[3.5rem] bg-slate-900/50 border border-white/5 relative">
                             <Quote className="h-12 w-12 text-amber-500/20 absolute top-8 left-8" />
                             <p className="text-xl text-slate-300 italic font-light mb-8 relative z-10">
-                                "La gestion financière et le suivi des CARPA sont enfin fluides. L'interface mobile est un vrai bonheur lors de mes déplacements aux tribunaux."
+                                "L'Extranet client change tout. Mes clients peuvent voir l'état de leurs dossiers en temps réel sans m'appeler. Un gain d'image inestimable."
                             </p>
                             <div className="flex items-center gap-4">
                                 <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-amber-500 to-amber-800" />
                                 <div>
                                     <div className="text-white font-bold text-lg">Maître Sophie L.</div>
-                                    <div className="text-amber-500 text-sm">Spécialiste Droit des Affaires</div>
+                                    <div className="text-amber-500 text-sm">Expertise Droit Immobilier</div>
                                 </div>
                             </div>
                         </div>
@@ -196,103 +287,20 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* 6. FAQ STRATÉGIQUE (NEW) */}
-            <section className="py-32 px-6">
-                <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-16">
-                        <HelpCircle className="h-12 w-12 text-indigo-400 mx-auto mb-6" />
-                        <h2 className="text-4xl font-black text-white">Vos questions, notre expertise.</h2>
-                    </div>
-                    <div className="space-y-6">
-                        {[
-                            { q: "Est-ce conforme déontologiquement ?", r: "Absolument. LexPremium a été conçu pour respecter rigoureusement le secret professionnel et les règles de conservation des documents numériques des barreaux." },
-                            { q: "Quid de la sécurité de mes données ?", r: "Données chiffrées en AES-256, hébergement souverain en Europe ou Afrique selon votre région, et sauvegardes quotidiennes inaltérables." },
-                            { q: "Puis-je migrer mes anciens dossiers ?", r: "Oui. Nos ingénieurs accompagnent votre transition en important vos données depuis vos anciens outils (Excel, Word, Logiciels tiers) en moins de 48h." }
-                        ].map((item, idx) => (
-                            <div key={idx} className="p-8 rounded-3xl bg-white/5 border border-white/5">
-                                <h4 className="text-lg font-bold text-white mb-3">{item.q}</h4>
-                                <p className="text-slate-400 font-light leading-relaxed">{item.r}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* 7. PRICING SECTION */}
-            <section id="pricing" className="py-32 px-6">
-                <div className="max-w-5xl mx-auto">
-                    <div className="text-center mb-20 text-white">
-                        <h2 className="text-5xl font-black mb-4">Tarification Transparente.</h2>
-                        <p className="text-slate-500 text-xl font-light">Aucun frais caché. Annulez quand vous voulez.</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-10">
-                        {/* PLAN INDIVIDUEL */}
-                        <div className="p-12 rounded-[4rem] bg-slate-900/40 border border-white/5 hover:border-white/20 transition-all flex flex-col items-center text-center">
-                            <div className="text-indigo-400 font-black tracking-widest text-xs mb-6 uppercase">Individuel</div>
-                            <div className="text-6xl font-black text-white mb-2">99€</div>
-                            <div className="text-slate-500 mb-12">par mois, sans engagement</div>
-                            <ul className="space-y-5 mb-12 text-left w-full">
-                                <li className="flex items-center gap-3 text-slate-300"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Dossiers Illimités</li>
-                                <li className="flex items-center gap-3 text-slate-300"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Assistant IA Premium</li>
-                                <li className="flex items-center gap-3 text-slate-300"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Comptabilité & CARPA</li>
-                            </ul>
-                            <Link href="/login" className="w-full">
-                                <Button variant="outline" className="w-full h-16 rounded-[2rem] border-white/10 text-white text-lg">Choisir Solo prestige</Button>
-                            </Link>
-                        </div>
-
-                        {/* PLAN CABINET */}
-                        <div className="p-12 rounded-[4rem] bg-indigo-600/10 border-2 border-amber-500/50 flex flex-col items-center text-center relative">
-                            <div className="absolute top-8 right-12 bg-amber-500 text-slate-950 px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase">Offre Limitée</div>
-                            <div className="text-amber-500 font-black tracking-widest text-xs mb-6 uppercase">Cabinet Associé</div>
-                            <div className="text-6xl font-black text-white mb-2">299€</div>
-                            <div className="text-amber-200/50 mb-12">Jusqu'à 5 avocats, facturation annuelle</div>
-                            <ul className="space-y-5 mb-12 text-left w-full">
-                                <li className="flex items-center gap-3 text-white font-medium"><CheckCircle2 className="h-5 w-5 text-amber-500" /> IA Illimitée & Red Teaming</li>
-                                <li className="flex items-center gap-3 text-white font-medium"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Support Prioritaire Dédié</li>
-                                <li className="flex items-center gap-3 text-white font-medium"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Signature Électronique Incluse</li>
-                            </ul>
-                            <Link href="/login" className="w-full">
-                                <Button className="w-full h-16 rounded-[2rem] bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-lg shadow-2xl shadow-amber-500/20">Investir dans le Cabinet</Button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 8. CALL TO ACTION FINAL */}
-            <section className="py-40 px-6">
-                <div className="max-w-7xl mx-auto rounded-[5rem] bg-gradient-to-r from-indigo-700 to-indigo-900 p-24 md:p-32 text-center text-white relative overflow-hidden shadow-3xl">
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-                    <Sparkles className="h-16 w-16 text-amber-400/30 mx-auto mb-12 animate-pulse" />
-                    <h2 className="text-6xl md:text-8xl font-black mb-12 relative z-10 leading-[0.9] tracking-tighter">
-                        CONSTRUISONS <br /> VOTRE FUTUR.
-                    </h2>
-                    <Link href="/login">
-                        <Button className="h-20 px-16 text-2xl bg-white text-indigo-700 hover:bg-slate-100 font-black rounded-3xl relative z-10 shadow-3xl transform hover:scale-105 transition-transform">
-                            Demander une Démo gratuite
-                        </Button>
-                    </Link>
-                    <p className="mt-12 text-indigo-200 text-xl font-light relative z-10">Rejoignez l'élite technologique du droit.</p>
-                </div>
-            </section>
-
-            {/* 9. FOOTER */}
+            {/* 8. FOOTER */}
             <footer className="py-20 px-6 border-t border-white/5">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
                     <div className="flex items-center gap-2 font-bold text-2xl tracking-tighter text-white">
                         <Scale className="h-8 w-8 text-amber-500" />
                         <span>LEX<span className="text-amber-500">PREMIUM</span></span>
                     </div>
                     <div className="flex gap-12 text-slate-500 text-sm">
-                        <a href="#" className="hover:text-white transition-colors">Mentions Légales</a>
-                        <a href="#" className="hover:text-white transition-colors">RGPD</a>
-                        <a href="#" className="hover:text-white transition-colors">Sécurité</a>
-                        <a href="#" className="hover:text-white transition-colors">Contact</a>
+                        <a href="#features" className="hover:text-white">Expertise</a>
+                        <a href="#ia" className="hover:text-white">LexAI</a>
+                        <a href="#pricing" className="hover:text-white">Tarifs CFA</a>
                     </div>
-                    <div className="text-slate-600 text-xs tracking-widest uppercase">
-                        &copy; 2026 LexPremium. L'excellence au service de la justice.
+                    <div className="text-slate-600 text-[10px] tracking-widest uppercase font-black">
+                        &copy; 2026 LexPremium. L'excellence au service de la justice OHADA.
                     </div>
                 </div>
             </footer>
