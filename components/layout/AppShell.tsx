@@ -12,7 +12,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     // Define public or standalone routes where the main dashboard shell should NOT appear
     // REMOVED '/' from standalone list because it is now the main Pro Dashboard
-    const isStandalone = pathname?.startsWith('/portal') || pathname?.startsWith('/login') || pathname?.startsWith('/register')
+    const isStandalone = pathname === '/' || pathname?.startsWith('/portal') || pathname?.startsWith('/login') || pathname?.startsWith('/register')
 
     if (isStandalone) {
         return (
