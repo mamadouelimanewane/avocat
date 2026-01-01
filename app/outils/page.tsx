@@ -2,8 +2,9 @@ import { DeadlineCalculator } from "@/components/tools/DeadlineCalculator"
 import { LegalLibrary } from "@/components/tools/LegalLibrary"
 import { LexScanner } from "@/components/tools/LexScanner"
 import { IndemnityCalculator } from "@/components/tools/IndemnityCalculator"
+import { ConflictChecker } from "@/components/tools/ConflictChecker"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Calculator, Clock, BookOpen, ScanSearch } from "lucide-react"
+import { Calculator, Clock, BookOpen, ScanSearch, ShieldAlert } from "lucide-react"
 
 export default function ToolsPage() {
     return (
@@ -16,12 +17,15 @@ export default function ToolsPage() {
             </div>
 
             <Tabs defaultValue="deadlines" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-5">
                     <TabsTrigger value="deadlines" className="gap-2">
                         <Clock className="h-4 w-4" /> Délais
                     </TabsTrigger>
                     <TabsTrigger value="indemnity" className="gap-2">
                         <Calculator className="h-4 w-4" /> Indemnités
+                    </TabsTrigger>
+                    <TabsTrigger value="conflicts" className="gap-2">
+                        <ShieldAlert className="h-4 w-4" /> Conflits
                     </TabsTrigger>
                     <TabsTrigger value="scanner" className="gap-2">
                         <ScanSearch className="h-4 w-4" /> Scanner
@@ -37,6 +41,10 @@ export default function ToolsPage() {
 
                 <TabsContent value="indemnity" className="mt-6">
                     <IndemnityCalculator />
+                </TabsContent>
+
+                <TabsContent value="conflicts" className="mt-6">
+                    <ConflictChecker />
                 </TabsContent>
 
                 <TabsContent value="scanner" className="mt-6">
