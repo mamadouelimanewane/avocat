@@ -225,7 +225,35 @@ export async function analyzeContractText(text: string): Promise<{
     dates: Array<{ label: string, value: string }>
     clauses: Array<{ type: string, text: string, risk?: string }>
 }> {
-    // Extraction des parties
+    // Si une clé API est configurée, on utilise l'IA pour une analyse plus profonde
+    if (DEEPSEEK_API_KEY || OPENAI_API_KEY) {
+        const prompt = `Analyse ce contrat juridique (Droit Sénégalais/OHADA) et extrais les informations suivantes sous forme de JSON uniquement :
+        {
+            "summary": "Résumé concis du contrat",
+            "risks": [{"severity": "HIGH|MEDIUM|LOW", "text": "description du risque"}],
+            "parties": ["Nom Partie 1", "Nom Partie 2"],
+            "dates": [{"label": "Date de signature/Echéance", "value": "2025-..."}],
+            "clauses": [{"type": "Non-concurrence", "text": "contenu", "risk": "avis"}]
+        }
+        
+        TEXTE DU CONTRAT:
+        ${text.substring(0, 10000)}`
+
+        try {
+            const response = await generateCompletion(prompt, [], 'RESEARCH')
+            if (response) {
+                // Nettoyage JSON
+                const jsonStr = response.includes('```')
+                    ? response.split('```')[1].replace('json', '').trim()
+                    : response.trim()
+                return JSON.parse(jsonStr)
+            }
+        } catch (error) {
+            console.error("Erreur analyse IA profonde, basculement sur heuristique:", error)
+        }
+    }
+
+    // --- FALLBACK HEURISTIQUE (Analyse locale si pas d'API) ---
     const parties: string[] = [];
     const partyPatterns = [
         /(?:Société|SARL|SAS|SA)\s+([A-Z][A-Za-zÀ-ÿ\s]+)(?:,|au capital)/gi,
@@ -242,7 +270,6 @@ export async function analyzeContractText(text: string): Promise<{
         }
     });
 
-    // Extraction des dates
     const dates: Array<{ label: string, value: string }> = [];
     const datePattern = /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/g;
     const dateMatches = text.matchAll(datePattern);
@@ -252,58 +279,26 @@ export async function analyzeContractText(text: string): Promise<{
         dateIndex++;
     }
 
-    // Détection de risques juridiques
     const risks: Array<{ severity: 'HIGH' | 'MEDIUM' | 'LOW', text: string }> = [];
-
-    // Risques HAUTE sévérité
     if (/non-concurrence|interdiction de concurrence/i.test(text)) {
         const durationMatch = text.match(/(?:pendant|durée de)\s+(\d+)\s+ans/i);
         if (durationMatch && parseInt(durationMatch[1]) > 2) {
-            risks.push({
-                severity: 'HIGH',
-                text: `Clause de non-concurrence excessive (${durationMatch[1]} ans) - Limite OHADA: 2 ans maximum en principe.`
-            });
+            risks.push({ severity: 'HIGH', text: `Clause de non-concurrence excessive (${durationMatch[1]} ans) - Limite OHADA: 2 ans.` });
         }
     }
 
-    if (/usages du commerce|pratiques commerciales/i.test(text) && !/loi applicable|code/i.test(text)) {
-        risks.push({
-            severity: 'HIGH',
-            text: 'Clause de loi applicable vague ("usages du commerce") - Risque d\'insécurité juridique. Préciser le droit applicable (Code OHADA, droit sénégalais).'
-        });
+    if (/usages du commerce/i.test(text) && !/loi applicable/i.test(text)) {
+        risks.push({ severity: 'HIGH', text: 'Clause de loi applicable vague - Risque d\'insécurité juridique.' });
     }
 
-    if (/résiliation unilatérale|droit de résilier à tout moment/i.test(text)) {
-        risks.push({
-            severity: 'MEDIUM',
-            text: 'Clause de résiliation unilatérale détectée - Vérifier l\'équilibre contractuel et le préavis imposé.'
-        });
-    }
-
-    // Risques MOYENNE sévérité
-    if (!/juridiction compétente|tribunal compétent/i.test(text)) {
-        risks.push({
-            severity: 'MEDIUM',
-            text: 'Absence de clause d\'attribution de juridiction - Risque de litiges sur la compétence territoriale.'
-        });
-    }
-
-    if (!/pénalité|clause pénale|dommages et intérêts/i.test(text)) {
-        risks.push({
-            severity: 'LOW',
-            text: 'Pas de clause pénale détectée - Envisager d\'ajouter des clauses de garantie en cas de manquement.'
-        });
-    }
-
-    // Génération du résumé
-    const summary = `Contrat impliquant ${parties.length} partie(s). ${risks.length} point(s) de vigilance identifié(s). Type de document : ${detectContractType(text)}.`;
+    const summary = `Contrat impliquant ${parties.length} partie(s). ${risks.length} point(s) de vigilance. Type : ${detectContractType(text)}. (Analyse Heuristique)`;
 
     return {
         summary,
         risks,
         parties,
         dates,
-        clauses: [] // Extension future: extraction clause par clause
+        clauses: []
     };
 }
 

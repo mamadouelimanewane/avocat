@@ -8,11 +8,23 @@ import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { LexAIAssistant } from '@/components/ai/LexAIAssistant'
 import { VoiceCommander } from '@/components/ai/VoiceCommander'
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+    children,
+    isLoggedIn
+}: {
+    children: React.ReactNode,
+    isLoggedIn?: boolean
+}) {
     const pathname = usePathname()
-    // Define public or standalone routes where the main dashboard shell should NOT appear
-    // REMOVED '/' from standalone list because it is now the main Pro Dashboard
-    const isStandalone = pathname === '/' || pathname?.startsWith('/portal') || pathname?.startsWith('/login') || pathname?.startsWith('/register')
+
+    // Standalone logic: 
+    // - If it's a portal/login/register page, always standalone.
+    // - If it's the root '/' AND the user is NOT logged in, then it's standalone (marketing).
+    // - IF it's the root '/' AND the user IS logged in, we want full Sidebar/Header (dashboard).
+    const isLoginPage = pathname?.startsWith('/portal') || pathname?.startsWith('/login') || pathname?.startsWith('/register');
+    const isMarketingAtRoot = pathname === '/' && !isLoggedIn;
+
+    const isStandalone = isLoginPage || isMarketingAtRoot;
 
     if (isStandalone) {
         return (
@@ -32,7 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </main>
                 <div className="relative z-[100]">
                     <LexAIAssistant />
-                    {/* <VoiceCommander /> */}
+                    <VoiceCommander />
                 </div>
                 <MobileBottomNav />
             </div>

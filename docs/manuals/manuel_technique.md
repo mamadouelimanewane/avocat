@@ -28,6 +28,12 @@ Le cœur de l'innovation de *LexPremium* réside dans son intégration profonde 
 - *Moteur de Dialogue contextuel* : Basé sur les modèles les plus puissants au monde (GPT-4o), il est configuré avec une base de connaissances spécifique au Droit Civil et à l'Acte Unique OHADA.
 - *Extraction de Données (OCR)* : Utilise désormais **Tesseract.js** (basé sur le moteur Google Tesseract LSTM). Résultat attendu : capable de lire des photos de mauvaise qualité, des scans inclinés et des polices complexes, le tout en local côté serveur pour une confidentialité totale.
 - *Parapheur Numérique* : Implémentation via Canvas HTML5. Les signatures sont converties en vecteurs SVG ou images PNG haute résolution, cryptées en base64 et stockées de manière immuable avec le hash du document.
+- **Pipeline de Génération Procédurale** : Utilisation de modèles LLM structurés (JSON Mode).
+- **Tactical Analytics Engine** : 
+    - *Nexus Graph* : Utilise des algorithmes de théorie des graphes pour identifier les clusters et les chemins critiques entre les entités (Personnes, Sociétés, Juridictions).
+    - *Sherlock Scraper* : Pipeline d'agrégation de données publiques et OSINT (Open Source Intelligence) avec filtrage sémantique.
+    - *Magistrat Profiling* : Agrégation statistique des métadonnées de jurisprudence (décisions par chambre/juge).
+- **Quantum Financial Engine** : Moteur de calcul flottant haute précision pour les simulations d'indemnités (Labor Law, Civil Liability) avec rendu dynamique côté client.
 - **NOUVEAU - Pipeline de Génération Procédurale** : Utilisation de modèles LLM structurés (JSON Mode) pour convertir des requêtes en langage naturel ("Procédure de divorce") en une série d'objets temporels (Tâches, Événements) injectés directement dans le graphe de données du dossier via une transaction atomique.
 - **OmniSearch Hybride** : Architecture de recherche avancée combinant :
     1.  **Prisma / MongoDB** : Pour les requêtes structurées (WHERE title CONTAINS...)
@@ -55,7 +61,13 @@ Le déploiement est assuré par l'infrastructure mondiale de **Vercel**. Résult
 
 ---
 
-## CHAPITRE 5 : GESTION DE L'ARCHIVAGE ET CYCLE DE VIE
+## CHAPITRE 5 : COMPLIANCE ET PRÉVISION FINANCIÈRE
+- **Centif Guard™ Architecture** : Système de monitoring passif des flux financiers. Il compare chaque `Transaction` entrante ou sortante (CARPA) à des dictionnaires de risques (Pays, Mots-clés, PEP) avant validation.
+- **Cashflow Oracle Logic** : Utilise des séries temporelles et une analyse de corrélation (`paymentDelay` vs `clientRating`) pour projeter la trésorerie disponible à J+180.
+- **Snap-to-SYSCOHADA OCR** : Intégration de pipelines d'extraction spécialisés pour la détection de champs comptables (Montant HT, TVA, Date, Fournisseur) avec mapping conditionnel vers les schémas de comptes OHADA.
+
+## CHAPITRE 6 : GESTION DE L'ARCHIVAGE ET CYCLE DE VIE
+
 - **Module d'Archivage Physique et Numérique** : L'archivage d'un dossier déclenche une double action :
     1.  Mise à jour du statut du `Dossier` vers `ARCHIVE`.
     2.  Migration des `Documents` liés vers un `ArchiveBoxId` spécifique, avec horodatage immuable de l'archivage.
@@ -63,5 +75,6 @@ Le déploiement est assuré par l'infrastructure mondiale de **Vercel**. Résult
 
 ---
 **LexPremium - L'Ingénierie de pointe au service du Droit.**
-*Documentation mise à jour : Décembre 2025*
-*SCP d'Avocats Dia & Associés*
+*Documentation mise à jour : Janvier 2026 - Version Masterclass*
+*Cabinet LexPremium AI Innovations*
+

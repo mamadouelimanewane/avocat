@@ -2,7 +2,9 @@
 "use client"
 
 import { SmartInvoiceGenerator } from "@/components/facturation/SmartInvoiceGenerator"
+import { FinancialXRay } from "@/components/ai/FinancialXRay"
 import { Button } from "@/components/ui/button"
+
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
@@ -19,9 +21,15 @@ export default function SmartInvoicePage() {
                 </div>
             </div>
 
-            <div className="max-w-3xl mx-auto">
-                <SmartInvoiceGenerator onInvoiceGenerated={(items) => console.log("Items generated:", items)} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                    <SmartInvoiceGenerator onInvoiceGenerated={(items) => console.log("Items generated:", items)} />
+                </div>
+                <div className="space-y-6">
+                    <FinancialXRay />
+                </div>
             </div>
+
         </div>
     )
 }

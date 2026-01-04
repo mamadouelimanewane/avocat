@@ -25,6 +25,11 @@ Le *Tableau de Bord* est la "Tour de Contrôle" de votre cabinet, offrant une vu
 - **Cliquer sur le bouton *Nouveau Client*** : Cette action fait apparaître une fenêtre de saisie prioritaire permettant d'enregistrer les coordonnées et le profil d'un nouveau mandant en quelques secondes.
 - **Cliquer sur le bouton *Nouveau Dossier*** : Vous ouvrez ainsi l'interface de création d'affaire où vous pourrez définir la juridiction compétente et rattacher le dossier à un client déjà présent dans votre base.
 - **Cliquer sur un item du *Flux de Veille*** : Le logiciel déploie alors le texte intégral de l'arrêt ou de la loi concernée, vous permettant une lecture approfondie accompagnée d'une synthèse automatique réalisée par l'IA.
+- **NOUVEAU - Voice Commander (Dictée Héroïque)** : 
+    - Cliquez sur l'icône *Micro* dans le header. 
+    - *Usage* : Énoncez une commande naturelle comme "Ouvre le dossier Seneweb" ou "Crée une facture de 500.000 pour M. Sy".
+    - *Résultat* : L'IA analyse l'intention et exécute l'action de navigation ou de création de donnée sans clic.
+
 
 ---
 
@@ -44,6 +49,11 @@ Le module *Dossiers* constitue le cœur battant de votre pratique juridique, où
 - **Cliquer sur *Ouvrir* dans le tableau** : Vous pénétrez dans l'espace de travail dédié au dossier sélectionné, où sont regroupés tous les documents, la chronologie des faits et l'état financier de l'affaire.
 - **Bouton *Importer* (dans l'onglet Documents)** : Cette commande permet de télécharger des pièces depuis votre ordinateur vers le serveur sécurisé du cabinet. Résultat attendu : le fichier est automatiquement analysé par l'IA pour en extraire le texte intégral (OCR).
 - **Cliquer sur l'onglet *Chronologie (Timeline)*** : Vous affichez alors l'historique exhaustif de toutes les actions menées sur le dossier, des coups de téléphone enregistrés aux audiences passées, offrant une preuve irréfutable des diligences accomplies.
+- **NOUVEAU - Utiliser l'Onglet *War Room (Tablette)*** : 
+    - Conçu pour le Palais. Affiche une interface sombre hautement lisible sous le soleil, avec accès direct aux conclusions adverses et à vos notes.
+- **NOUVEAU - Utiliser l'Onglet *Justice Prédictive*** : 
+    - *Calculateur de Probabilités* : Simule l'issue du litige basée sur l'historique des jugements de la juridiction saisie.
+    - *Aide à la Riposte* : Saisie sémantique pour trouver la faille dans l'argumentaire adverse.
 - **NOUVEAU - Utiliser l'Onglet *Procédure avec IA*** : 
     - *Bouton "Générer avec LexAI"* : En cliquant ici, vous activez l'IA juriste qui va analyser le contexte du dossier (ex: "Licenciement abusif" ou "Recouvrement de créance") et l'étape procédurale actuelle.
     - *Résultat* : Une liste chronologique des prochaines étapes obligatoires apparaît (ex: "Signifier conclusions sous 15 jours", "Audience de mise en état").
@@ -91,12 +101,15 @@ Ce module assure la rigueur financière nécessaire à la pérennité de votre c
 ### 5.2 Actions & Résultats Attendus
 - **Bouton *Saisir Écriture*** : Ouvre l'interface de saisie en partie double. Résultat attendu : une fois validée, l'écriture met à jour instantanément votre Grand Livre et votre Balance sans aucune autre manipulation.
 - **Bouton *Exporter Balance*** : Génère au format Excel l'intégralité de vos comptes. Résultat : un document prêt à être transmis à votre expert-comptable pour les états financiers de fin d'année.
-- **NOUVEAU - Module *Éditions Comptables Complètes*** :
-    - Accessible via le bouton "Éditions" ou le menu contextuel.
-    - *Balance Générale PDF* : Génère un document officiel à 6 colonnes, prêt pour l'administration fiscale.
-    - *Grand Livre PDF* : Produit un livret détaillant chaque mouvement compte par compte, essentiel pour les audits.
-    - *Bilan & Compte de Résultat* : Le système compile automatiquement tous les soldes pour produire les états de synthèse annuels au format strict du *SYSCOHADA Révisé*.
-- **Cliquer sur l'onglet *Bilan (OHADA)*** : Le logiciel réorganise vos données comptables pour présenter une photographie fidèle de votre patrimoine, séparant ce que le cabinet possède (Actif) de ce qu'il doit (Passif).
+- **NOUVEAU - Snap-to-SYSCOHADA** : 
+    - Déposez une facture dans le module **Scan IA**.
+    - *Extraction* : Le système identifie le Fournisseur, le montant HT et la TVA.
+    - *Imputation* : L'IA suggère le plan de compte (ex: 604 - Achats). Un bouton "Valider" génère l'écriture comptable complète.
+- **NOUVEAU - Centif Guard (Compliance)** : 
+    - Scanner anti-blanchiment en temps réel lors des maniements de fonds. Vérifie les listes mondiales de sanctions et les bénéficiaires effectifs.
+- **NOUVEAU - Cashflow Oracle** : 
+    - Prédiction de trésorerie à 6 mois. L'IA apprend des délais de paiement passés pour projeter vos liquidités réelles futures.
+
 
 ---
 
@@ -116,13 +129,17 @@ La gestion des fonds de tiers est une obligation déontologique que LexPremium s
 ## CHAPITRE 7 : INTELLIGENCE ARTIFICIELLE ET OUTILS MÉTIERS
 Ce chapitre regroupe les modules exclusifs qui font de LexPremium un ERP de troisième génération.
 
-### 7.1 Assistant IA et Scanner Adverse
-- *Assistant IA* : Une interface de dialogue naturel où vous pouvez poser des questions juridiques complexes. Résultat : vous recevez une réponse argumentée citant les textes de lois applicables.
-- *Scanner Adverse* : Module permettant de télécharger les mémoires ou conclusions de vos adversaires. Résultat attendu : l'IA déconstruit l'argumentaire opposé et vous suggère des failles juridiques exploitables pour votre plaidoirie.
+### 7.1 L'Arsenal Tactique
+- **Magistrat Intel™** : Visualisez le profil du juge : win-rate, sévérité, et style de plaidoirie préféré (Équité vs Procédural).
+- **Sherlock OSINT™** : Scan d'actifs et solvabilité adverse. Vérifie les registres fonciers, les parts sociales et l'e-réputation des parties adverses.
+- **Nexus Graph™** : Cartographie des liens d'influence entre juges, avocats et entreprises pour détecter tout conflit d'intérêt préjudiciable.
+- **Quantum Simulator™** : Interface immersive pour simuler les dommages-intérêts et forcer un accord lors des négociations.
+- **Execution Commander™** : Carte tactique de Dakar pour gérer le recouvrement forcé et coordonner vos huissiers.
 
-### 7.2 Générateur de Contrats et Recherche IA
-- *Générateur de Contrats* : Choisissez un modèle (Bail, Statuts), remplissez les variables. Résultat : un document .docx juridiquement blindé est généré automatiquement.
-- *Recherche IA Global* : Cet outil révolutionnaire permet de retrouver une information précise (ex: une clause de non-concurrence spécifique) dans l'intégralité des milliers de documents stockés par le cabinet, même s'il s'agit de scans d'images (grâce à l'OCR).
+### 7.2 GED 2.0 & Parapheur
+- **Parapheur Numérique** : Circuit de validation documentaire visuel.
+- **Auto-Classifier** : L'IA range et nomme vos documents en analysant leur contenu sémantique.
+
 
 ---
 
@@ -139,5 +156,6 @@ Situé en permanence en bas de votre menu latéral, cet outil capture la valeur 
 
 ---
 **LexPremium - Le Droit, la Technologie et l'IA réunis pour l'excellence.**
-*Documentation mise à jour : Décembre 2025*
-*SCP d'Avocats Dia & Associés*
+*Documentation mise à jour : Janvier 2026 - Version Masterclass*
+*Cabinet LexPremium*
+

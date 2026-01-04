@@ -15,16 +15,21 @@ export const metadata: Metadata = {
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 
+import { cookies } from 'next/headers';
+
 export default function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const cookieStore = cookies();
+    const isLoggedIn = !!cookieStore.get('auth_token')?.value;
+
     return (
         <html lang="fr" suppressHydrationWarning>
             <body className={`${inter.variable} ${outfit.variable} font-sans bg-background text-foreground min-h-screen`} suppressHydrationWarning>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                    <AppShell>
+                    <AppShell isLoggedIn={isLoggedIn}>
                         {children}
                     </AppShell>
                     <Toaster />

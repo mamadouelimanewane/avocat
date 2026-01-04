@@ -162,6 +162,15 @@ export async function runOCR(documentId: string) {
                 updates.folder = classification.folder
                 updates.tags = JSON.stringify(classification.tags)
 
+                // --- NEW : ANALYSE JURIDIQUE PROFONDE SI CONTRAT ---
+                if (classification.category === 'ACTE' || extractedText.toLowerCase().includes('contrat')) {
+                    const { analyzeContractText } = await import('@/lib/ai')
+                    const analysis = await analyzeContractText(extractedText)
+
+                    // Stocker l'analyse dans le contenu OCR ou des métadonnées étendues
+                    updates.ocrContent = `[ANALYSE LEXAI]\nRésumé: ${analysis.summary}\n\nRisques:\n${analysis.risks.map(r => `- [${r.severity}] ${r.text}`).join('\n')}\n\n--- TEXTE BRUT ---\n${extractedText}`
+                }
+
                 // Handle Detected Deadline
                 if (classification.detectedDeadline) {
                     const { date, type, reason } = classification.detectedDeadline
@@ -2652,13 +2661,76 @@ export async function deleteTemplate(id: string) {
 
 export async function updateDossierStatus(dossierId: string, columnId: string) {
     try {
+        const column = await prisma.kanbanColumn.findUnique({ where: { id: columnId } })
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { client: true, assignedTo: true }
+        })
+
+        if (!column || !dossier) return { success: false }
+
+        // Mettre à jour le statut en base
         await prisma.dossier.update({
             where: { id: dossierId },
             data: { columnId: columnId }
         })
+
+        // --- AUTOMATISATION DES WORKFLOWS (Side Effects) ---
+        const title = column.title.toLowerCase()
+
+        // 1. Détecter si c'est une étape de facturation
+        if (title.includes('facture') || title.includes('billing')) {
+            // Créer une facture brouillon automatique
+            await createInvoice({
+                clientId: dossier.clientId,
+                dossierId: dossier.id,
+                items: [{ description: `Honoraires - Étape ${column.title}`, quantity: 1, unitPrice: 250000 }],
+                type: 'FACTURE'
+            })
+        }
+
+        // 2. Détecter si c'est une étape de clôture
+        if (title.includes('terminé') || title.includes('clôturé') || title.includes('done')) {
+            // Envoyer un email automatique au client
+            if (dossier.client?.email) {
+                await sendEmail({
+                    to: dossier.client.email,
+                    subject: `Finalisation de votre dossier : ${dossier.reference}`,
+                    html: `
+                        <div style="font-family: sans-serif; padding: 20px;">
+                            <h2>Information Cabinet LexPremium</h2>
+                            <p>Cher(e) <b>${dossier.client.name}</b>,</p>
+                            <p>Nous avons le plaisir de vous informer que votre dossier <b>${dossier.title}</b> est désormais terminé.</p>
+                            <p>Vous pouvez consulter les documents finaux sur votre portail client.</p>
+                            <br/>
+                            <p>Cordialement,<br/>L'équipe LexPremium</p>
+                        </div>
+                    `
+                })
+            }
+        }
+
+        // 3. Créer une tâche automatique si c'est une étape de diligence
+        if (title.includes('procédure') || title.includes('audience')) {
+            await prisma.task.create({
+                data: {
+                    title: `Préparer l'étape : ${column.title}`,
+                    description: `Dossier déplacé dans ${column.title}. Vérifier les délais.`,
+                    priority: 'HAUTE',
+                    dossierId: dossier.id,
+                    assignedToId: dossier.assignedToId || undefined,
+                    dueDate: new Date(Date.now() + 48 * 60 * 60 * 1000) // J+2
+                }
+            })
+        }
+
         revalidatePath('/workflows')
-        return { success: true }
+        revalidatePath('/factures')
+        revalidatePath('/taches')
+
+        return { success: true, message: `Dossier déplacé vers ${column.title} (Actions auto déclenchées)` }
     } catch (e) {
+        console.error("Workflow Automation Error:", e)
         return { success: false }
     }
 }
@@ -4524,5 +4596,102 @@ export async function archiveDossier(dossierId: string, archiveBoxId: string) {
         return { success: true }
     } catch (e) {
         return { success: false }
+    }
+}
+
+// ============ LEXAI AVANT-GARDE ============
+
+export async function generateExecutiveSummary(dossierId: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: {
+                client: true,
+                documents: { take: 5, orderBy: { updatedAt: 'desc' }, where: { ocrContent: { not: null } } },
+                tasks: { where: { completed: false }, take: 5 },
+                event: { where: { startDate: { gte: new Date() } }, take: 3, orderBy: { startDate: 'asc' } },
+                carpaTransactions: true,
+                expenses: true
+            }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier non trouvé" }
+
+        // CACHE LOGIC: Check if summary exists and is fresh (generated AFTER last update)
+        if (dossier.aiSummary && dossier.aiSummaryAt && dossier.updatedAt <= dossier.aiSummaryAt) {
+            return { success: true, summary: dossier.aiSummary, cached: true }
+        }
+
+        const carpaBalance = dossier.carpaTransactions.reduce((acc: number, t: any) => acc + t.amount, 0)
+        const totalExpenses = dossier.expenses.reduce((acc: number, e: any) => acc + e.amount, 0)
+
+        const docSummaries = dossier.documents.map(d => `${d.name}: ${d.ocrContent?.substring(0, 100)}...`).join('\n')
+        const taskTitles = dossier.tasks.map(t => t.title).join(', ')
+        const upcomingEvents = dossier.event.map(e => `${e.title} le ${e.startDate.toLocaleDateString()}`).join(', ')
+
+        const prompt = `Génère une synthèse executive FLASH (style 60 secondes pour un avocat d'élite) :
+        Dossier : ${dossier.title} | Client : ${dossier.client.name}
+        Finance : Solde CARPA ${carpaBalance} CFA | Débours ${totalExpenses} CFA
+        Actualité : ${docSummaries}
+        Agenda : ${upcomingEvents}
+        Tâches : ${taskTitles}
+        
+        Réponds avec :
+        1. 📍 STATUT ACTUEL (1 phrase)
+        2. ⚡ URGENCES & RISQUES
+        3. 🎯 ACTIONS PRIORITAIRES
+        4. 💰 SOLDE & RENTABILITÉ`
+
+        const summary = await generateCompletion(prompt, [], "RESEARCH")
+
+        if (summary) {
+            // Save to Cache
+            await prisma.dossier.update({
+                where: { id: dossierId },
+                data: {
+                    aiSummary: summary,
+                    aiSummaryAt: new Date()
+                }
+            })
+        }
+
+        return { success: true, summary: summary || "Erreur de génération.", cached: false }
+    } catch (e) {
+        return { success: false, message: "Erreur technique" }
+    }
+}
+
+export async function askDossierAIAssistant(dossierId: string, question: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: {
+                client: true,
+                documents: {
+                    where: { ocrContent: { not: null } },
+                    take: 10,
+                    orderBy: { updatedAt: 'desc' }
+                }
+            }
+        })
+
+        if (!dossier) return { success: false, message: "Dossier non trouvé" }
+
+        const contextDocs = dossier.documents.map(d => ({
+            title: d.name,
+            content: d.ocrContent || "",
+            reference: d.category || "DOCUMENT"
+        }))
+
+        const prompt = `En tant qu'assistant juridique d'élite travaillant sur le dossier "${dossier.title}" pour le client "${dossier.client.name}", réponds à cette question en te basant exclusivement sur les documents du dossier fournis en contexte :
+        
+        QUESTION : "${question}"
+        
+        Si l'information n'est pas dans les documents, précise-le.`
+
+        const answer = await generateCompletion(prompt, contextDocs, "RESEARCH")
+        return { success: true, answer: answer || "Désolé, je n'ai pas pu trouver l'information." }
+    } catch (e) {
+        return { success: false, message: "Erreur Chat IA" }
     }
 }

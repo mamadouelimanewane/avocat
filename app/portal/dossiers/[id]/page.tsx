@@ -19,6 +19,8 @@ import {
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { ProcedureTracker } from '@/components/portal/ProcedureTracker'
+
 
 export default async function PortalDossierDetailPage({ params }: { params: { id: string } }) {
     const { success, dossier } = await getPortalDossierById(params.id)
@@ -79,31 +81,14 @@ export default async function PortalDossierDetailPage({ params }: { params: { id
                                         L'instruction suit son cours conformément au calendrier établi.
                                     </p>
 
-                                    {/* Vertical Timeline */}
-                                    <div className="space-y-6 mt-8">
-                                        <div className="relative pl-8 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
-                                            <div className="relative mb-8">
-                                                <div className="absolute -left-8 top-1 h-6 w-6 rounded-full bg-emerald-500 border-4 border-white shadow-sm flex items-center justify-center">
-                                                    <CheckCircle2 className="h-3 w-3 text-white" />
-                                                </div>
-                                                <h4 className="font-bold text-slate-900">Ouverture du dossier</h4>
-                                                <p className="text-sm text-slate-500">{formatDate(dossier.createdAt)}</p>
-                                                <p className="text-sm text-slate-600 mt-1">Prise en charge initiale et constitution du dossier.</p>
-                                            </div>
-
-                                            <div className="relative mb-2">
-                                                <div className="absolute -left-8 top-1 h-6 w-6 rounded-full bg-indigo-500 border-4 border-white shadow-sm flex items-center justify-center animate-pulse" />
-                                                <h4 className="font-bold text-indigo-700">Phase actuelle : {dossier.stage || 'Instruction'}</h4>
-                                                <p className="text-sm text-slate-500">Dernière mise à jour le {formatDate(dossier.updatedAt)}</p>
-                                                <div className="mt-3 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-                                                    <p className="text-sm text-indigo-900 font-medium flex items-center gap-2">
-                                                        <AlertCircle className="h-4 w-4" />
-                                                        Action requise : Aucun document à signer pour le moment
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    {/* Procedure Tracker (LexPremium Style) */}
+                                    <div className="mt-8 px-4 pb-4">
+                                        <ProcedureTracker
+                                            currentStage={dossier.stage || 'OUVERTURE'}
+                                            estimatedCompletion="Prochaine étape prévue dans 12 jours"
+                                        />
                                     </div>
+
                                 </CardContent>
                             </Card>
                         </TabsContent>

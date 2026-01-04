@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import Link from 'next/link'
+import { SmartGEDWorkflow } from '@/components/documents/SmartGEDWorkflow'
+
 
 const prisma = new PrismaClient()
 
@@ -48,7 +50,11 @@ export default async function DocumentsPage({ searchParams }: { searchParams: { 
                 </div>
             </div>
 
+            {/* Smart Workflow & Parapheur */}
+            <SmartGEDWorkflow />
+
             {/* Stats / Folders Quick Access */}
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {['Actes', 'Preuves', 'Correspondances', 'Administratif'].map(cat => (
                     <Card key={cat} className="hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer transition-colors">

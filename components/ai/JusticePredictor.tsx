@@ -13,8 +13,8 @@ import { getJusticePrediction } from "@/app/actions"
 
 // ... imports ...
 
-export function JusticePredictor() {
-    const [caseDescription, setCaseDescription] = useState("Litige commercial : Recouvrement de créances impayées (Facture N° 2024-056) d'un montant de 15.000.000 FCFA contre la société 'Bâtisseurs du Sahel'. Le débiteur conteste la qualité du ciment livré, mais a signé le bon de livraison sans réserve. Mise en demeure infructueuse envoyée le 10/11/2024.")
+export function JusticePredictor({ initialDescription = "" }: { initialDescription?: string }) {
+    const [caseDescription, setCaseDescription] = useState(initialDescription || "Litige commercial : Recouvrement de créances impayées (Facture N° 2024-056) d'un montant de 15.000.000 FCFA contre la société 'Bâtisseurs du Sahel'. Le débiteur conteste la qualité du ciment livré, mais a signé le bon de livraison sans réserve. Mise en demeure infructueuse envoyée le 10/11/2024.")
     const [jurisdiction, setJurisdiction] = useState("dakar_commerce")
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [result, setResult] = useState<any>(null)

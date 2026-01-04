@@ -41,7 +41,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
     const pathname = usePathname();
 
     const translatedNavigation = [
-        { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
+        { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
         { name: 'Dossiers', href: '/dossiers', icon: Briefcase },
         { name: 'Clients', href: '/clients', icon: Users },
         { name: 'Agenda', href: '/agenda', icon: Calendar },

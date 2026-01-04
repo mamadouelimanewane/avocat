@@ -1,16 +1,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Clock, Calendar, CheckCircle2, AlertCircle } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import DocumentsTab from '@/components/dossier/DocumentsTab'
-import FinanceTab from '@/components/dossier/FinanceTab'
-import ExpensesTab from '@/components/dossier/ExpensesTab'
-import DossierOverview from '@/components/dossier/DossierOverview'
-import ProcedureTab from '@/components/dossier/ProcedureTab'
+import DossierDetailClient from '@/components/dossier/DossierDetailClient'
 
 export default async function DossierDetailPage({ params }: { params: { id: string } }) {
     const dossier = await prisma.dossier.findUnique({
@@ -51,80 +42,10 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
     })
 
     return (
-        <div className="space-y-6">
-            {/* Top Navigation */}
-            <div className="flex items-center gap-4 text-sm text-slate-500 mb-6">
-                <Link href="/dossiers" className="hover:text-slate-900 flex items-center">
-                    <ArrowLeft className="h-4 w-4 mr-1" /> Dossiers
-                </Link>
-                <span>/</span>
-                <span className="font-medium text-slate-900">{dossier.reference}</span>
-            </div>
-
-            {/* Header Info */}
-            <div className="flex items-start justify-between">
-                <div>
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900">{dossier.title}</h1>
-                        <Badge variant={dossier.status === 'OUVERT' ? 'success' : 'default'} className="mt-1">
-                            {dossier.status}
-                        </Badge>
-                    </div>
-                    <p className="text-slate-500 mt-2 text-lg">
-                        Client : <span className="font-semibold text-slate-800">{dossier.client.name}</span>
-                    </p>
-                </div>
-
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                        <Clock className="mr-2 h-4 w-4" /> Saisir Temps
-                    </Button>
-                    <Button size="sm" className="bg-slate-900 text-white">Facturer</Button>
-                </div>
-            </div>
-
-            {/* Main Content Tabs */}
-            <div className="mt-8">
-                <Tabs defaultValue="documents" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4 lg:w-[400px]">
-                        <TabsTrigger value="overview">Vue Global</TabsTrigger>
-                        <TabsTrigger value="documents">GED & Actes</TabsTrigger>
-                        <TabsTrigger value="expenses">Frais</TabsTrigger>
-                        <TabsTrigger value="procedure">Procédure</TabsTrigger>
-                        <TabsTrigger value="billing">Finances</TabsTrigger>
-                    </TabsList>
-
-                    <div className="mt-6">
-                        <TabsContent value="overview">
-                            <DossierOverview dossier={dossier} />
-                        </TabsContent>
-
-                        <TabsContent value="expenses">
-                            <ExpensesTab dossierId={dossier.id} expenses={expenses} />
-                        </TabsContent>
-
-                        <TabsContent value="documents">
-                            <DocumentsTab dossierId={dossier.id} templates={templates} initialDocuments={dossier.documents} />
-                        </TabsContent>
-
-                        <TabsContent value="procedure">
-                            <ProcedureTab
-                                dossierId={dossier.id}
-                                currentStage={dossier.stage || 'SAISINE'}
-                                procedureType={dossier.procedureType || 'CIVIL'}
-                            />
-                        </TabsContent>
-
-                        <TabsContent value="billing">
-                            <FinanceTab
-                                dossierId={dossier.id}
-                                carpaTransactions={dossier.carpaTransactions}
-                                expenses={expenses}
-                            />
-                        </TabsContent>
-                    </div>
-                </Tabs>
-            </div>
-        </div>
+        <DossierDetailClient
+            dossier={dossier}
+            templates={templates}
+            expenses={expenses}
+        />
     )
 }

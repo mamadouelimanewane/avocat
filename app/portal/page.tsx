@@ -128,37 +128,76 @@ export default function ClientPortalDashboard() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* List of Dossiers */}
-                    <Card className="border-slate-200 shadow-sm overflow-hidden">
-                        <CardHeader className="bg-white border-b">
-                            <CardTitle className="text-lg">Mes Dossiers</CardTitle>
-                        </CardHeader>
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-slate-50/50">
-                                    <TableHead>Référence</TableHead>
-                                    <TableHead>Titre</TableHead>
-                                    <TableHead>Statut</TableHead>
-                                    <TableHead className="text-right">Détails</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {allDossiers.map((d: any) => (
-                                    <TableRow key={d.id} className="hover:bg-slate-50/50 transition-colors">
-                                        <TableCell className="font-mono text-xs font-bold text-indigo-600">{d.reference}</TableCell>
-                                        <TableCell className="font-medium text-slate-900 truncate max-w-[200px]">{d.title}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={d.status === 'OUVERT' ? 'success' : 'secondary'}>{d.status}</Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <Button variant="ghost" size="sm" className="h-8">
-                                                <ExternalLink className="h-4 w-4" />
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </Card>
+                    <div className="space-y-6">
+                        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <Clock className="h-5 w-5 text-indigo-600" /> Suivi de mes Affaires (Live Tracking)
+                        </h2>
+
+                        <div className="grid grid-cols-1 gap-6">
+                            {allDossiers.map((d: any) => {
+                                const steps = [
+                                    { label: 'Saisine', status: 'COMPLETED' },
+                                    { label: 'Instruction', status: d.stage === 'INSTRUCTION' ? 'CURRENT' : (['INSTRUCTION', 'PLAIDOIRIE', 'DELIBERE', 'TERMINE'].includes(d.stage) ? 'COMPLETED' : 'PENDING') },
+                                    { label: 'Plaidoirie', status: d.stage === 'PLAIDOIRIE' ? 'CURRENT' : (['PLAIDOIRIE', 'DELIBERE', 'TERMINE'].includes(d.stage) ? 'COMPLETED' : 'PENDING') },
+                                    { label: 'Délibéré', status: d.stage === 'DELIBERE' ? 'CURRENT' : (['DELIBERE', 'TERMINE'].includes(d.stage) ? 'COMPLETED' : 'PENDING') },
+                                    { label: 'Jugement', status: d.stage === 'TERMINE' ? 'COMPLETED' : 'PENDING' },
+                                ]
+
+                                return (
+                                    <Card key={d.id} className="border-none shadow-lg overflow-hidden bg-white ring-1 ring-slate-100">
+                                        <div className="bg-slate-900 p-4 flex justify-between items-center">
+                                            <div>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Dossier #{d.reference}</p>
+                                                <h3 className="text-white font-bold">{d.title}</h3>
+                                            </div>
+                                            <Badge className="bg-indigo-500 text-white border-none">
+                                                {d.status}
+                                            </Badge>
+                                        </div>
+                                        <CardContent className="p-6">
+                                            {/* Amazon Style Stepper */}
+                                            <div className="relative flex justify-between items-center w-full max-w-4xl mx-auto py-4">
+                                                {/* Process Line */}
+                                                <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-100 -translate-y-1/2 z-0" />
+
+                                                {steps.map((step, i) => (
+                                                    <div key={i} className="relative z-10 flex flex-col items-center gap-2">
+                                                        <div className={`h-8 w-8 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${step.status === 'COMPLETED' ? 'bg-emerald-500 border-emerald-500 text-white' :
+                                                                step.status === 'CURRENT' ? 'bg-white border-indigo-600 text-indigo-600 animate-pulse scale-110 shadow-lg' :
+                                                                    'bg-white border-slate-200 text-slate-300'
+                                                            }`}>
+                                                            {step.status === 'COMPLETED' ? (
+                                                                <ShieldCheck className="h-4 w-4" />
+                                                            ) : (
+                                                                <span className="text-[10px] font-bold">{i + 1}</span>
+                                                            )}
+                                                        </div>
+                                                        <span className={`text-[10px] font-bold uppercase ${step.status === 'COMPLETED' ? 'text-emerald-600' :
+                                                                step.status === 'CURRENT' ? 'text-indigo-600' : 'text-slate-400'
+                                                            }`}>
+                                                            {step.label}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <div className="mt-8 pt-6 border-t border-slate-50 flex justify-between items-center text-sm">
+                                                <div className="text-slate-500">
+                                                    Dernière mise à jour : <span className="font-semibold text-slate-900">{formatDate(d.updatedAt)}</span>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <Button variant="outline" size="sm" className="text-xs">Timeline détaillée</Button>
+                                                    <Button size="sm" className="bg-slate-100 text-slate-900 hover:bg-slate-200 border-none text-xs">
+                                                        Donner un avis
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                )
+                            })}
+                        </div>
+                    </div>
 
                     {/* Important Documents */}
                     <Card className="border-slate-200 shadow-sm overflow-hidden">

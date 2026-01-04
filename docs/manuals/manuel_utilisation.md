@@ -16,7 +16,10 @@ Configuré pour une efficacité maximale, le menu offre un accès direct à tous
 - **Dossiers** : Gestion électronique des affaires et des documents (GED).
 - **Clients** : Gestion de la relation client et intelligence relationnelle (CRM).
 - **Agenda** : Synchronisation des audiences, délais et rendez-vous.
-- **Facturation & Comptabilité** : Gestion du cycle financier complet aux normes *SYSCOHADA*.
+- **Facturation & Comptabilité** : Gestion du cycle financier complet aux normes *SYSCOHADA* avec Intelligence Artificielle.
+- **Outils & Intelligence** : L'arsenal tactique (Sherlock, Nexus, Magistrat Intel).
+- **Communication** : Centralisation WhatsApp, Email et Commandes Vocales.
+
 
 ---
 
@@ -35,8 +38,9 @@ Le *Tableau de Bord* est la "Tour de Contrôle" de votre cabinet, offrant une vu
 - *Flux de Veille Juridique* : Cet espace affiche le défilement des derniers titres et résumés de la jurisprudence OHADA et sénégalaise, offrant aux avocats un accès immédiat aux évolutions majeures du droit positif sans jamais quitter l'interface de travail principale.
 
 ### 1.2 Actions & Résultats Attendus
-- **Cliquer sur une carte statistique** : Le système vous redirige automatiquement vers le module détaillé correspondant à la statistique sélectionnée (par exemple, un clic sur la carte des dossiers ouvrira la liste complète de vos affaires).
-- La dictée vocale de vos rapports.
+- **Cliquer sur une carte statistique** : Le système vous redirige automatiquement vers le module détaillé correspondant à la statistique sélectionnée.
+- **Voice Commander (Dictée Héroïque)** : Cliquez sur l'icône micro en haut à droite. Dictez vos instructions : "Crée un dossier pour M. Tall", "Signe le contrat de bail". L'IA exécute l'ordre instantanément.
+
 
 ### 1.3 NOUVEAU : OmniSearch (Recherche Unifiée - Ctrl+K)
 Accessible partout dans l'application, ce moteur de recherche est votre "Google interne".
@@ -74,10 +78,14 @@ Le module *Dossiers* constitue le cœur battant de votre pratique juridique, où
     - Sélectionnez un document, cliquez sur *Actions > Signer (Élec.)*.
     - Tracez votre signature à la souris ou sur tablette.
     - Le document est verrouillé, horodaté et marqué comme "SIGNÉ". Idéal pour valider rapidement vos courriers ou contrats internes.
-- **Cliquer sur l'onglet *Chronologie (Timeline)*** : Vous affichez alors l'historique exhaustif de toutes les actions menées sur le dossier, des coups de téléphone enregistrés aux audiences passées, offrant une preuve irréfutable des diligences accomplies.
-- **NOUVEAU : Onglet *Procédure avec IA*** : 
-    - *Générer avec LexAI* : L'IA analyse votre dossier (type, étape actuelle) et génère automatiquement un calendrier prévisionnel des étapes clés (Assignations, Audiences, Délais de recours) adaptées au droit Sénégalais/OHADA.
-    - *Appliquer au dossier* : D'un simple clic, transformez ces prévisions en véritables Tâches et Événements dans votre agenda.
+- **Cliquer sur l'onglet *Chronologie (Timeline)*** : Vous affichez alors l'historique exhaustif de toutes les actions menées sur le dossier.
+- **NOUVEAU : Onglet *War Room (Tablette)*** : 
+    - Une interface épurée et immersive conçue pour l'audience au Palais.
+    - Accédez à vos pièces, vos notes de plaidoirie et le profil du juge en un glissement de doigt, sans papier.
+- **NOUVEAU : Onglet *Justice Prédictive*** : 
+    - *Calculateur de Probabilités* : L'IA analyse les faits et la jurisprudence pour simuler le taux de réussite de votre action.
+    - *Suggestions de Riposte* : L'IA détecte les points faibles de votre argumentaire avant l'audience.
+
 
 ---
 
@@ -124,10 +132,15 @@ Ce module assure la rigueur financière nécessaire à la pérennité de votre c
     - Enregistrez un "Frais" en précisant le type **Débours**.
     - *Automatisme* : Le système génère l'écriture comptable (Crédit Banque / Débit Compte 461) et marque le frais comme "À Facturer".
     - *Refacturation* : Dans le dossier, un bouton **Refacturer** permet de générer une facture client incluant le débours en un clic.
-- **NOUVEAU - Balance Agée & Relances** : 
-    - Visualisez l'ancienneté de vos créances clients (0-30j, 30-60j, etc.).
-    - Cliquez sur **Relancer** : Un email professionnel est envoyé au client avec le récapitulatif de ses factures impayées.
-- **NOUVEAU - Rapport TVA (Sénégal/OHADA)** : Calculez automatiquement votre TVA collectée et déductible pour vos déclarations mensuelles.
+- **NOUVEAU - Snap-to-SYSCOHADA (Scanner IA)** : 
+    - Allez dans l'onglet **Scan IA**. Glissez une facture (SENELEC, Fournitures, Loyer).
+    - *Résultat* : L'IA "lit" la facture, identifie le montant HT/TVA et propose immédiatement l'imputation dans le bon compte 6xx (Charges).
+- **NOUVEAU - Centif Guard (Anti-Blanchiment)** : 
+    - Avant chaque virement CARPA, le module scanne la transaction.
+    - *Alerte* : Si le pays est à risque (GAFI) ou si le montant est suspect, une alerte rouge apparaît pour bloquer préventivement l'opération.
+- **NOUVEAU - Cashflow Oracle** : 
+    - Visualisez vos entrées d'argent prévisionnelles à 3 et 6 mois basées sur les habitudes de paiement de vos clients.
+
 
 ---
 
@@ -147,13 +160,13 @@ La gestion des fonds de tiers est une obligation déontologique que LexPremium s
 ## CHAPITRE 7 : INTELLIGENCE ARTIFICIELLE ET OUTILS MÉTIERS
 Ce chapitre regroupe les modules exclusifs qui font de LexPremium un ERP de troisième génération.
 
-### 7.1 Assistant IA et Scanner Adverse
-- *Assistant IA* : Une interface de dialogue naturel où vous pouvez poser des questions juridiques complexes. Résultat : vous recevez une réponse argumentée citant les textes de lois applicables.
-- *Scanner Adverse* : Module permettant de télécharger les mémoires ou conclusions de vos adversaires. Résultat attendu : l'IA déconstruit l'argumentaire opposé et vous suggère des failles juridiques exploitables pour votre plaidoirie.
+### 7.1 L'Arsenal Tactique
+- **Magistrat Intel™** : Profilage des juges. Accédez aux statistiques de rendu de décision, au degré de sévérité et aux jurisprudences favorites du magistrat qui présidera votre audience.
+- **Sherlock OSINT™** : Investigation numérique. Lancez un scan pour identifier le patrimoine (terrains, sociétés, réseaux sociaux) d'une partie adverse.
+- **Nexus Graph™** : Cartographie des réseaux. Visualisez les liens entre avocats, juges, entreprises et clients pour détecter conflits d'intérêts ou réseaux d'influence.
+- **Quantum Simulator™** : Prédiction financière de litige. Projetez les indemnités de licenciement ou dommages-intérêts avec une interface dynamique pour écraser la partie adverse en négociation.
+- **Execution Commander™** : Pilotage tactique du recouvrement. Suivez vos saisies sur une carte interactive de Dakar et coordonnez vos huissiers comme un chef de guerre.
 
-### 7.2 Générateur de Contrats et Recherche IA
-- *Générateur de Contrats* : Choisissez un modèle (Bail, Statuts), remplissez les variables. Résultat : un document .docx juridiquement blindé est généré automatiquement.
-- *Recherche IA Global* : Cet outil révolutionnaire permet de retrouver une information précise (ex: une clause de non-concurrence spécifique) dans l'intégralité des milliers de documents stockés par le cabinet, même s'il s'agit de scans d'images (grâce à l'OCR).
 
 ---
 
@@ -173,10 +186,11 @@ Situé en permanence en bas de votre menu latéral, cet outil capture la valeur 
 ## CHAPITRE 9 : PORTAIL CLIENT SÉCURISÉ
 Offrez à vos clients une expérience moderne et transparente grâce à leur espace dédié.
 
-- **Accès Sécurisé** : Vos clients se connectent via leur email et un **Code PIN unique** généré par le cabinet.
-- **Suivi en temps réel** : Ils consultent l'état d'avancement de leurs dossiers et les prochaines audiences.
-- **GED Client** : Ils téléchargent uniquement les documents que vous avez marqués comme "SIGNÉS".
-- **Paiement en ligne** : Ils visualisent leurs factures et peuvent procéder au règlement (via intégration mobile money/carte).
+- **Accès Sécurisé** : Vos clients se connectent via leur email et un **Code PIN unique**.
+- **Procedure Tracker** : Le client suit l'avancée de son dossier via une barre de progression "Style Amazon" (Dépôt > Audience > Délibéré).
+- **WhatsApp Pro Bridge** : Envoyez des notifications automatiques (Templates) sur le WhatsApp du client directement depuis le logiciel.
+- **Paiement en ligne** : Intégration Wave/Orange Money pour le règlement instantané des provisions.
+
 
 ---
 
@@ -189,14 +203,14 @@ Le module *Pilotage* transforme vos données en décisions stratégiques.
 
 ---
 
-## CHAPITRE 11 : ARCHIVAGE LÉGAL ET PHYSIQUE
-Assurez la conservation de vos dossiers clôturés conformément aux exigences légales.
+## CHAPITRE 12 : SMART GED & WORKFLOW
+Maîtrisez le cycle de vie de vos documents.
 
-- **Boîtes d'Archives** : Créez des boîtes numériques correspondant à vos boîtes physiques (Code, Emplacement).
-- **Archivage en 1 clic** : Clôturez un dossier et liez-le à une boîte d'archive. Tous les documents sont verrouillés et localisés.
-- **Registre de Destruction** : Programmez et suivez les dates de destruction légale de vos archives.
+- **Parapheur Numérique** : Circuit de validation visuel (Rédaction > Revue > Signature). Ne signez plus rien sur papier.
+- **Auto-Classifier IA** : Glissez un document en vrac. L'IA l'analyse, le renomme intelligemment et le range dans le bon dossier virtuel.
 
 ---
 **LexPremium - Le Droit, la Technologie et l'IA réunis pour l'excellence.**
-*Documentation mise à jour : Décembre 2025*
+*Documentation mise à jour : Janvier 2026 - Version Masterclass*
 *Cabinet LexPremium*
+

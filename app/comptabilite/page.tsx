@@ -2,7 +2,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save, FileText, Users, Search, Printer, Sparkles, Link as LinkIcon, CheckCircle, BarChart3 } from "lucide-react"
+import { Building, Wallet, TrendingUp, TrendingDown, RefreshCcw, Save, FileText, Users, Search, Printer, Sparkles, Link as LinkIcon, CheckCircle, BarChart3, ShieldCheck } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -31,6 +32,12 @@ import Link from "next/link"
 import { ExportButton } from "@/components/ui/ExportButton"
 import { AccountingAssistantDialog } from "@/components/comptabilite/AccountingAssistantDialog"
 import { AccountingOCRDialog } from "@/components/comptabilite/AccountingOCRDialog"
+import { CashflowOracle } from "@/components/comptabilite/CashflowOracle"
+import { CentifGuard } from "@/components/comptabilite/CentifGuard"
+import { SmartScanner } from "@/components/comptabilite/SmartScanner"
+
+
+
 
 export default function AccountingPage() {
     const [accounts, setAccounts] = useState<any[]>([])
@@ -363,10 +370,38 @@ export default function AccountingPage() {
 
             <Tabs defaultValue="balance" className="w-full">
                 <TabsList>
+                    <TabsTrigger value="oracle" className="gap-2">
+                        <Sparkles className="h-4 w-4 text-purple-500" />
+                        Oracle Trésorerie
+                    </TabsTrigger>
+                    <TabsTrigger value="centif" className="gap-2">
+                        <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                        Anti-Blanchiment
+                    </TabsTrigger>
+                    <TabsTrigger value="scan" className="gap-2">
+                        <Sparkles className="h-4 w-4 text-indigo-500" />
+                        Scan IA
+                    </TabsTrigger>
                     <TabsTrigger value="balance">Balance Générale</TabsTrigger>
+
                     <TabsTrigger value="grandlivre">Grand Livre</TabsTrigger>
                     <TabsTrigger value="bilan">Bilan (OHADA)</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="oracle" className="mt-4">
+                    <CashflowOracle />
+                </TabsContent>
+
+                <TabsContent value="centif" className="mt-4">
+                    <CentifGuard />
+                </TabsContent>
+
+                <TabsContent value="scan" className="mt-4">
+                    <SmartScanner />
+                </TabsContent>
+
+
+
 
                 <TabsContent value="grandlivre" className="mt-4">
                     <div className="flex flex-col items-center justify-center py-12 text-slate-400 bg-white border border-dashed rounded-lg">

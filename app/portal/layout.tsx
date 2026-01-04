@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Scale, FileText, Briefcase, Bell, User, Menu } from 'lucide-react'
+import { Scale, FileText, Briefcase, Bell, User, Menu, PenTool } from 'lucide-react'
 import { LogoutButton } from '@/components/portal/LogoutButton'
 import { getPortalDashboardData } from '@/app/actions'
 import { Button } from '@/components/ui/button'
@@ -40,6 +40,9 @@ export default async function PortalLayout({
                         </Link>
                         <Link href="/portal/documents" className="hover:text-indigo-600 transition-colors flex items-center gap-2 px-1 py-6 border-b-2 border-transparent hover:border-indigo-600">
                             <FileText className="h-4 w-4" /> Documents
+                        </Link>
+                        <Link href="/portal/signatures" className="hover:text-indigo-600 transition-colors flex items-center gap-2 px-1 py-6 border-b-2 border-transparent hover:border-indigo-600">
+                            <PenTool className="h-4 w-4 text-amber-500" /> Signatures
                         </Link>
                         <Link href="/portal/profil" className="hover:text-indigo-600 transition-colors flex items-center gap-2 px-1 py-6 border-b-2 border-transparent hover:border-indigo-600">
                             <User className="h-4 w-4" /> Profil
@@ -82,14 +85,15 @@ export default async function PortalLayout({
                     <Link href="/portal/dossiers" className="p-3 bg-indigo-600 rounded-full -translate-y-6 shadow-lg shadow-indigo-500/50 text-white">
                         <Scale className="h-6 w-6" />
                     </Link>
-                    <Button variant="ghost" className="flex flex-col items-center gap-1 hover:text-white p-0 h-auto">
-                        <Bell className="h-5 w-5" />
-                        <span className="text-[10px] font-bold">Alertes</span>
-                    </Button>
+                    <Link href="/portal/signatures" className="flex flex-col items-center gap-1 hover:text-white transition-colors">
+                        <PenTool className="h-5 w-5 text-amber-500" />
+                        <span className="text-[10px] font-bold">Signer</span>
+                    </Link>
                     <Link href="/portal/profil" className="flex flex-col items-center gap-1 hover:text-white transition-colors">
                         <User className="h-5 w-5" />
                         <span className="text-[10px] font-bold">Profil</span>
                     </Link>
+
                 </nav>
             </div>
 
