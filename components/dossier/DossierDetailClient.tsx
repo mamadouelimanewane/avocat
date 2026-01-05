@@ -14,6 +14,7 @@ import ProcedureTab from '@/components/dossier/ProcedureTab'
 import { JusticePredictor } from '@/components/ai/JusticePredictor'
 import { LexAIPanel } from '@/components/dossier/LexAIPanel'
 import { WarRoomMode } from '@/components/dossier/WarRoomMode'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 
 interface DossierDetailClientProps {
