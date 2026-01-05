@@ -28,6 +28,7 @@ export default function JurisprudencePage() {
         if (activeTab === "lois") return item.type === "LOI" || item.court === "SENEGAL";
         if (activeTab === "arretes") return item.type === "ARRETE";
         if (activeTab === "jurisprudence") return item.type === "JURISPRUDENCE" || (!item.type && (item.court === "CCJA" || item.court === "COUR_SUPREME"));
+        if (activeTab === "foncier") return item.category === "FONCIER";
         return true;
     });
 
@@ -42,7 +43,10 @@ export default function JurisprudencePage() {
             "Code Pénal Sénégalais - Mise à jour 2024": "/codes_pdf/code_penal_senegalais_2024.pdf",
             "Code de l'Urbanisme - Partie Réglementaire 2025": "/codes_pdf/code_de_lurbanisme_-_reglementation_2025.pdf",
             "Code de l'Environnement 2024": "/codes_pdf/code_de_lenvironnement_2024.pdf",
-            "Code de l'Électricité 2024": "/codes_pdf/code_de_lelectricite_-_cadre_2024.pdf"
+            "Code de l'Électricité 2024": "/codes_pdf/code_de_lelectricite_-_cadre_2024.pdf",
+            "Loi n° 64-46 relative au Domaine National": "/codes_pdf/loi_sur_le_domaine_national_64-46.pdf",
+            "Loi n° 76-67 relative à l'expropriation pour cause d'utilité publique": "/codes_pdf/loi_sur_lexpropriation_76-67.pdf",
+            "Décret n° 2023-382 sur la Baisse des Loyers": "/codes_pdf/decret_sur_la_baisse_des_loyers_2023.pdf"
         };
 
         const realPdfPath = pdfMapping[item.title];
@@ -324,7 +328,7 @@ Signature numérique: VALIDÉ-#${Math.floor(Math.random() * 100000)}`
             </div>
 
             <Tabs defaultValue="tous" className="w-full" onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-5 mb-4 bg-slate-100/50 p-1">
+                <TabsList className="grid w-full grid-cols-6 mb-4 bg-slate-100/50 p-1">
                     <TabsTrigger value="tous" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Tous</TabsTrigger>
                     <TabsTrigger value="jurisprudence" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Jurisprudence</TabsTrigger>
                     <TabsTrigger value="lois" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Lois & Codes</TabsTrigger>
@@ -332,6 +336,7 @@ Signature numérique: VALIDÉ-#${Math.floor(Math.random() * 100000)}`
                     <TabsTrigger value="ohada" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">
                         <span className="font-bold">OHADA</span>
                     </TabsTrigger>
+                    <TabsTrigger value="foncier" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white hover:text-emerald-600 transition-all font-bold">FONCIER</TabsTrigger>
                 </TabsList>
             </Tabs>
 
