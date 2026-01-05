@@ -38,7 +38,11 @@ export default function JurisprudencePage() {
             "Nouveau Code des Investissements 2025": "/codes_pdf/code_des_investissements_2025.pdf",
             "Code des Marchés Publics - Réforme 2024": "/codes_pdf/code_des_marchés_publics_2024.pdf",
             "Code du Travail Sénégalais - Mise à jour 2024": "/codes_pdf/code_du_travail_sénégalais_2024.pdf",
-            "Nouveau Code Minier (Projet 2025)": "/codes_pdf/code_minier_du_sénégal_2025.pdf"
+            "Nouveau Code Minier (Projet 2025)": "/codes_pdf/code_minier_du_sénégal_2025.pdf",
+            "Code Pénal Sénégalais - Mise à jour 2024": "/codes_pdf/code_penal_senegalais_2024.pdf",
+            "Code de l'Urbanisme - Partie Réglementaire 2025": "/codes_pdf/code_de_lurbanisme_-_reglementation_2025.pdf",
+            "Code de l'Environnement 2024": "/codes_pdf/code_de_lenvironnement_2024.pdf",
+            "Code de l'Électricité 2024": "/codes_pdf/code_de_lelectricite_-_cadre_2024.pdf"
         };
 
         const realPdfPath = pdfMapping[item.title];
