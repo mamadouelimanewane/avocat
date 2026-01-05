@@ -4609,7 +4609,7 @@ export async function generateExecutiveSummary(dossierId: string) {
                 client: true,
                 documents: { take: 5, orderBy: { updatedAt: 'desc' }, where: { ocrContent: { not: null } } },
                 tasks: { where: { completed: false }, take: 5 },
-                event: { where: { startDate: { gte: new Date() } }, take: 3, orderBy: { startDate: 'asc' } },
+                events: { where: { startDate: { gte: new Date() } }, take: 3, orderBy: { startDate: 'asc' } },
                 carpaTransactions: true,
                 expenses: true
             }
@@ -4627,7 +4627,7 @@ export async function generateExecutiveSummary(dossierId: string) {
 
         const docSummaries = dossier.documents.map(d => `${d.name}: ${d.ocrContent?.substring(0, 100)}...`).join('\n')
         const taskTitles = dossier.tasks.map(t => t.title).join(', ')
-        const upcomingEvents = dossier.event.map(e => `${e.title} le ${e.startDate.toLocaleDateString()}`).join(', ')
+        const upcomingEvents = dossier.events.map((e: any) => `${e.title} le ${e.startDate.toLocaleDateString()}`).join(', ')
 
         const prompt = `Génère une synthèse executive FLASH (style 60 secondes pour un avocat d'élite) :
         Dossier : ${dossier.title} | Client : ${dossier.client.name}
