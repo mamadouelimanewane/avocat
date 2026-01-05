@@ -362,20 +362,24 @@ export async function generateAIDocument(dossierId: string, description: string)
 
         const content = await generateCompletion(prompt, contextDocs, "DRAFTING");
 
-        const finalContent = content || `BROUILLON GÉNÉRÉ AUTOMATIQUEMENT\n\nObjet : ${description}\n\nDossier : ${dossier?.title}\nClient : ${dossier?.client?.name}\n\n[Contenu simulé par l'IA en l'absence de clé API]\nLe présent projet d'acte concerne...`;
+        // --- NOUVEAU : DÉTECTION INTENTION FONCIÈRE POUR CONTEXTE SPÉCIFIQUE ---
+        let finalContent = content;
+        if (!content) {
+            finalContent = `BROUILLON GÉNÉRÉ AUTOMATIQUEMENT\n\nObjet : ${description}\n\nDossier : ${dossier?.title}\nClient : ${dossier?.client?.name}\n\n[Contenu simulé par l'IA en l'absence de clé API]\nLe présent projet d'acte concerne...`;
+        }
 
         const newDoc = await prisma.document.create({
             data: {
                 name: `Brouillon IA - ${description.substring(0, 30)}.docx`,
                 type: 'ACTE',
-                category: 'AUTRE',
+                category: description.toLowerCase().includes('foncier') || description.toLowerCase().includes('terrain') ? 'FONCIER' : 'AUTRE',
                 status: 'DRAFT',
                 dossierId: dossierId,
                 ocrContent: finalContent,
                 versions: {
                     create: {
                         version: 1,
-                        size: Buffer.byteLength(finalContent, 'utf8'),
+                        size: Buffer.byteLength(finalContent || '', 'utf8'),
                         path: '/mock/ai-generated.docx',
                         comment: content ? 'Généré par LexAI' : 'Généré par LexAI (Simulation)'
                     }
@@ -4005,6 +4009,73 @@ CONTENU DU CONTRAT :`
             success: false,
             message: "Erreur lors de la génération du contrat."
         }
+    }
+}
+
+/**
+ * Génère un projet d'acte foncier automatisé à partir des documents du dossier
+ */
+export async function generateLandDraftFromAI(dossierId: string, templateName: string) {
+    try {
+        const dossier = await prisma.dossier.findUnique({
+            where: { id: dossierId },
+            include: { client: true, documents: { where: { ocrStatus: 'DONE' } } }
+        });
+
+        if (!dossier) return { success: false, message: "Dossier introuvable" };
+
+        const contextDocs = dossier.documents.map(d => ({
+            id: d.id,
+            title: d.name,
+            content: d.ocrContent,
+            reference: d.category || 'PIECE',
+            type: d.type
+        })) as any;
+
+        const template = await prisma.template.findFirst({ where: { name: templateName } });
+
+        const prompt = `Rédige un projet d'acte juridique de type "${templateName}" pour le dossier "${dossier.title}".
+        
+        UTILISE LES DONNÉES DU DOSSIER :
+        - Client : ${dossier.client.name}
+        - Référence : ${dossier.reference}
+        - Contenu du modèle guide : ${template?.content || 'Utilise le formalisme standard'}
+        
+        CONSIGNES SPÉCIFIQUES :
+        1. Identifie les noms, adresses, surfaces et numéros de titres fonciers mentionnés dans les pièces jointes au dossier.
+        2. Applique rigoureusement les dispositions du Domaine National (Loi 64-46) ou de la Réforme Foncière selon le cas.
+        3. Produis un acte complet prêt à être relu.`;
+
+        const { generateCompletion } = await import('@/lib/ai');
+        const content = await generateCompletion(prompt, contextDocs, 'DRAFTING');
+
+        if (!content) throw new Error("Échec de la génération IA");
+
+        const newDoc = await prisma.document.create({
+            data: {
+                name: `PROJET - ${templateName}.docx`,
+                type: 'ACTE',
+                category: 'FONCIER',
+                status: 'DRAFT',
+                dossierId: dossierId,
+                ocrContent: content,
+                versions: {
+                    create: {
+                        version: 1,
+                        size: Buffer.byteLength(content, 'utf8'),
+                        path: '/uploads/ai-land-draft.docx',
+                        comment: `Généré automatiquement par LexAI (Modèle: ${templateName})`
+                    }
+                }
+            }
+        });
+
+        revalidatePath(`/dossiers/${dossierId}`);
+        return { success: true, documentId: newDoc.id, message: "Acte foncier généré avec succès." };
+
+    } catch (error) {
+        console.error("AI Land Gen Error:", error);
+        return { success: false, message: "Erreur lors de la génération automatisée." };
     }
 }
 

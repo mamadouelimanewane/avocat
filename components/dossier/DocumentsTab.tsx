@@ -58,7 +58,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { createDocumentFromTemplate, uploadDocument, generateAIDocument, runOCR, deleteDocument, addDocumentVersion } from '@/app/actions';
+import { createDocumentFromTemplate, uploadDocument, generateAIDocument, runOCR, deleteDocument, addDocumentVersion, generateLandDraftFromAI } from '@/app/actions';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/navigation';
@@ -139,6 +139,8 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
 
     const [selectedDocForSigning, setSelectedDocForSigning] = useState<DocumentProps | null>(null);
     const [selectedDocForView, setSelectedDocForView] = useState<DocumentProps | null>(null);
+    const [isLandDialogOpen, setIsLandDialogOpen] = useState(false);
+    const [selectedLandTemplate, setSelectedLandTemplate] = useState("");
 
     const filteredDocuments = documents.filter(doc =>
         doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -253,6 +255,36 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
             } finally {
                 setIsGenerating(false);
             }
+        }
+    }
+
+    const handleLandGenerate = async () => {
+        if (!selectedLandTemplate) return;
+        setIsGenerating(true);
+        try {
+            const res = await generateLandDraftFromAI(dossierId, selectedLandTemplate);
+            if (res.success) {
+                toast({
+                    title: "Acte Foncier Généré",
+                    description: "Le projet d'acte a été rédigé avec succès par LexAI.",
+                });
+                setIsLandDialogOpen(false);
+                router.refresh();
+            } else {
+                toast({
+                    title: "Erreur",
+                    description: res.message,
+                    variant: "destructive",
+                });
+            }
+        } catch (e) {
+            toast({
+                title: "Erreur",
+                description: "Échec de la génération foncière.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsGenerating(false);
         }
     }
 
@@ -400,6 +432,49 @@ export default function DocumentsTab({ dossierId, templates = [], initialDocumen
                     <Button variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100" onClick={handleAIGenerate}>
                         <BrainCircuit className="mr-2 h-4 w-4" /> Assistant Rédaction IA
                     </Button>
+
+                    <Dialog open={isLandDialogOpen} onOpenChange={setIsLandDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
+                                <Sparkles className="mr-2 h-4 w-4" /> Actes Fonciers (IA)
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[500px]">
+                            <DialogHeader>
+                                <DialogTitle className="flex items-center gap-2">
+                                    <Sparkles className="h-5 w-5 text-emerald-500" />
+                                    Rédaction Foncière Intelligente
+                                </DialogTitle>
+                                <DialogDescription>
+                                    LexAI va rédiger un projet d'acte en extrayant automatiquement les données du dossier (titres fonciers, surfaces, parties).
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="py-4 space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Type d'acte foncier professionnel</Label>
+                                    <Select onValueChange={setSelectedLandTemplate} value={selectedLandTemplate}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Choisir un acte à générer..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Réquisition d'Immatriculation Foncière">Réquisition d'Immatriculation</SelectItem>
+                                            <SelectItem value="Assignation en Expulsion (Occupant sans droit ni titre)">Assignation en Expulsion</SelectItem>
+                                            <SelectItem value="Demande de Transformation de Titre Précaire en Titre Foncier">Transformation de Titre</SelectItem>
+                                            <SelectItem value="Mise en Demeure de Payer (Bail Habitation - Décret 2023)">Mise en demeure (Bail)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs text-slate-500 italic">
+                                    Note : L'IA consultera tous les documents OCRisés du dossier pour remplir les champs contractuels.
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleLandGenerate} disabled={!selectedLandTemplate || isGenerating}>
+                                    {isGenerating ? "Rédaction par LexAI..." : "Générer le projet d'acte"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
 
                     <Button variant="outline" className="text-slate-700 border-slate-300" onClick={handleOCR}>
                         <ScanLine className="mr-2 h-4 w-4" /> Scan OCR
