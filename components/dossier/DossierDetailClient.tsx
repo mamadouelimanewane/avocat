@@ -13,7 +13,14 @@ import DossierOverview from '@/components/dossier/DossierOverview'
 import ProcedureTab from '@/components/dossier/ProcedureTab'
 import { JusticePredictor } from '@/components/ai/JusticePredictor'
 import { LexAIPanel } from '@/components/dossier/LexAIPanel'
+import { WarRoomMode } from '@/components/dossier/WarRoomMode'
 import { Sparkles } from 'lucide-react'
+
+interface DossierDetailClientProps {
+    dossier: any
+    templates: any[]
+    expenses: any[]
+}
 
 export default function DossierDetailClient({ dossier, templates, expenses }: DossierDetailClientProps) {
     const [isWarRoomOpen, setIsWarRoomOpen] = useState(false)
