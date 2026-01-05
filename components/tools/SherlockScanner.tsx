@@ -98,9 +98,9 @@ export function SherlockScanner() {
                             <div className="space-y-2">
                                 <Progress value={progress} className="h-1 bg-slate-800" indicatorClassName="bg-rose-500" />
                                 <p className="text-[10px] text-slate-400 font-mono animate-pulse">
-                                    > Analysing RCCM databases...<br />
-                                    > Scraping social graphs...<br />
-                                    > Checking land registry index...
+                                    &gt; Analysing RCCM databases...<br />
+                                    &gt; Scraping social graphs...<br />
+                                    &gt; Checking land registry index...
                                 </p>
                             </div>
                         )}
