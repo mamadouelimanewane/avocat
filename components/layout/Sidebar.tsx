@@ -67,7 +67,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
         { name: 'Archives', href: '/archives', icon: Archive },
         { name: 'Rapports', href: '/rapports', icon: BarChart3 },
         { name: 'Outils', href: '/outils', icon: BookOpen },
-        { name: 'Modèles (Bible)', href: '/modeles', icon: FileMsg },
+        { name: 'Modèles (Bibliothèque)', href: '/modeles', icon: FileMsg },
         { name: 'CRM', href: '/crm', icon: Rocket },
         { name: 'Conflits d\'Intérêts', href: '/conflits', icon: ShieldAlert },
         { name: 'Communication', href: '/communication', icon: MessageCircle },

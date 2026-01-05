@@ -40,7 +40,9 @@ export default async function ModelesPage() { // Keep as server component but ma
     const admin = templates.filter(t => t.category === 'ADMINISTRATIF')
     const international = templates.filter(t => t.category === 'INTERNATIONAL')
     const tech = templates.filter(t => t.category === 'TECH')
-    const others = templates.filter(t => !['AFFAIRES', 'FONCIER', 'TRAVAIL', 'LITIGE', 'PROCEDURE', 'SOCIAL', 'CIVIL', 'PENAL', 'ADMINISTRATIF', 'INTERNATIONAL', 'TECH'].includes(t.category || ''))
+    const energie = templates.filter(t => t.category === 'PETROLE_GAZ')
+    const fiscalite = templates.filter(t => t.category === 'FISCALITE')
+    const others = templates.filter(t => !['AFFAIRES', 'FONCIER', 'TRAVAIL', 'LITIGE', 'PROCEDURE', 'SOCIAL', 'CIVIL', 'PENAL', 'ADMINISTRATIF', 'INTERNATIONAL', 'TECH', 'PETROLE_GAZ', 'FISCALITE'].includes(t.category || ''))
 
     const TemplateTable = ({ data }: { data: typeof templates }) => (
         <div className="rounded-md border border-slate-200 bg-white shadow-sm mt-4">
@@ -92,7 +94,7 @@ export default async function ModelesPage() { // Keep as server component but ma
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Bible des Actes</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Bibliothèque des Actes</h1>
                     <p className="text-slate-500 mt-1">Gérez vos modèles d'actes et documents récurrents intelligemment.</p>
                 </div>
                 <Button className="bg-slate-900 text-white hover:bg-slate-800" asChild>
@@ -114,6 +116,8 @@ export default async function ModelesPage() { // Keep as server component but ma
                     <TabsTrigger value="social" className="gap-2 data-[state=active]:bg-slate-100"><Users className="h-4 w-4" /> Famille & Social</TabsTrigger>
                     <TabsTrigger value="foncier" className="gap-2 data-[state=active]:bg-slate-100"><Building2 className="h-4 w-4" /> Foncier</TabsTrigger>
                     <TabsTrigger value="tech" className="gap-2 data-[state=active]:bg-slate-100"><Cpu className="h-4 w-4" /> Tech & Données</TabsTrigger>
+                    <TabsTrigger value="energie" className="gap-2 data-[state=active]:bg-slate-100"><FileText className="h-4 w-4 text-orange-600" /> Pétrole & Gaz</TabsTrigger>
+                    <TabsTrigger value="fiscal" className="gap-2 data-[state=active]:bg-slate-100"><Scale className="h-4 w-4 text-emerald-600" /> Fiscalité</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="tous">
@@ -143,6 +147,12 @@ export default async function ModelesPage() { // Keep as server component but ma
                 </TabsContent>
                 <TabsContent value="foncier">
                     <TemplateTable data={foncier} />
+                </TabsContent>
+                <TabsContent value="energie">
+                    <TemplateTable data={energie} />
+                </TabsContent>
+                <TabsContent value="fiscal">
+                    <TemplateTable data={fiscalite} />
                 </TabsContent>
             </Tabs>
         </div>

@@ -61,9 +61,17 @@ export default async function MainDashboard() {
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[10px] font-black tracking-[0.2em] text-amber-500 mb-6 uppercase">
-                            <Sparkles className="h-3 w-3" />
-                            LexPremium Pro
+                        <div className="flex gap-3 mb-6">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[10px] font-black tracking-[0.2em] text-amber-500 uppercase">
+                                <Sparkles className="h-3 w-3" />
+                                LexPremium Pro
+                            </div>
+                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[10px] font-black tracking-[0.2em] uppercase ${(process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY)
+                                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                                    : "bg-slate-500/10 border-slate-500/20 text-slate-500 opacity-60"
+                                }`}>
+                                LexAI : {(process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY) ? "DeepSeek Active" : "Heuristic Only"}
+                            </div>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-tight mb-4">
                             LE CABINET <br />

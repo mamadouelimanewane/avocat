@@ -6,10 +6,14 @@ export let openai: OpenAI | null = null;
 
 const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
 
-if (apiKey) {
+if (process.env.DEEPSEEK_API_KEY) {
     openai = new OpenAI({
-        apiKey: apiKey,
+        apiKey: process.env.DEEPSEEK_API_KEY,
         baseURL: 'https://api.deepseek.com'
+    });
+} else if (process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
     });
 }
 

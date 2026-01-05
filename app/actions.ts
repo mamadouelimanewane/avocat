@@ -2669,29 +2669,46 @@ export async function updateDossierStatus(dossierId: string, columnId: string) {
 
         if (!column || !dossier) return { success: false }
 
-        // Mettre à jour le statut en base
+        // Mappage automatique du titre de la colonne vers le "stage" du dossier pour le suivi client
+        const title = column.title.toLowerCase()
+        let detectedStage = dossier.stage
+        if (title.includes('instruction') || title.includes('mise en état')) detectedStage = 'MISE_EN_ETAT'
+        else if (title.includes('plaidoirie') || title.includes('audience')) detectedStage = 'PLAIDOIRIE'
+        else if (title.includes('délibéré')) detectedStage = 'DELIBERE'
+        else if (title.includes('terminé') || title.includes('clôturé')) detectedStage = 'EXECUTION'
+
+        // Mettre à jour le statut et l'étape en base
         await prisma.dossier.update({
             where: { id: dossierId },
-            data: { columnId: columnId }
+            data: {
+                columnId: columnId,
+                stage: detectedStage
+            }
         })
 
         // --- AUTOMATISATION DES WORKFLOWS (Side Effects) ---
-        const title = column.title.toLowerCase()
 
         // 1. Détecter si c'est une étape de facturation
         if (title.includes('facture') || title.includes('billing')) {
-            // Créer une facture brouillon automatique
             await createInvoice({
                 clientId: dossier.clientId,
                 dossierId: dossier.id,
                 items: [{ description: `Honoraires - Étape ${column.title}`, quantity: 1, unitPrice: 250000 }],
                 type: 'FACTURE'
             })
+            // Logger l'action
+            await prisma.communicationLog.create({
+                data: {
+                    type: 'SYSTEM',
+                    direction: 'INTERNAL',
+                    content: `LexAI : Facture automatique générée pour l'étape ${column.title}`,
+                    dossierId: dossier.id
+                }
+            })
         }
 
         // 2. Détecter si c'est une étape de clôture
         if (title.includes('terminé') || title.includes('clôturé') || title.includes('done')) {
-            // Envoyer un email automatique au client
             if (dossier.client?.email) {
                 await sendEmail({
                     to: dossier.client.email,
@@ -2707,19 +2724,29 @@ export async function updateDossierStatus(dossierId: string, columnId: string) {
                         </div>
                     `
                 })
+                // Logger l'email
+                await prisma.communicationLog.create({
+                    data: {
+                        type: 'EMAIL',
+                        direction: 'OUTBOUND',
+                        content: `E-Mail automatique envoyé au client (${dossier.client.email}) pour clôture.`,
+                        clientId: dossier.clientId,
+                        dossierId: dossier.id
+                    }
+                })
             }
         }
 
         // 3. Créer une tâche automatique si c'est une étape de diligence
-        if (title.includes('procédure') || title.includes('audience')) {
+        if (detectedStage === 'MISE_EN_ETAT' || detectedStage === 'PLAIDOIRIE') {
             await prisma.task.create({
                 data: {
-                    title: `Préparer l'étape : ${column.title}`,
-                    description: `Dossier déplacé dans ${column.title}. Vérifier les délais.`,
+                    title: `Préparer ${column.title}`,
+                    description: `Dossier déplacé dans ${column.title}. LexAI suggère de vérifier les conclusions.`,
                     priority: 'HAUTE',
                     dossierId: dossier.id,
                     assignedToId: dossier.assignedToId || undefined,
-                    dueDate: new Date(Date.now() + 48 * 60 * 60 * 1000) // J+2
+                    dueDate: new Date(Date.now() + 72 * 60 * 60 * 1000) // J+3
                 }
             })
         }
@@ -2727,8 +2754,9 @@ export async function updateDossierStatus(dossierId: string, columnId: string) {
         revalidatePath('/workflows')
         revalidatePath('/factures')
         revalidatePath('/taches')
+        revalidatePath('/portal')
 
-        return { success: true, message: `Dossier déplacé vers ${column.title} (Actions auto déclenchées)` }
+        return { success: true, message: `Dossier déplacé vers ${column.title}` }
     } catch (e) {
         console.error("Workflow Automation Error:", e)
         return { success: false }
@@ -4549,8 +4577,21 @@ export async function getClientPortalData(clientId: string) {
             include: {
                 dossiers: {
                     include: {
-                        documents: { where: { status: 'SIGNED' } },
-                        factures: { include: { payments: true } }
+                        documents: {
+                            where: {
+                                status: { in: ['SIGNED', 'PENDING_SIGNATURE'] }
+                            }
+                        },
+                        factures: { include: { payments: true } },
+                        communications: {
+                            where: { direction: 'OUTBOUND' },
+                            orderBy: { createdAt: 'desc' },
+                            take: 5
+                        },
+                        events: {
+                            where: { type: 'AUDIENCE' },
+                            orderBy: { startDate: 'asc' }
+                        }
                     }
                 }
             }
