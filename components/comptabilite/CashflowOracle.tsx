@@ -63,7 +63,7 @@ export function CashflowOracle() {
                                 <YAxis stroke="#64748b" tick={{ fill: '#94a3b8' }} tickFormatter={(val) => `${val / 1000000}M`} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff' }}
-                                    formatter={(val: number) => `${val.toLocaleString()} FCFA`}
+                                    formatter={(val: any) => `${val?.toLocaleString()} FCFA`}
                                 />
                                 {/* Current Performance */}
                                 <Area type="monotone" dataKey="actual" stroke="#10b981" fill="transparent" strokeWidth={3} name="Réalisé" />
