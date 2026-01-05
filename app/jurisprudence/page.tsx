@@ -32,7 +32,34 @@ export default function JurisprudencePage() {
     });
 
     const handleDownloadPDF = (item: any) => {
-        // ... (code existant pour download PDF) ...
+        // Mappage des titres vers les fichiers PDF réels générés
+        const pdfMapping: Record<string, string> = {
+            "Code Général des Impôts (CGI) - Actualisation 2025": "/codes_pdf/code_general_des_impots_cgi_2025.pdf",
+            "Nouveau Code des Investissements 2025": "/codes_pdf/code_des_investissements_2025.pdf",
+            "Code des Marchés Publics - Réforme 2024": "/codes_pdf/code_des_marchés_publics_2024.pdf",
+            "Code du Travail Sénégalais - Mise à jour 2024": "/codes_pdf/code_du_travail_sénégalais_2024.pdf",
+            "Nouveau Code Minier (Projet 2025)": "/codes_pdf/code_minier_du_sénégal_2025.pdf"
+        };
+
+        const realPdfPath = pdfMapping[item.title];
+
+        if (realPdfPath) {
+            // Téléchargement du fichier réel
+            const link = document.createElement('a');
+            link.href = realPdfPath;
+            link.download = realPdfPath.split('/').pop() || 'document.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            toast({
+                title: "Téléchargement PDF",
+                description: `Téléchargement du texte officiel : ${item.title}`,
+            });
+            return;
+        }
+
+        // Fallback sur la génération textuelle si le fichier n'est pas mappé
         const pdfContent = `
 ═══════════════════════════════════════════════════════════════
 ${item.title}
