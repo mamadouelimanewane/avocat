@@ -28,34 +28,35 @@ interface Deadline {
     type: 'CONCLUSIONS' | 'PROCEDURE' | 'APPEL' | 'AUDIENCE'
 }
 
-export function DeadlinePro() {
-    const [deadlines] = useState<Deadline[]>([
+interface DeadlineProProps {
+    events?: any[]
+}
+
+export function DeadlinePro({ events = [] }: DeadlineProProps) {
+    // Filter only future deadlines from the events passed
+    const realDeadlines = events
+        .filter(e => e.type === 'DEADLINE' || e.type === 'APPEL' || e.type === 'CONCLUSIONS')
+        .map(e => ({
+            id: e.id,
+            title: e.title,
+            dossierRef: e.resource?.dossier?.reference || 'N/A',
+            dueDate: new Date(e.start).toLocaleDateString('fr-CA'),
+            remainingDays: Math.ceil((new Date(e.start).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)),
+            priority: e.title.toLowerCase().includes('urgent') ? 'URGENT' : 'NORMAL',
+            type: e.type
+        }))
+        .filter(d => d.remainingDays >= 0)
+        .sort((a, b) => a.remainingDays - b.remainingDays)
+
+    const [deadlines] = useState<any[]>(realDeadlines.length > 0 ? realDeadlines : [
         {
-            id: '1',
-            title: 'Dépôt des conclusions en défense',
-            dossierRef: 'DOS-2024-001',
-            dueDate: '2024-12-30',
+            id: 'mock-1',
+            title: 'Exemple: Dépôt des conclusions',
+            dossierRef: 'DOS-2024-DEMO',
+            dueDate: '2025-01-30',
             remainingDays: 5,
             priority: 'URGENT',
             type: 'CONCLUSIONS'
-        },
-        {
-            id: '2',
-            title: 'Délai d\'appel - Jugement Tribunal de Grande Instance',
-            dossierRef: 'DOS-2023-452',
-            dueDate: '2025-01-15',
-            remainingDays: 21,
-            priority: 'HIGH',
-            type: 'APPEL'
-        },
-        {
-            id: '3',
-            title: 'Signification d\'acte par Huissier',
-            dossierRef: 'DOS-2024-112',
-            dueDate: '2024-12-28',
-            remainingDays: 3,
-            priority: 'URGENT',
-            type: 'PROCEDURE'
         }
     ])
 
@@ -125,7 +126,7 @@ export function DeadlinePro() {
                             <div key={deadline.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4">
                                 <div className="flex items-start gap-4">
                                     <div className={`p-2 rounded-lg ${deadline.remainingDays <= 5 ? 'bg-red-100 text-red-600' :
-                                            deadline.remainingDays <= 15 ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-600'
+                                        deadline.remainingDays <= 15 ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-600'
                                         }`}>
                                         <AlertTriangle className="h-5 w-5" />
                                     </div>

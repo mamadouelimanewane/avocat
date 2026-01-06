@@ -37,6 +37,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Stopwatch } from '@/components/tools/Stopwatch';
+import { logout } from '@/app/actions';
 export function Sidebar({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
     const pathname = usePathname();
 
@@ -119,8 +120,16 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
 
 
                 {/* Footer / Stopwatch */}
-                <div className="p-4 border-t border-slate-800 bg-slate-950">
+                <div className="p-4 border-t border-slate-800 bg-slate-950 space-y-4">
                     <Stopwatch />
+
+                    <button
+                        onClick={() => logout()}
+                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 hover:bg-red-950/30 hover:text-red-400 transition-all duration-200 group"
+                    >
+                        <LogOut className="h-5 w-5 text-slate-500 group-hover:text-red-400" />
+                        Se déconnecter
+                    </button>
                 </div>
             </div>
         </div>

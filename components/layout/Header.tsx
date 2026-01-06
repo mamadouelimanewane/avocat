@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, Menu, User } from 'lucide-react';
+import { Bell, Menu, User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MobileSidebar } from '@/components/layout/MobileSidebar';
 import { ThemeCustomizer } from '@/components/theme-customizer';
@@ -8,12 +8,29 @@ import { GlobalSearchModal } from '@/components/layout/GlobalSearchModal';
 import { NewTaskDialog } from '@/components/tasks/NewTaskDialog';
 import { NewNoteDialog } from '@/components/notes/NewNoteDialog';
 import { NotificationsPopover } from '@/components/layout/NotificationsPopover';
+import { logout } from '@/app/actions';
 
 // Composants pour l'avatar avec statut online
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export function Header() {
-    const userName = "Mamadou Dia";
+interface HeaderProps {
+    user?: {
+        name: string | null;
+        role: string | null;
+    } | null;
+}
+
+export function Header({ user }: HeaderProps) {
+    const userName = user?.name || "Invité";
+    const userRole = user?.role || "Visiteur";
     const initials = userName
         .split(' ')
         .map((n) => n[0])
@@ -59,18 +76,43 @@ export function Header() {
                 {/* User Profile */}
                 <div className="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-800">
                     <div className="text-right hidden sm:block">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Me Dia</p>
-                        <p className="text-xs text-slate-500">Associé Gérant</p>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{userName}</p>
+                        <p className="text-xs text-slate-500">{userRole}</p>
                     </div>
 
-                    {/* Avatar avec point vert "online" */}
-                    <div className="relative inline-block">
-                        <Avatar>
-                            <AvatarImage src="" alt={userName} /> {/* Remplacez src par une URL d'image si vous en avez une */}
-                            <AvatarFallback>{initials}</AvatarFallback>
-                        </Avatar>
-                        <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-white dark:ring-slate-950 bg-green-500" />
-                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button className="relative inline-block focus:outline-none group">
+                                <Avatar className="h-9 w-9 border border-slate-200 dark:border-slate-800 transition-transform group-hover:scale-105">
+                                    <AvatarImage src="" alt={userName} />
+                                    <AvatarFallback>{initials}</AvatarFallback>
+                                </Avatar>
+                                <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-slate-950 bg-green-500" />
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="cursor-pointer" asChild>
+                                <a href="/profil" className="flex items-center w-full">
+                                    <User className="mr-2 h-4 w-4" />
+                                    <span>Profil</span>
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer">
+                                <Settings className="mr-2 h-4 w-4" />
+                                <span>Paramètres</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                className="text-red-600 focus:text-red-600 cursor-pointer"
+                                onClick={() => logout()}
+                            >
+                                <LogOut className="mr-2 h-4 w-4" />
+                                <span>Se déconnecter</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
         </header>

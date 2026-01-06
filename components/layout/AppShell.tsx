@@ -10,10 +10,12 @@ import { VoiceAssistant } from '@/components/ai/VoiceAssistant'
 
 export function AppShell({
     children,
-    isLoggedIn
+    isLoggedIn,
+    user
 }: {
     children: React.ReactNode,
-    isLoggedIn?: boolean
+    isLoggedIn?: boolean,
+    user?: any
 }) {
     const pathname = usePathname()
 
@@ -38,7 +40,7 @@ export function AppShell({
         <>
             <Sidebar className="hidden md:flex fixed left-0 top-0 z-50" />
             <div className="flex flex-col min-h-screen md:pl-64 transition-all duration-300">
-                <Header />
+                <Header user={user} />
                 <main className="flex-1 p-6 md:p-8 animate-in fade-in duration-500 pb-20 md:pb-8">
                     {children}
                 </main>

@@ -30,12 +30,71 @@ import { createUser, updateUserStatus, updateUserPermissions, updateUserRole, up
 import { Checkbox } from "@/components/ui/checkbox"
 
 // Define available permissions
-const PERMISSIONS_LIST = [
-    { id: 'VIEW_FINANCE', label: 'Voir Finances & CARPA' },
-    { id: 'MANAGE_FINANCE', label: 'Gérer Transactions (CARPA/Frais)' },
-    { id: 'MANAGE_USERS', label: 'Gérer Utilisateurs (Admin)' },
-    { id: 'DELETE_DOSSIER', label: 'Supprimer Dossiers' },
-    { id: 'EXPORT_DATA', label: 'Exporter Données' },
+const PERMISSION_GROUPS = [
+    {
+        name: 'Dossiers & Clients',
+        order: 1,
+        permissions: [
+            { id: 'VIEW_DOSSIERS', label: 'Voir les dossiers' },
+            { id: 'CREATE_DOSSIERS', label: 'Créer des dossiers' },
+            { id: 'EDIT_DOSSIERS', label: 'Modifier les dossiers' },
+            { id: 'DELETE_DOSSIERS', label: 'Supprimer les dossiers' },
+            { id: 'VIEW_CLIENTS', label: 'Voir les clients' },
+            { id: 'MANAGE_CLIENTS', label: 'Gérer les clients' },
+        ]
+    },
+    {
+        name: 'Documents & GED',
+        order: 2,
+        permissions: [
+            { id: 'VIEW_DOCUMENTS', label: 'Voir les documents' },
+            { id: 'UPLOAD_DOCUMENTS', label: 'Ajouter des documents' },
+            { id: 'DELETE_DOCUMENTS', label: 'Supprimer des documents' },
+            { id: 'SIGN_DOCUMENTS', label: 'Signer des documents' },
+            { id: 'MANAGE_TEMPLATES', label: 'Gérer les modèles' },
+        ]
+    },
+    {
+        name: 'Finance & Comptabilité',
+        order: 3,
+        permissions: [
+            { id: 'VIEW_FINANCE', label: 'Voir les rapports financiers' },
+            { id: 'MANAGE_INVOICES', label: 'Gérer la facturation' },
+            { id: 'VIEW_CARPA', label: 'Voir les fonds CARPA' },
+            { id: 'MANAGE_CARPA', label: 'Gérer les fonds CARPA' },
+            { id: 'MANAGE_EXPENSES', label: 'Gérer les frais' },
+        ]
+    },
+    {
+        name: 'Agenda & Tâches',
+        order: 4,
+        permissions: [
+            { id: 'VIEW_AGENDA', label: 'Voir l\'agenda global' },
+            { id: 'MANAGE_EVENTS', label: 'Gérer les rendez-vous' },
+            { id: 'MANAGE_TASKS', label: 'Gérer les tâches' },
+        ]
+    },
+    {
+        name: 'IA & Outils',
+        order: 5,
+        permissions: [
+            { id: 'USE_LEXAI', label: 'Utiliser l\'IA LexAI' },
+            { id: 'USE_PREDICTIVE_IA', label: 'Utiliser l\'IA prédictive' },
+            { id: 'LEGAL_RESEARCH', label: 'Recherche juridique avancée' },
+        ]
+    },
+    {
+        name: 'Administration',
+        order: 6,
+        permissions: [
+            { id: 'MANAGE_USERS', label: 'Gérer les utilisateurs' },
+            { id: 'MANAGE_ROLES', label: 'Gérer les rôles' },
+            { id: 'CABINET_SETTINGS', label: 'Paramètres du cabinet' },
+            { id: 'VIEW_AUDIT_LOGS', label: 'Voir les logs d\'audit' },
+            { id: 'VIEW_TECHNICAL_DOCS', label: 'Documentation technique' },
+            { id: 'EXPORT_DATA', label: 'Exporter des données' },
+        ]
+    }
 ]
 
 export default function AdminUsersPage({ users, roles }: { users: any[], roles: any[] }) {
@@ -47,12 +106,12 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
     const [selectedPerms, setSelectedPerms] = useState<string[]>([])
     const [editData, setEditData] = useState({ name: '', email: '', roleId: '', hourlyRate: '' })
 
-    const [newUser, setNewUser] = useState({ name: '', email: '', roleId: roles[0]?.id || '', hourlyRate: '200' })
+    const [newUser, setNewUser] = useState({ name: '', email: '', password: '', roleId: roles[0]?.id || '', hourlyRate: '200' })
 
     const handleCreate = async () => {
         await createUser(newUser)
         setIsCreateOpen(false)
-        setNewUser({ name: '', email: '', roleId: roles[0]?.id || '', hourlyRate: '200' })
+        setNewUser({ name: '', email: '', password: '', roleId: roles[0]?.id || '', hourlyRate: '200' })
         window.location.reload()
     }
 
@@ -150,15 +209,33 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
                                 <Label>Email</Label>
                                 <Input value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} />
                             </div>
+                            <div className="grid gap-2">
+                                <Label>Mot de passe temporaire</Label>
+                                <Input
+                                    type="password"
+                                    placeholder="Ex: LexPremium2026!"
+                                    value={newUser.password}
+                                    onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+                                />
+                                <p className="text-[10px] text-slate-500">L'utilisateur pourra le changer plus tard dans ses paramètres.</p>
+                            </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label>Rôle</Label>
                                     <Select value={newUser.roleId} onValueChange={v => setNewUser({ ...newUser, roleId: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder={roles.length > 0 ? "Sélectionner un rôle" : "Aucun rôle disponible"} />
+                                        </SelectTrigger>
                                         <SelectContent>
-                                            {roles.map(role => (
-                                                <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
-                                            ))}
+                                            {roles.length > 0 ? (
+                                                roles.map(role => (
+                                                    <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+                                                ))
+                                            ) : (
+                                                <div className="p-2 text-xs text-slate-500 text-center">
+                                                    Veuillez créer des rôles dans l'onglet "Rôles & Permissions" d'abord.
+                                                </div>
+                                            )}
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -183,21 +260,30 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
                                 Définissez les droits d'accès pour {selectedUser?.name}.
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="space-y-4">
-                                {PERMISSIONS_LIST.map((perm) => (
-                                    <div key={perm.id} className="flex items-center space-x-2 border p-3 rounded-md hover:bg-slate-50">
-                                        <Checkbox
-                                            id={perm.id}
-                                            checked={selectedPerms.includes(perm.id)}
-                                            onCheckedChange={() => togglePerm(perm.id)}
-                                        />
-                                        <label
-                                            htmlFor={perm.id}
-                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer w-full"
-                                        >
-                                            {perm.label}
-                                        </label>
+                        <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="space-y-6 py-4">
+                                {PERMISSION_GROUPS.map((group) => (
+                                    <div key={group.name} className="space-y-3">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-1">
+                                            {group.name}
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {group.permissions.map((perm) => (
+                                                <div key={perm.id} className="flex items-center space-x-2 border p-3 rounded-md hover:bg-slate-50 transition-colors">
+                                                    <Checkbox
+                                                        id={perm.id}
+                                                        checked={selectedPerms.includes(perm.id)}
+                                                        onCheckedChange={() => togglePerm(perm.id)}
+                                                    />
+                                                    <label
+                                                        htmlFor={perm.id}
+                                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer w-full"
+                                                    >
+                                                        {perm.label}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -264,7 +350,9 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
                                 <div className="grid gap-2">
                                     <Label>Rôle</Label>
                                     <Select value={editData.roleId} onValueChange={v => setEditData({ ...editData, roleId: v })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Sélectionner un rôle" />
+                                        </SelectTrigger>
                                         <SelectContent>
                                             {roles.map(role => (
                                                 <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>

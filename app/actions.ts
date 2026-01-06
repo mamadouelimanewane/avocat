@@ -586,7 +586,7 @@ export async function createUser(data: any) {
                 role: data.role, // legacy
                 roleId: data.roleId, // dynamic
                 hourlyRate: parseFloat(data.hourlyRate || '200'),
-                password: 'password123', // Default password
+                password: data.password || 'password123', // Use provided password or fallback
                 active: true
             }
         })
@@ -3385,6 +3385,44 @@ export async function loginStaff(prevState: any, formData: FormData) {
     }
 }
 
+export async function updateUserPassword(prevState: any, formData: FormData) {
+    const currentPassword = formData.get('currentPassword') as string
+    const newPassword = formData.get('newPassword') as string
+
+    try {
+        const userId = cookies().get('auth_token')?.value
+        if (!userId) return { success: false, message: "Non connecté" }
+
+        const user = await prisma.user.findUnique({ where: { id: userId } })
+
+        if (!user) return { success: false, message: "Utilisateur introuvable" }
+
+        if (user.password && user.password !== currentPassword) {
+            return { success: false, message: "Mot de passe actuel incorrect" }
+        }
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: newPassword }
+        })
+
+        return { success: true, message: "Mot de passe mis à jour avec succès" }
+    } catch (e) {
+        return { success: false, message: "Erreur lors de la mise à jour" }
+    }
+}
+
+export async function logout() {
+    cookies().delete('auth_token')
+    cookies().delete('user_role')
+    return redirect('/login')
+}
+
+export async function logoutClient() {
+    cookies().delete('portal_token')
+    return redirect('/portal/login')
+}
+
 export async function loginClient(prevState: any, formData: FormData) {
     const email = formData.get('email') as string
     const code = formData.get('code') as string // Access Code for clients
@@ -3414,17 +3452,6 @@ export async function loginClient(prevState: any, formData: FormData) {
     }
 }
 
-export async function logoutClient() {
-    cookies().delete('portal_token')
-    redirect('/portal/login')
-}
-
-export async function logout() {
-    cookies().delete('auth_token')
-    cookies().delete('user_role')
-    cookies().delete('portal_token')
-    redirect('/login')
-}
 
 export async function getPortalDashboardData() {
     const cookieStore = cookies()

@@ -15,21 +15,31 @@ export const metadata: Metadata = {
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 
+import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     const cookieStore = cookies();
-    const isLoggedIn = !!cookieStore.get('auth_token')?.value;
+    const userId = cookieStore.get('auth_token')?.value;
+    const isLoggedIn = !!userId;
+
+    let user = null;
+    if (userId) {
+        user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { name: true, role: true }
+        });
+    }
 
     return (
         <html lang="fr" suppressHydrationWarning>
             <body className={`${inter.variable} ${outfit.variable} font-sans bg-background text-foreground min-h-screen`} suppressHydrationWarning>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                    <AppShell isLoggedIn={isLoggedIn}>
+                    <AppShell isLoggedIn={isLoggedIn} user={user}>
                         {children}
                     </AppShell>
                     <Toaster />

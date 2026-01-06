@@ -12,14 +12,65 @@ import { Textarea } from '@/components/ui/textarea'
 import { createRole, updateRoleData, deleteRole } from '@/app/actions'
 import { Checkbox } from '@/components/ui/checkbox'
 
-const AVAILABLE_PERMISSIONS = [
-    { id: 'VIEW_FINANCE', label: 'Voir Finances & CARPA' },
-    { id: 'MANAGE_FINANCE', label: 'Gérer Transactions (CARPA/Frais)' },
-    { id: 'MANAGE_USERS', label: 'Gérer Utilisateurs (Admin)' },
-    { id: 'DELETE_DOSSIER', label: 'Supprimer Dossiers' },
-    { id: 'EXPORT_DATA', label: 'Exporter Données' },
-    { id: 'MANAGE_ROLES', label: 'Gérer les Rôles' },
-    { id: 'VIEW_TECHNICAL_DOCS', label: 'Voir Documentation Technique' },
+const PERMISSION_GROUPS = [
+    {
+        name: 'Dossiers & Clients',
+        permissions: [
+            { id: 'VIEW_DOSSIERS', label: 'Voir les dossiers' },
+            { id: 'CREATE_DOSSIERS', label: 'Créer des dossiers' },
+            { id: 'EDIT_DOSSIERS', label: 'Modifier les dossiers' },
+            { id: 'DELETE_DOSSIERS', label: 'Supprimer les dossiers' },
+            { id: 'VIEW_CLIENTS', label: 'Voir les clients' },
+            { id: 'MANAGE_CLIENTS', label: 'Gérer les clients' },
+        ]
+    },
+    {
+        name: 'Documents & GED',
+        permissions: [
+            { id: 'VIEW_DOCUMENTS', label: 'Voir les documents' },
+            { id: 'UPLOAD_DOCUMENTS', label: 'Ajouter des documents' },
+            { id: 'DELETE_DOCUMENTS', label: 'Supprimer des documents' },
+            { id: 'SIGN_DOCUMENTS', label: 'Signer des documents' },
+            { id: 'MANAGE_TEMPLATES', label: 'Gérer les modèles' },
+        ]
+    },
+    {
+        name: 'Finance & Comptabilité',
+        permissions: [
+            { id: 'VIEW_FINANCE', label: 'Voir les rapports financiers' },
+            { id: 'MANAGE_INVOICES', label: 'Gérer la facturation' },
+            { id: 'VIEW_CARPA', label: 'Voir les fonds CARPA' },
+            { id: 'MANAGE_CARPA', label: 'Gérer les fonds CARPA' },
+            { id: 'MANAGE_EXPENSES', label: 'Gérer les frais' },
+        ]
+    },
+    {
+        name: 'Agenda & Tâches',
+        permissions: [
+            { id: 'VIEW_AGENDA', label: 'Voir l\'agenda global' },
+            { id: 'MANAGE_EVENTS', label: 'Gérer les rendez-vous' },
+            { id: 'MANAGE_TASKS', label: 'Gérer les tâches' },
+        ]
+    },
+    {
+        name: 'IA & Outils',
+        permissions: [
+            { id: 'USE_LEXAI', label: 'Utiliser l\'IA LexAI' },
+            { id: 'USE_PREDICTIVE_IA', label: 'Utiliser l\'IA prédictive' },
+            { id: 'LEGAL_RESEARCH', label: 'Recherche juridique avancée' },
+        ]
+    },
+    {
+        name: 'Administration',
+        permissions: [
+            { id: 'MANAGE_USERS', label: 'Gérer les utilisateurs' },
+            { id: 'MANAGE_ROLES', label: 'Gérer les rôles' },
+            { id: 'CABINET_SETTINGS', label: 'Paramètres du cabinet' },
+            { id: 'VIEW_AUDIT_LOGS', label: 'Voir les logs d\'audit' },
+            { id: 'VIEW_TECHNICAL_DOCS', label: 'Documentation technique' },
+            { id: 'EXPORT_DATA', label: 'Exporter des données' },
+        ]
+    }
 ]
 
 export default function AdminRolesPage({ roles }: { roles: any[] }) {
@@ -108,17 +159,24 @@ export default function AdminRolesPage({ roles }: { roles: any[] }) {
                                 <Label>Description</Label>
                                 <Textarea value={newRole.description} onChange={e => setNewRole({ ...newRole, description: e.target.value })} />
                             </div>
-                            <div className="grid gap-2">
-                                <Label>Permissions par défaut</Label>
-                                <div className="grid grid-cols-2 gap-2 mt-2">
-                                    {AVAILABLE_PERMISSIONS.map(perm => (
-                                        <div key={perm.id} className="flex items-center space-x-2 border p-2 rounded hover:bg-slate-50">
-                                            <Checkbox
-                                                id={`new-${perm.id}`}
-                                                checked={newRole.permissions.includes(perm.id)}
-                                                onCheckedChange={() => togglePermission('new', perm.id)}
-                                            />
-                                            <label htmlFor={`new-${perm.id}`} className="text-xs cursor-pointer">{perm.label}</label>
+                            <div className="grid gap-4">
+                                <Label className="text-sm font-semibold text-slate-900">Permissions par module</Label>
+                                <div className="space-y-6">
+                                    {PERMISSION_GROUPS.map(group => (
+                                        <div key={group.name} className="space-y-3">
+                                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-1">{group.name}</h4>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {group.permissions.map(perm => (
+                                                    <div key={perm.id} className="flex items-center space-x-2 border p-2 rounded hover:bg-slate-50 transition-colors">
+                                                        <Checkbox
+                                                            id={`new-${perm.id}`}
+                                                            checked={newRole.permissions.includes(perm.id)}
+                                                            onCheckedChange={() => togglePermission('new', perm.id)}
+                                                        />
+                                                        <label htmlFor={`new-${perm.id}`} className="text-xs cursor-pointer text-slate-700">{perm.label}</label>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -187,17 +245,24 @@ export default function AdminRolesPage({ roles }: { roles: any[] }) {
                             <Label>Description</Label>
                             <Textarea value={editRole.description} onChange={e => setEditRole({ ...editRole, description: e.target.value })} />
                         </div>
-                        <div className="grid gap-2">
-                            <Label>Permissions par défaut</Label>
-                            <div className="grid grid-cols-2 gap-2 mt-2">
-                                {AVAILABLE_PERMISSIONS.map(perm => (
-                                    <div key={perm.id} className="flex items-center space-x-2 border p-2 rounded hover:bg-slate-50">
-                                        <Checkbox
-                                            id={`edit-${perm.id}`}
-                                            checked={editRole.permissions.includes(perm.id)}
-                                            onCheckedChange={() => togglePermission('edit', perm.id)}
-                                        />
-                                        <label htmlFor={`edit-${perm.id}`} className="text-xs cursor-pointer">{perm.label}</label>
+                        <div className="grid gap-4">
+                            <Label className="text-sm font-semibold text-slate-900">Permissions par module</Label>
+                            <div className="space-y-6">
+                                {PERMISSION_GROUPS.map(group => (
+                                    <div key={group.name} className="space-y-3">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-1">{group.name}</h4>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {group.permissions.map(perm => (
+                                                <div key={perm.id} className="flex items-center space-x-2 border p-2 rounded hover:bg-slate-50 transition-colors">
+                                                    <Checkbox
+                                                        id={`edit-${perm.id}`}
+                                                        checked={editRole.permissions.includes(perm.id)}
+                                                        onCheckedChange={() => togglePermission('edit', perm.id)}
+                                                    />
+                                                    <label htmlFor={`edit-${perm.id}`} className="text-xs cursor-pointer text-slate-700">{perm.label}</label>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

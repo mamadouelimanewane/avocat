@@ -313,7 +313,7 @@ export default function AgendaPage() {
                 </TabsContent>
 
                 <TabsContent value="deadlines" className="flex-1 outline-none">
-                    <DeadlinePro />
+                    <DeadlinePro events={events} />
                 </TabsContent>
             </Tabs>
         </div>
