@@ -8,11 +8,11 @@ const prisma = new PrismaClient()
 
 export async function processUrl(url: string, region: string = 'SENEGAL') {
     try {
-        const simulatedFetch = await fetch(url).then(res => res.text()).catch(() => "")
-        if (!simulatedFetch) return { success: false, message: "Impossible d'accéder à l'URL" }
+        const rawContent = await fetch(url).then(res => res.text()).catch(() => "")
+        if (!rawContent) return { success: false, message: "Impossible d'accéder à l'URL" }
 
         // Remove heavy scripts/styles
-        const lightContent = simulatedFetch.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/g, "")
+        const lightContent = rawContent.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/g, "")
             .replace(/<style\b[^>]*>([\s\S]*?)<\/style>/g, "")
             .replace(/<[^>]+>/g, " ");
 
@@ -40,7 +40,7 @@ export async function processUrl(url: string, region: string = 'SENEGAL') {
                 date: aiAnalysis.date ? new Date(aiAnalysis.date) : new Date()
             }
         } else {
-            const titleMatch = simulatedFetch.match(/<title>(.*?)<\/title>/)
+            const titleMatch = rawContent.match(/<title>(.*?)<\/title>/)
             if (titleMatch) finalData.title = titleMatch[1]
         }
 

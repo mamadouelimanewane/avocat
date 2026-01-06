@@ -9,34 +9,46 @@ async function main() {
     // Clean DB
     try {
         await prisma.invoiceItem.deleteMany()
+        await prisma.payment.deleteMany()
         await prisma.facture.deleteMany()
+        await prisma.documentVersion.deleteMany()
         await prisma.document.deleteMany()
         await prisma.event.deleteMany()
         await prisma.task.deleteMany()
+        await prisma.timeEntry.deleteMany()
+        await prisma.expense.deleteMany()
+        await prisma.carpaTransaction.deleteMany()
+        await prisma.meeting.deleteMany()
+        await prisma.communicationLog.deleteMany()
         await prisma.dossier.deleteMany()
         await prisma.client.deleteMany()
         await prisma.user.deleteMany()
         await prisma.template.deleteMany()
         await prisma.account.deleteMany()
         await prisma.journal.deleteMany()
+        await prisma.jurisprudence.deleteMany()
     } catch (e) {
-        console.log('Error cleaning DB (tables might not exist yet):', e)
+        console.log('Error cleaning DB:', e)
     }
 
     // 1. Create Users (Staff)
-    const admin = await prisma.user.create({
-        data: {
+    const admin = await prisma.user.upsert({
+        where: { email: 'admin@lexpremium.sn' },
+        update: {},
+        create: {
             email: 'admin@lexpremium.sn',
             name: 'Maître Principal',
             role: 'ADMIN',
-            password: 'demo123', // In real app: hashed
+            password: 'demo123',
             hourlyRate: 300.0,
             active: true
         }
     })
 
-    const avocat = await prisma.user.create({
-        data: {
+    const avocat = await prisma.user.upsert({
+        where: { email: 'avocat@lexpremium.sn' },
+        update: {},
+        create: {
             email: 'avocat@lexpremium.sn',
             name: 'Maître Diop',
             role: 'AVOCAT',
@@ -46,8 +58,10 @@ async function main() {
         }
     })
 
-    const assistant = await prisma.user.create({
-        data: {
+    const assistant = await prisma.user.upsert({
+        where: { email: 'assistant@lexpremium.sn' },
+        update: {},
+        create: {
             email: 'assistant@lexpremium.sn',
             name: 'Assistant Ndiaye',
             role: 'ASSISTANT',
@@ -57,7 +71,7 @@ async function main() {
         }
     })
 
-    console.log('Users created')
+    console.log('Users upserted')
 
     // 2. Create Clients
     const clientsData = [
@@ -167,14 +181,170 @@ async function main() {
 
 
     // 6. Create Templates
-    await prisma.template.createMany({
-        data: [
-            { name: 'Lettre de Mise en Demeure', category: 'LETTRE', content: '<p>Objet : Mise en demeure de payer ...</p>' },
-            { name: 'Contrat de Travail CDI', category: 'CONTRAT', content: '<p>Entre les soussignés ...</p>' },
-            { name: 'Assignation en Paiement', category: 'ACTE', content: '<p>L\'an deux mille vingt-quatre ...</p>' }
-        ]
-    })
-    console.log('Templates created')
+    const templatesData = [
+        // --- AFFAIRES & OHADA ---
+        {
+            name: 'Statuts SARL (Standard OHADA)',
+            category: 'AFFAIRES',
+            content: '<h1>STATUTS DE LA SOCIETE {{NOM_SOCIETE}}</h1><p>Au capital de {{CAPITAL_SOCIAL}} FCFA...</p>',
+            variables: JSON.stringify(['NOM_SOCIETE', 'CAPITAL_SOCIAL', 'SIEGE_SOCIAL', 'DUREE', 'CO_GERANTS'])
+        },
+        {
+            name: 'Contrat de Bail Commercial OHADA',
+            category: 'AFFAIRES',
+            content: '<p>Entre le Bailleur {{BAILLEUR}} et le Preneur {{PRENEUR}}...</p>',
+            variables: JSON.stringify(['BAILLEUR', 'PRENEUR', 'LOYER', 'DOSSIER_ID', 'DESTINATION'])
+        },
+        {
+            name: 'Convention de Compte Courant d\'Associé',
+            category: 'AFFAIRES',
+            content: '<p>Conditions d\'avance de fonds par {{ASSOCIE}} à {{SOCIETE}}...</p>',
+            variables: JSON.stringify(['ASSOCIE', 'SOCIETE', 'MONTANT_AVANCE', 'INTERETS'])
+        },
+        {
+            name: 'Contrat de Cession de Parts Sociales',
+            category: 'AFFAIRES',
+            content: '<p>Cédant : {{CEDANT}}, Cessionnaire : {{CESSIONNAIRE}}...</p>',
+            variables: JSON.stringify(['CEDANT', 'CESSIONNAIRE', 'NB_PARTS', 'PRIX_CESSION'])
+        },
+
+        // --- TRAVAIL ---
+        {
+            name: 'Contrat de Travail CDI (Cadre)',
+            category: 'TRAVAIL',
+            content: '<p>Engagement de M./Mme {{SALARIE}} par {{ENTREPRISE}}...</p>',
+            variables: JSON.stringify(['SALARIE', 'ENTREPRISE', 'QUALIFICATION', 'REMUNERATION', 'CLAUSE_NON_CONCURRENCE'])
+        },
+        {
+            name: 'Contrat de Stage (Convention)',
+            category: 'TRAVAIL',
+            content: '<p>Convention de stage entre {{ECOLE}}, {{ENTREPRISE}} et {{STAGIAIRE}}...</p>',
+            variables: JSON.stringify(['ECOLE', 'ENTREPRISE', 'STAGIAIRE', 'GRATIFICATION'])
+        },
+        {
+            name: 'Lettre de Mise en Demeure (Absence Injustifiée)',
+            category: 'TRAVAIL',
+            content: '<p>Objet : Mise en demeure de reprendre le travail suite à absence depuis {{DATE}}...</p>',
+            variables: JSON.stringify(['SALARIE', 'DATE_DEBUT_ABSENCE'])
+        },
+
+        // --- FAMILLE & SOCIAL ---
+        {
+            name: 'Requête en Divorce par Consentement Mutuel',
+            category: 'SOCIAL',
+            content: '<h1>REQUETE EN DIVORCE</h1><p>A Monsieur le Président du Tribunal d\'Instance de {{VILLE}}...</p>',
+            variables: JSON.stringify(['VILLE', 'EPOUX_A', 'EPOUX_B', 'DATE_MARIAGE'])
+        },
+        {
+            name: 'Acte de Partage Successoral Amiable',
+            category: 'SOCIAL',
+            content: '<p>Succession de feu {{DE_CUJUS}} décédé le {{DATE_DECES}}...</p>',
+            variables: JSON.stringify(['DE_CUJUS', 'DATE_DECES', 'MASSE_A_PARTAGER', 'LISTE_HERITIERS'])
+        },
+        {
+            name: 'Offre d\'Achat après Calcul de Succession',
+            category: 'SOCIAL',
+            content: '<p>Projet de rachat de parts d\'indivision par {{ACHETEUR}} aux autres héritiers...</p>',
+            variables: JSON.stringify(['ACHETEUR', 'PRIX_GLOBAL', 'DELAI_ACCEPTATION'])
+        },
+
+        // --- FONCIER ---
+        {
+            name: 'Contrat de Promotion Immobilière',
+            category: 'FONCIER',
+            content: '<p>Promoteur : {{PROMOTEUR}}, Maître d\'Ouvrage : {{CLIENT}}...</p>',
+            variables: JSON.stringify(['PROMOTEUR', 'CLIENT', 'LOCALISATION_TERRAIN', 'COUT_ESTIME'])
+        },
+        {
+            name: 'Compromis de Vente de Terrain Nu',
+            category: 'FONCIER',
+            content: '<p>Vente du Titre Foncier n° {{TF_NUMERO}} situé à {{ZONE}}...</p>',
+            variables: JSON.stringify(['TF_NUMERO', 'ZONE', 'VENDEUR', 'ACHETEUR', 'PRIX_M_CARRE'])
+        },
+
+        // --- PROCÉDURE ---
+        {
+            name: 'Conclusions en Réplique (Fond)',
+            category: 'PROCEDURE',
+            content: '<h1>CONCLUSIONS EN REPLIQUE</h1><p>Pour : {{CLIENT_NOM}}... Contre : {{PARTIE_ADVERSE}}...</p>',
+            variables: JSON.stringify(['CLIENT_NOM', 'PARTIE_ADVERSE', 'TRIBUNAL', 'FAITS'])
+        },
+        {
+            name: 'Assignation en Référé Expertise',
+            category: 'PROCEDURE',
+            content: '<p>Saisine en urgence du juge des référés de {{VILLE}}...</p>',
+            variables: JSON.stringify(['VILLE', 'MOTIF_URGENCE', 'MISSION_EXPERTE_DEMANDEE'])
+        },
+
+        // --- PETROLE & GAZ ---
+        {
+            name: 'Accord de Confidentialité (NDA Oil & Gas)',
+            category: 'PETROLE_GAZ',
+            content: '<p>Dans le cadre de l\'appel d\'offres pour le bloc {{BLOCK_ID}}...</p>',
+            variables: JSON.stringify(['BLOCK_ID', 'DUREE_NDA', 'PARTIES_CONCERNEES'])
+        },
+        {
+            name: 'Contrat de Sous-traitance Maintenance Offshore',
+            category: 'PETROLE_GAZ',
+            content: '<p>Prestations sur la plateforme {{PLATFORM_NAME}}...</p>',
+            variables: JSON.stringify(['PLATFORM_NAME', 'PRESTATAIRE', 'DELAI_INTERVENTION'])
+        },
+
+        // --- TECH & DONNÉES ---
+        {
+            name: 'Charte Informatique Interne',
+            category: 'TECH',
+            content: '<p>Règles d\'utilisation des outils numériques de {{ENTREPRISE}}...</p>',
+            variables: JSON.stringify(['ENTREPRISE', 'ADMIN_SYS'])
+        },
+        {
+            name: 'Accord de Traitement des Données (DPA)',
+            category: 'TECH',
+            content: '<p>Conformité au règlement CDP (Sénégal) et RGPD...</p>',
+            variables: JSON.stringify(['TYPE_DONNEES', 'FINALITE_TRAITEMENT', 'RESPONSABLE'])
+        },
+
+        // --- INTERNATIONAL ---
+        {
+            name: 'Contrat d\'Agent Commercial Export',
+            category: 'INTERNATIONAL',
+            content: '<p>Mission de représentation en zone {{ZONE_EXPORT}} pour {{FABRICANT}}...</p>',
+            variables: JSON.stringify(['ZONE_EXPORT', 'FABRICANT', 'TAUX_COMMISSION'])
+        },
+        {
+            name: 'Convention de Joint-Venture (International)',
+            category: 'INTERNATIONAL',
+            content: '<p>Alliance entre {{PARTNER_A}} et {{PARTNER_B}} pour le marché africain...</p>',
+            variables: JSON.stringify(['PARTNER_A', 'PARTNER_B', 'PAYS_HOTE', 'CONTRIBUTION_TECHNOLOGIQUE'])
+        },
+
+        // --- FISCALITÉ ---
+        {
+            name: 'Audit de Situation Fiscale',
+            category: 'FISCALITE',
+            content: '<p>Analyse des risques fiscaux pour {{SOCIETE}} sur les exercices {{EXERCICES}}...</p>',
+            variables: JSON.stringify(['SOCIETE', 'EXERCICES', 'TAXES_AUDITEES'])
+        },
+        {
+            name: 'Réclamation Contentieuse (DGID)',
+            category: 'FISCALITE',
+            content: '<p>Contestation du redressement notifié par l\'Administration le {{DATE_REDRESSEMENT}}...</p>',
+            variables: JSON.stringify(['DATE_REDRESSEMENT', 'MONTANT_CONTESTE', 'ARGUMENTS_DROIT'])
+        },
+
+        // --- ADMINISTRATIF ---
+        {
+            name: 'Recours pour Excès de Pouvoir (REP)',
+            category: 'ADMINISTRATIF',
+            content: '<p>Requête contre la décision administrative n° {{DECISION_REF}}...</p>',
+            variables: JSON.stringify(['DECISION_REF', 'AUTORITE_EMETTRICE', 'MOYENS_ANNULATION'])
+        }
+    ]
+
+    for (const t of templatesData) {
+        await prisma.template.create({ data: t })
+    }
+    console.log(`Massive Template Library seeded: ${templatesData.length} new high-quality models.`)
 
     // 7. Create Knowledge Base (RAG Data)
     await prisma.jurisprudence.createMany({

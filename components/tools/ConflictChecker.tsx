@@ -7,32 +7,64 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, ShieldAlert, CheckCircle, Loader2, UserPlus, AlertTriangle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { createDocumentFromTemplate } from "@/app/actions"
+import { useToast } from "@/components/ui/use-toast"
+import { FileCheck, FileX } from "lucide-react"
+
+import { checkConflict } from "@/app/actions"
 
 export function ConflictChecker() {
     const [query, setQuery] = useState("")
     const [isScanning, setIsScanning] = useState(false)
+    const [isGenerating, setIsGenerating] = useState(false)
     const [results, setResults] = useState<any[] | null>(null)
+    const { toast } = useToast()
 
-    const handleScan = () => {
+    const handleGenerateConflictReport = async (found: boolean) => {
+        setIsGenerating(true)
+        try {
+            const templateSlug = found ? 'PROCEDURE_conflit_detecte' : 'PROCEDURE_certificat_non_conflit'
+            const result = await createDocumentFromTemplate(
+                "677c7774e54823467f555555", // Simulated Dossier
+                templateSlug,
+                {
+                    PARTIE_VERIFIEE: query,
+                    DATE_VERIFICATION: new Date().toLocaleDateString('fr-FR'),
+                    RESULTAT: found ? "CONFLIT DETECTE" : "AUCUN CONFLIT",
+                    DETAILS: found ? `Match trouvé pour ${results?.map(r => r.name).join(', ')}` : "Recherche exhaustive effectuée dans la base LexPremium."
+                }
+            )
+
+            if (result.success) {
+                toast({
+                    title: found ? "Rapport de conflit généré" : "Certificat généré",
+                    description: "Le document a été ajouté au dossier administratif du cabinet."
+                })
+            }
+        } catch (e) {
+            toast({ variant: "destructive", title: "Erreur", description: "Échec de l'automatisation." })
+        } finally {
+            setIsGenerating(false)
+        }
+    }
+
+    const handleScan = async () => {
         if (!query) return
         setIsScanning(true)
         setResults(null)
 
-        // Simulation d'une analyse IA approfondie dans la base de données
-        setTimeout(() => {
-            const mockData = [
-                { id: 1, name: "Samba Diop", role: "Client Actuel", dossier: "2023-CIV-045", risk: "HIGH" },
-                { id: 2, name: "Diop SARL", role: "Partie Adverse", dossier: "2024-COM-012", risk: "MEDIUM" },
-            ]
-
-            // On filtre pour la démo si le nom contient "Diop"
-            if (query.toLowerCase().includes("diop")) {
-                setResults(mockData)
+        try {
+            const res = await checkConflict(query)
+            if (res.success && res.conflict) {
+                setResults(res.matches || [])
             } else {
                 setResults([])
             }
+        } catch (error) {
+            console.error("Conflict check error:", error)
+        } finally {
             setIsScanning(false)
-        }, 2000)
+        }
     }
 
     return (
@@ -79,9 +111,21 @@ export function ConflictChecker() {
                     <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                         {results.length > 0 ? (
                             <>
-                                <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-800">
-                                    <AlertTriangle className="h-5 w-5 shrink-0" />
-                                    <p className="text-sm font-semibold">ALERTE CONFLIT : Des correspondances critiques ont été détectées.</p>
+                                <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between text-red-800">
+                                    <div className="flex items-center gap-3">
+                                        <AlertTriangle className="h-5 w-5 shrink-0" />
+                                        <p className="text-sm font-semibold">ALERTE CONFLIT : Correspondances détectées.</p>
+                                    </div>
+                                    <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        className="h-8 text-[10px]"
+                                        onClick={() => handleGenerateConflictReport(true)}
+                                        disabled={isGenerating}
+                                    >
+                                        {isGenerating ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <FileX className="h-3 w-3 mr-1" />}
+                                        Générer Rapport
+                                    </Button>
                                 </div>
                                 <div className="grid gap-3">
                                     {results.map((res) => (
@@ -109,9 +153,21 @@ export function ConflictChecker() {
                                 <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
                                 <h4 className="text-lg font-bold text-emerald-900">Aucun Conflit Détecté</h4>
                                 <p className="text-emerald-700/70 text-sm max-w-xs mx-auto">Le nom "{query}" n'apparaît dans aucun dossier actif ou passé en tant que partie adverse ou tiers incohérent.</p>
-                                <Button size="sm" className="mt-6 bg-emerald-600 hover:bg-emerald-700">
-                                    <UserPlus className="h-4 w-4 mr-2" /> Ouvrir Dossier en toute sécurité
-                                </Button>
+                                <div className="mt-6 flex justify-center gap-2">
+                                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">
+                                        <UserPlus className="h-4 w-4 mr-2" /> Ouvrir Dossier
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="border-emerald-200 text-emerald-700"
+                                        onClick={() => handleGenerateConflictReport(false)}
+                                        disabled={isGenerating}
+                                    >
+                                        {isGenerating ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <FileCheck className="h-3 w-3 mr-1" />}
+                                        Générer Certificat
+                                    </Button>
+                                </div>
                             </div>
                         )}
                     </div>

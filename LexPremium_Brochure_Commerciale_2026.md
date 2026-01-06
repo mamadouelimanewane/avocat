@@ -1,46 +1,48 @@
 # DOSSIER COMMERCIAL : LEXPREMIUM - L'AVOCAT AUGMENTÉ 2026
-## *Plus qu'un logiciel. Une arme de guerre juridique.*
+## *Plus qu'un logiciel. Une arme de guerre juridique et financière.*
 
 ---
 
 ### I. L'AVANCE TECHNOLOGIQUE DÉCISIVE
-Dans un monde où la justice se numérise, LexPremium vous donne **10 ans d'avance**. Nous ne vendons pas seulement de la gestion, nous vendons de la **Victoire**.
+Dans un monde où la justice se numérise, LexPremium vous donne **10 ans d'avance**. Nous ne vendons pas seulement de la gestion, nous vendons de la **Souveraineté Digitale**.
 
 ---
 
 ### II. INTELLIGENCE STRATÉGIQUE (DISRUPTIVE FEATURES)
 C'est ici que vous laissez la concurrence derrière vous.
-- **Magistrat Intel™** : Ne plaidez plus à l'aveugle. Connaissez le profil psychologique de votre juge avant même d'entrer dans la salle. (Statistiques de condamnation, préférences procédurales).
-- **Sherlock OSINT™** : Le renseignement d'affaires intégré. Un clic pour scanner le patrimoine caché et la réputation numérique de la partie adverse.
-- **Nexus Graph™** : Visualisez l'invisible. Un graphe interactif révèle les conflits d'intérêts et les liens secrets entre les acteurs de vos dossiers.
+- **Tableau de Bord Exécutif™** : Pilotez votre cabinet comme une multinationale. Vision 360° sur le CA, la marge nette et la trésorerie prévisionnelle à 90 jours.
+- **Magistrat Intel™** : Ne plaidez plus à l'aveugle. Connaissez le profil de votre juge (Statistiques de confirmation, préférences procédurales).
+- **Sherlock OSINT™** : Le renseignement d'affaires intégré. Scan du patrimoine et de la solvabilité de la partie adverse en un clic.
+- **Nexus Graph™** : Visualisez l'invisible. Détection automatique des conflits d'intérêts et des réseaux d'influence.
 
 ---
 
-### III. LA PUISSANCE DE L'IA AU QUOTIDIEN
-- **LexAI Predict** : Probabilité de succès calculée par IA sur la base de thousands de décisions similaires.
-- **Quantum Simulator** : En négociation sociale, écrasez la partie adverse avec des calculs d'indemnités et de risques projetés en temps réel sur une interface futuriste.
-- **Auto-Drafter** : Votre premier jet de conclusions rédigé par l'IA en 3 minutes chrono.
+### III. LA PUISSANCE DE L'IA & DU CALCUL EXPERT
+- **Succession Pro™** : Liquidation successorale complexe (10 méthodes) conforme au Code de la Famille sénégalais. Ce qui prenait 3 jours d'expertise se calcule désormais en 9 minutes.
+- **LexAI Predict** : Probabilité de succès calculée par IA sur la base des dernières tendances jurisprudentielles.
+- **Quantum Simulator** : Simulations d'indemnités sociales et foncières ultra-précises en temps réel.
+- **Auto-Drafter** : Rédaction assistée par IA de contrats OHADA et d'actes de procédure.
 
 ---
 
-### IV. GESTION FINANCIÈRE & CONFORMITÉ ELITE
-- **Execution Commander** : Transformez vos jugements en cash. Une carte interactive de Dakar pour piloter vos huissiers et vos saisies en temps réel.
-- **Centif Guard** : Votre officier de conformité virtuel. Analyse chaque virement CARPA pour vous protéger pénalement contre le blanchiment.
-- **Cashflow Oracle** : Prédit votre trésorerie à 6 mois en analysant le comportement payeur de vos clients.
-- **Snap-to-SYSCOHADA** : Jetez vos factures dans l'ocr. L'IA les lit et génère les écritures comptables sans saisie manuelle.
+### IV. INGÉNIERIE FINANCIÈRE & RECOUVREMENT
+- **Smart Recovery Engine™** : Automatisez vos relances impayées. Scoring IA du risque client (0-100), relances multi-canaux (WhatsApp/Email) et génération de mises en demeure juridiques.
+- **Execution Commander** : Carte interactive des actifs saisis et pilotage des huissiers.
+- **Centif Guard** : Protection anti-blanchiment automatique sur chaque transaction CARPA.
+- **Snap-to-SYSCOHADA** : Intégration comptable instantanée via OCR assisté par IA.
 
 ---
 
 ### V. EXPERIENCE CLIENT & MOBILITÉ
-- **War Room Tablette** : Une interface immersive spécialement conçue pour l'audience. Tout votre dossier sous le doigt, sans papier.
-- **WhatsApp Bridge** : Communiquez comme une banque privée. Notifications WhatsApp professionnelles et templates pré-rédigés pour vos clients.
-- **Procedure Tracker** : Vos clients suivent leur dossier comme un colis Amazon. Transparence totale, appels téléphoniques inutiles réduits de 80%.
+- **War Room Tablette** : Votre cabinet dans votre sacoche. Dossiers accessibles hors-ligne pour les plaidoiries en région.
+- **WhatsApp Bridge** : Communication automatisée et sécurisée. Vos clients reçoivent leurs notifications de procédure sur l'application qu'ils utilisent déjà.
+- **Dossier Express** : Portail client VIP pour le dépôt de pièces et le suivi financier en temps réel.
 
 ---
 
-### VI. LE SOCLE SOLIDE
-- **GED Intelligente** : Parapheur numérique et circuit de validation visuel.
-- **Securité Bancaire** : Chiffrement AES-256 et MFA.
+### VI. LE SOCLE DE CONFIANCE
+- **Souveraineté des Données** : Hébergement sécurisé et backups redondants.
+- **Conformité Totale** : Code de la Famille, OHADA, et Loi sur la Protection des Données Personnelles (Sénégal).
 
 ---
 
@@ -48,3 +50,4 @@ C'est ici que vous laissez la concurrence derrière vous.
 **Web** : [https://avocat-tito.vercel.app](https://avocat-tito.vercel.app)
 **Email** : contact@lexpremium.sn
 **LexPremium - Le Droit avance. Et vous ?**
+

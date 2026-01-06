@@ -1,161 +1,74 @@
-# La Bible LexPremium : Guide d'Utilisation Intégral (Version Ultra-Détaillée)
+# La Bible LexPremium : Guide d'Utilisation Intégral (Version Ultra-Détaillée 2.0)
 ![[dakar_office.png]]
 
 ## AVANT-PROPOS
-Ce manuel a été conçu pour transformer chaque utilisateur en expert de LexPremium. Il détaille chaque écran, chaque bouton et chaque résultat attendu, permettant une navigation fluide et une exploitation maximale des outils d'Intelligence Artificielle du cabinet. Chaque terme en *Marron* représente une fonctionnalité clé ou un bouton cliquable.
+Ce manuel a été conçu pour transformer chaque utilisateur en expert de **LexPremium 2.0 (Janvier 2026)**. Il détaille chaque écran, chaque bouton et chaque résultat attendu pour les nouveaux modules stratégiques : le **Tableau de Bord Exécutif**, le **Moteur de Recouvrement IA** et le **Calculateur Succession Pro**.
 
 ---
 
-## CHAPITRE 1 : TABLEAU DE BORD (DASHBOARD)
-Le *Tableau de Bord* est la "Tour de Contrôle" de votre cabinet, offrant une vue synthétique et intelligente de l'ensemble de votre activité.
+## CHAPITRE 1 : TABLEAU DE BORD EXÉCUTIF (SMART PILOTING)
+Accessible via la route **`/executive`**, ce module est le cockpit décisionnel réservé aux associés.
 
-### 1.1 Informations Affichées
-- **Cartes de Statistiques Sommaires** :
-    - *Dossiers Ouverts* : Cette carte affiche en temps réel le volume total des affaires actuellement traitées par le cabinet, permettant aux associés de visualiser d'un seul coup d'œil la charge de travail globale et la vitalité de l'activité.
-    - *RDV Semaine* : Cet indicateur recense l'intégralité des créneaux horaires réservés dans l'agenda pour la semaine en cours, qu'il s'agisse de consultations clients, de réunions de travail ou d'audiences programmées au palais.
-    - *Tâches en Attente* : Ce compteur met en lumière le nombre d'actions et de diligences qui n'ont pas encore été marquées comme terminées, servant de rappel constant pour garantir qu'aucune échéance procédurale ou administrative ne soit oubliée.
-    - *Veille Juridique* : Ce bloc permet de suivre l'actualité législative et jurisprudentielle en affichant le nombre de nouvelles décisions de justice (CCJA, Cour Suprême) ou de textes de loi indexés par le système au cours des derniers jours.
-- *Briefing IA du Jour* : Véritable bulletin météo de votre matinée, ce texte synthétisé dynamiquement par l'Intelligence Artificielle analyse vos données pour vous présenter vos priorités absolues, telles que les audiences critiques du jour, les retards de paiement les plus urgents et les dossiers nécessitant une attention immédiate.
-- *Prochains RDV (Calendrier)* : Cette section présente une liste organisée de manière chronologique des trois prochaines échéances imminentes de votre emploi du temps, précisant pour chaque élément le titre de l'événement, l'heure exacte et le lieu de rendez-vous ou la juridiction concernée.
-- *Actions Rapides* : Ces quatre boutons interactifs et illustrés permettent d'accéder de manière instantanée aux fonctions les plus fréquentes du cabinet, vous offrant ainsi la possibilité de lancer une nouvelle procédure sans avoir à naviguer manuellement dans les menus latéraux.
-- *Flux de Veille Juridique* : Cet espace affiche le défilement des derniers titres et résumés de la jurisprudence OHADA et sénégalaise, offrant aux avocats un accès immédiat aux évolutions majeures du droit positif sans jamais quitter l'interface de travail principale.
+### 1.1 Indicateurs de Performance (KPI)
+- **Revenue Dashboard** : Affiche le chiffre d'affaires encaissé vs facturé avec un comparatif sur les 12 derniers mois.
+- **Marge Nette de Dossier** : Analyse le coût du temps passé par les collaborateurs (basé sur leur taux interne) par rapport aux honoraires perçus.
+- **Taux de Recouvrement** : Pourcentage de factures payées. Un code couleur (Rouge < 70%, Orange < 85%, Vert > 85%) permet une alerte visuelle immédiate.
 
-### 1.2 Actions & Résultats Attendus
-- **Cliquer sur une carte statistique** : Le système vous redirige automatiquement vers le module détaillé correspondant à la statistique sélectionnée (par exemple, un clic sur la carte des dossiers ouvrira la liste complète de vos affaires).
-- **Cliquer sur le bouton *Nouveau Client*** : Cette action fait apparaître une fenêtre de saisie prioritaire permettant d'enregistrer les coordonnées et le profil d'un nouveau mandant en quelques secondes.
-- **Cliquer sur le bouton *Nouveau Dossier*** : Vous ouvrez ainsi l'interface de création d'affaire où vous pourrez définir la juridiction compétente et rattacher le dossier à un client déjà présent dans votre base.
-- **Cliquer sur un item du *Flux de Veille*** : Le logiciel déploie alors le texte intégral de l'arrêt ou de la loi concernée, vous permettant une lecture approfondie accompagnée d'une synthèse automatique réalisée par l'IA.
-- **NOUVEAU - Voice Commander (Dictée Héroïque)** : 
-    - Cliquez sur l'icône *Micro* dans le header. 
-    - *Usage* : Énoncez une commande naturelle comme "Ouvre le dossier Seneweb" ou "Crée une facture de 500.000 pour M. Sy".
-    - *Résultat* : L'IA analyse l'intention et exécute l'action de navigation ou de création de donnée sans clic.
-
+### 1.2 Intelligence Prédictive
+- **Projection Oracle** : Utilise l'IA pour prédire les revenus des 3 prochains mois en analysant les habitudes de paiement historiques des clients.
+- **Scoring de Risque Global** : Liste des 5 clients présentant le plus haut risque d'impayés imminents.
 
 ---
 
-## CHAPITRE 2 : GESTION DES DOSSIERS
-Le module *Dossiers* constitue le cœur battant de votre pratique juridique, où chaque affaire est traitée comme un univers documentaire et financier propre.
+## CHAPITRE 2 : MODULE DE RECOUVREMENT IA (SMART RECOVERY)
+Accessible via la route **`/recouvrement`**, ce module automatise la gestion des créances.
 
-### 2.1 Informations Affichées
-- *Barre de Recherche Intelligente* : Cet outil de filtrage dynamique vous permet de retrouver n'importe quel dossier en saisissant simplement quelques lettres de sa référence interne, de son titre ou du nom du client associé.
-- *Bouton Exporter Excel* : Cette fonctionnalité extrait l'intégralité de la liste de vos dossiers en cours vers un fichier tableur, facilitant ainsi la réalisation de rapports d'activité personnalisés ou le suivi statistique externe au cabinet.
-- **Tableau Central des Affaires** :
-    - *Référence* : Affiche le code d'identification unique (ex: D2025-001) essentiel pour le classement physique et numérique.
-    - *Client* : Affiche le nom du mandant ; cliquer sur ce lien vous transporte directement vers sa fiche signalétique complète.
-    - *Statut* : Un badge de couleur indique si l'affaire est en cours d'instruction (*OUVERT*), suspendue ou définitivement archivée (*CLÔTURÉ*).
-    - *Mise à jour* : Indique la date et l'heure du dernier mouvement enregistré sur le dossier pour garantir la traçabilité des opérations.
+### 2.1 Le Scoring Client (0-100)
+L'IA évalue chaque client sur 4 axes :
+1. **Ponctualité** : Retard moyen sur les 3 dernières factures.
+2. **Exposition** : Montant total des impayés.
+3. **Relationnel** : Volume de dossiers actifs.
+4. **Comportemental** : Nombre de relances déjà envoyées.
 
-### 2.2 Actions & Résultats Attendus
-- **Cliquer sur *Ouvrir* dans le tableau** : Vous pénétrez dans l'espace de travail dédié au dossier sélectionné, où sont regroupés tous les documents, la chronologie des faits et l'état financier de l'affaire.
-- **Bouton *Importer* (dans l'onglet Documents)** : Cette commande permet de télécharger des pièces depuis votre ordinateur vers le serveur sécurisé du cabinet. Résultat attendu : le fichier est automatiquement analysé par l'IA pour en extraire le texte intégral (OCR).
-- **Cliquer sur l'onglet *Chronologie (Timeline)*** : Vous affichez alors l'historique exhaustif de toutes les actions menées sur le dossier, des coups de téléphone enregistrés aux audiences passées, offrant une preuve irréfutable des diligences accomplies.
-- **NOUVEAU - Utiliser l'Onglet *War Room (Tablette)*** : 
-    - Conçu pour le Palais. Affiche une interface sombre hautement lisible sous le soleil, avec accès direct aux conclusions adverses et à vos notes.
-- **NOUVEAU - Utiliser l'Onglet *Justice Prédictive*** : 
-    - *Calculateur de Probabilités* : Simule l'issue du litige basée sur l'historique des jugements de la juridiction saisie.
-    - *Aide à la Riposte* : Saisie sémantique pour trouver la faille dans l'argumentaire adverse.
-- **NOUVEAU - Utiliser l'Onglet *Procédure avec IA*** : 
-    - *Bouton "Générer avec LexAI"* : En cliquant ici, vous activez l'IA juriste qui va analyser le contexte du dossier (ex: "Licenciement abusif" ou "Recouvrement de créance") et l'étape procédurale actuelle.
-    - *Résultat* : Une liste chronologique des prochaines étapes obligatoires apparaît (ex: "Signifier conclusions sous 15 jours", "Audience de mise en état").
-    - *Action "Appliquer"* : Transforme instantanément ces prévisions en événements concrets dans votre agenda et en tâches assignées aux collaborateurs.
+### 2.2 Relances Automatisées
+- **Relance WhatsApp** : Envoie un message sécurisé directement sur le smartphone du client avec un lien vers la facture.
+- **Mise en Demeure Auto** : Génère un document .txt juridique formel, prêt à être signé et signifié, en intégrant automatiquement les chiffres et les délais légaux.
 
 ---
 
-## CHAPITRE 3 : FICHIER CLIENTS ET CRM
-Le module *Clients* centralise toute l'intelligence relationnelle du cabinet, transformant un simple répertoire en un véritable outil de gestion de la clientèle.
+## CHAPITRE 3 : CALCULATEUR DE SUCCESSION PRO
+Accessible via la route **`/succession`**, cet outil gère les partages les plus complexes.
 
-### 3.1 Informations Affichées
-- **Grille des Profils Clients** : Chaque bloc visuel présente l'identité du client, son secteur d'activité (Banque, Industrie, Particulier) et son niveau d'engagement financier vis-à-vis du cabinet.
-- *Badges de Qualification* : Ces indicateurs visuels permettent de distinguer instantanément les clients institutionnels des clients particuliers pour adapter votre communication.
+### 3.1 Saisie des Casus
+- **Configuration Mateimoniale** : Choisissez entre Communauté, Séparation ou Participation.
+- **Arbre des Héritiers** : Ajoutez les conjoints, enfants, ascendants ou collatéraux. L'IA gère automatiquement les ordres et les degrés.
 
-### 3.2 Actions & Résultats Attendus
-- **Bouton *Nouveau Client*** : En cliquant sur cette commande, vous accédez à un formulaire structuré incluant des champs pour les coordonnées, les informations fiscales et des notes de profilage CRM. Résultat : le client est immédiatement indexé et prêt à être lié à un nouveau dossier.
-- **Cliquer sur une fiche client détaillée** : Le système déploie alors l'historique complet de sa relation avec le cabinet, listant l'ensemble des dossiers qui lui sont rattachés et l'état global de sa balance financière (ce qu'il a payé et ce qu'il doit encore).
-
----
-
-## CHAPITRE 4 : AGENDA ET SMART PLANNING
-L'organisation temporelle est une ressource critique que LexPremium optimise grâce à son *Agenda* interactif.
-
-### 4.1 Informations Affichées
-- *Calendrier Visuel Dynamique* : Affiche vos rendez-vous selon une vue hebdomadaire ou mensuelle, où chaque segment de couleur représente un type d'activité spécifique (ex: Bleu pour le bureau, Rouge pour le Palais).
-- *Détails de l'Événement* : En passant votre curseur sur un créneau, une infobulle apparaît pour vous rappeler l'objet précis de la rencontre et le dossier concerné.
-
-### 4.2 Actions & Résultats Attendus
-- **Bouton *Ajouter Événement*** : Permet d'ouvrir l'interface de programmation. Après validation, l'événement est partagé avec les collaborateurs concernés et une alerte de rappel est automatiquement programmée.
-- **Déplacer un bloc par *Glisser-Déposer*** : Cette action modifie instantanément la date ou l'heure de l'événement en base de données, mettant à jour les rappels et les agendas de tous les participants en un seul geste.
+### 3.2 Résultats Experts
+- **Onglet Share** : Calcul immédiat des parts en "Pleine Propriété" ou "Usufruit".
+- **Onglet Tax** : Application automatique du barème de l'impôt sur les successions du Sénégal (CGI).
+- **Onglet Donations** : Gestion du rapport des libéralités et de la réduction des excès.
 
 ---
 
-## CHAPITRE 5 : COMPTABILITÉ GÉNÉRALE (SYSCOHADA)
-Ce module assure la rigueur financière nécessaire à la pérennité de votre cabinet, en stricte conformité avec les normes OHADA.
-
-### 5.1 Informations Affichées
-- **Cartes de Pilotage (KPI)** :
-    - *Trésorerie (Actif)* : Indique le montant total des liquidités disponibles dans vos différents comptes bancaires et en caisse.
-    - *Charges (6xxx)* : Somme de toutes les dépenses engagées pour le fonctionnement du cabinet (loyers, fournitures, salaires).
-    - *Produits (7xxx)* : Représente le chiffre d'affaires total généré par vos prestations juridiques.
-    - *Résultat Net* : Affiche la rentabilité réelle de votre activité (Bénéfice en vert ou Perte en rouge).
-- *Plan de Comptes (Balance)* : Tableau structuré listant chaque compte comptable (ex: *5121 - Banque SGBS*) avec son solde actuel débitur ou créditeur.
-
-### 5.2 Actions & Résultats Attendus
-- **Bouton *Saisir Écriture*** : Ouvre l'interface de saisie en partie double. Résultat attendu : une fois validée, l'écriture met à jour instantanément votre Grand Livre et votre Balance sans aucune autre manipulation.
-- **Bouton *Exporter Balance*** : Génère au format Excel l'intégralité de vos comptes. Résultat : un document prêt à être transmis à votre expert-comptable pour les états financiers de fin d'année.
-- **NOUVEAU - Snap-to-SYSCOHADA** : 
-    - Déposez une facture dans le module **Scan IA**.
-    - *Extraction* : Le système identifie le Fournisseur, le montant HT et la TVA.
-    - *Imputation* : L'IA suggère le plan de compte (ex: 604 - Achats). Un bouton "Valider" génère l'écriture comptable complète.
-- **NOUVEAU - Centif Guard (Compliance)** : 
-    - Scanner anti-blanchiment en temps réel lors des maniements de fonds. Vérifie les listes mondiales de sanctions et les bénéficiaires effectifs.
-- **NOUVEAU - Cashflow Oracle** : 
-    - Prédiction de trésorerie à 6 mois. L'IA apprend des délais de paiement passés pour projeter vos liquidités réelles futures.
-
+## CHAPITRE 4 : GESTION DOCUMENTAIRE & OCR NEURAL
+- **Drop-Zone Intelligent** : Glissez n'importe quel document (même une photo floue).
+- **Moteur OCR Neural** : Le texte est extrait en arrière-plan. Vous pouvez alors effectuer des recherches plein-texte (Ctrl+F) à l'intérieur de vos images scannés.
+- **Contract Analyzer** : Cliquez sur "Analyser" sur une pièce adverse. L'IA détecte les clauses abusives ou les faiblesses juridiques basées sur l'Acte Unique OHADA.
 
 ---
 
-## CHAPITRE 6 : CARPA ET FONDS TIERS
-La gestion des fonds de tiers est une obligation déontologique que LexPremium simplifie et sécurise.
-
-### 6.1 Informations Affichées
-- *Solde CARPA Global* : Affiche le montant total des fonds clients actuellement sous votre responsabilité, offrant une vue transparente pour les audits du Bâtonnat.
-- *Registre des Dépôts* : Liste chronologique de tous les mouvements de fonds rattachés à chaque dossier.
-
-### 6.2 Actions & Résultats Attendus
-- **Bouton *Nouveau Dépôt*** : Enregistre l'encaissement d'un chèque ou d'un virement destiné à un tiers. Résultat : les fonds sont isolés du patrimoine du cabinet et liés exclusivement au dossier bénéficiaire.
-- **Bouton *Générer Attestation*** : Produit un document PDF officiel de confirmation de dépôt. Résultat : vous disposez d'une preuve formelle à remettre à votre client ou à une autorité judiciaire.
+## CHAPITRE 5 : COMPTABILITÉ & SNAP-TO-SYSCOHADA
+- **Journalisation Mobile** : Photographiez une facture de restaurant ou de fournitures.
+- **Snap-to-SYSCOHADA** : L'IA identifie le compte comptable (ex: 62x) et crée l'écriture de charge instantanément.
+- **Suivi CARPA** : Sécurisation des fonds tiers avec alerte anti-blanchiment automatique (**Centif Guard™**).
 
 ---
 
-## CHAPITRE 7 : INTELLIGENCE ARTIFICIELLE ET OUTILS MÉTIERS
-Ce chapitre regroupe les modules exclusifs qui font de LexPremium un ERP de troisième génération.
-
-### 7.1 L'Arsenal Tactique
-- **Magistrat Intel™** : Visualisez le profil du juge : win-rate, sévérité, et style de plaidoirie préféré (Équité vs Procédural).
-- **Sherlock OSINT™** : Scan d'actifs et solvabilité adverse. Vérifie les registres fonciers, les parts sociales et l'e-réputation des parties adverses.
-- **Nexus Graph™** : Cartographie des liens d'influence entre juges, avocats et entreprises pour détecter tout conflit d'intérêt préjudiciable.
-- **Quantum Simulator™** : Interface immersive pour simuler les dommages-intérêts et forcer un accord lors des négociations.
-- **Execution Commander™** : Carte tactique de Dakar pour gérer le recouvrement forcé et coordonner vos huissiers.
-
-### 7.2 GED 2.0 & Parapheur
-- **Parapheur Numérique** : Circuit de validation documentaire visuel.
-- **Auto-Classifier** : L'IA range et nomme vos documents en analysant leur contenu sémantique.
-
-
----
-
-## CHAPITRE 8 : LE CHRONOMÈTRE (STOPWATCH)
-Situé en permanence en bas de votre menu latéral, cet outil capture la valeur de votre temps intellectuel.
-
-### 8.1 Informations Affichées
-- *Compteur de Temps* : Affiche la durée exacte passée sur la tâche en cours (Heures:Minutes:Secondes).
-- *Sélecteur de Dossier* : Permet d'indiquer instantanément à quelle affaire l'activité doit être rattachée.
-
-### 8.2 Actions & Résultats Attendus
-- **Cliquer sur le bouton *Play*** : Démarre le décompte du temps. Vous pouvez alors effectuer votre recherche ou votre rédaction sereinement.
-- **Cliquer sur le bouton *Stop*** : Met fin à l'enregistrement et ouvre une fenêtre de validation. Résultat attendu : le temps est automatiquement comptabilisé comme "élément facturable" dans la fiche du client, prêt à être converti en honoraires sur la prochaine facture.
+## CHAPITRE 6 : MOBILITÉ ET PORTAIL CLIENT
+- **WhatsApp Bridge** : Synchronisez vos échanges clients pour qu'ils apparaissent directement dans le dossier.
+- **Extranet Pro** : Le client reçoit par SMS un lien vers son espace sécurisé pour consulter l'avancée de sa procédure (Barre de progression visuelle).
 
 ---
 **LexPremium - Le Droit, la Technologie et l'IA réunis pour l'excellence.**
-*Documentation mise à jour : Janvier 2026 - Version Masterclass*
-*Cabinet LexPremium*
-
+*Documentation mise à jour : Janvier 2026 - Version Masterclass 2.0*
+*Cabinet LexPremium AI Innovations*

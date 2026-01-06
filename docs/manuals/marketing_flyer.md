@@ -1,35 +1,39 @@
-# LEXPREMIUM ERP : LE QUARTIER GÉNÉRAL DU DROIT
-## *L'Alliance Divine entre le Droit et l'IA*
+# LEXPREMIUM 2.0 : LE QUARTIER GÉNÉRAL DU DROIT
+## *L'Alliance Divine entre le Droit, l'IA et la Performance*
 
-LexPremium n'est pas un simple logiciel. C'est votre **War Room** numérique, conçue pour les cabinets qui ne tolèrent que l'Excellence.
+LexPremium 2.0 n'est pas un simple logiciel. C'est votre **War Room** numérique, conçue pour les cabinets qui ne tolèrent que l'Excellence absolue.
 
 ![[dakar_office.png]]
 
-## LES ARMES DU CABINET ÉLITE
+## LES 3 ARMES STRATÉGIQUES DE LA V2.0
 
-### 🧠 INTELLIGENCE STRATÉGIQUE (LEXAI PREDICT)
-Ne plaidez plus, gagnez. **Magistrat Intel™** analyse le profil de votre juge (win-rate, sévérité) avant l'audience. **LexAI** rédige vos conclusions et trouve la faille dans l'argumentaire adverse.
+### 📊 TABLEAU DE BORD EXÉCUTIF
+Pilotez votre cabinet avec la précision d'une multinationale. Vision 360° sur votre CA, votre marge nette et vos projections de trésorerie à 90 jours (IA Oracle).
 
-### 🔍 INVESTIGATION TACTIQUE (SHERLOCK & NEXUS)
-Maîtrisez le renseignement. **Sherlock OSINT™** scanne la solvabilité et le patrimoine de vos adversaires. **Nexus Graph™** cartographie les réseaux d'influence pour éviter tout piège.
+### 💰 SMART RECOVERY ENGINE™
+Ne laissez plus vos honoraires s'évaporer. Scoring IA de solvabilité, relances automatiques WhatsApp/Email et génération instantanée de mises en demeure.
 
-### 🛡️ CONFORMITÉ & FINANCE (CENTIF GUARD)
-Pilotez votre trésorerie avec le **Cashflow Oracle**. Sécurisez vos maniements de fonds CARPA avec le **Centif Guard™**, votre scanner anti-blanchiment intégré.
+### ⚖️ SUCCESSION PRO™
+Liquidez vos successions complexes en 9 minutes. 10 méthodes expertes conformes au Code de la Famille et barèmes fiscaux automatisés.
 
-### 📠 SNAPT-TO-SYSCOHADA (ZERO SAISIE)
-Prenez vos factures en photo. L'IA les impute directement en comptabilité OHADA. Gain de temps administratif : **90%**.
+---
+
+## L'ARSENAL TACTIQUE AI
+- **Magistrat Intel™** : Profilage des juges et win-rate.
+- **Sherlock OSINT™** : Investigation sur le patrimoine adverse.
+- **OCR Neural** : Numérisation et indexation plein-texte instantanée.
 
 ---
 
 ## L'EXPÉRIENCE CLIENT "ULTRA-PREMIUM"
-- **Procedure Tracker** : Vos clients suivent leur dossier comme un colis de luxe (Barre de progression style Amazon).
-- **War Room Tablette** : Tout votre dossier sous la main au Palais, sans une seule feuille.
-- **WhatsApp Bridge** : Relances et notifications professionnelles automatisées.
+- **Procedure Tracker** : Vos clients suivent leur dossier comme un colis de luxe.
+- **WhatsApp Pro Bridge** : Liaison directe et automatisée avec vos mandants.
+- **Snap-to-SYSCOHADA** : Numérisez vos factures, l'IA fait la comptabilité.
 
 ![[lawyer.png]]
 
 ## TRANSFORMEZ VOTRE CABINET EN FORTERESSE.
-*LexPremium* : Dominez votre pratique juridique.
+*LexPremium 2.0* : Dominez votre pratique juridique.
 
-**Prenez le pouvoir : [avocat-tito.vercel.app](https://avocat-tito.vercel.app)**
+**Prenez le pouvoir : [www.lexpremium.sn](https://www.lexpremium.sn)**
 *(c) 2026 LexPremium AI Innovations*

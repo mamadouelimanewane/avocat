@@ -19,9 +19,11 @@ import {
     CheckCircle2,
     Loader2,
     PenTool,
-    Sparkles
+    Sparkles,
+    Save
 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { createDocumentFromTemplate } from "@/app/actions"
 
 export function LexScanner() {
     const [content, setContent] = useState("")

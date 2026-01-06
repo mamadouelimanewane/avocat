@@ -1,4 +1,4 @@
-# 🚀 Guide de Démarrage Rapide - Configuration IA
+# 🚀 Guide de Démarrage Rapide - LexPremium 2.0
 
 ## ⚡ Installation en 5 Minutes
 
@@ -16,7 +16,7 @@ DATABASE_URL="mongodb+srv://username:password@cluster.mongodb.net/avocat"
 
 ### Étape 3 : Configuration IA (Optionnel mais Recommandé)
 
-#### Option A : DeepSeek (5$ gratuits, recommandé)
+#### Option A : DeepSeek (Recommandé - Économique)
 1. Rendez-vous sur [https://platform.deepseek.com](https://platform.deepseek.com)
 2. Créez un compte → **API Keys** → Générer
 3. Ajoutez dans `.env.local` :
@@ -24,15 +24,16 @@ DATABASE_URL="mongodb+srv://username:password@cluster.mongodb.net/avocat"
    DEEPSEEK_API_KEY="sk-votre-cle-ici"
    ```
 
-#### Option B : OpenAI (si vous avez déjà un compte)
+#### Option B : OpenAI (GPT-4)
 ```bash
 OPENAI_API_KEY="sk-votre-cle-openai"
 ```
 
 ### Étape 4 : Initialiser la Base
 ```bash
+npx prisma generate
 npx prisma db push
-npm run db:seed
+npm run db:seed  # Charge les données factices (facultatif)
 ```
 
 ### Étape 5 : Lancer l'App
@@ -43,176 +44,89 @@ npm run dev
 
 ---
 
-## 🧪 Tester l'IA
+## 🔝 Nouveautés Stratégiques 2.0
 
-### Test Automatique Complet
-```bash
-npm run test:ai
-```
+### 1. **Tableau de Bord Exécutif** 📊
+- Accédez à `/executive`
+- Vision 360° : CA, Marge, Trésorerie à 90j.
+- Alertes automatiques sur les dossiers à risque.
 
-Vous verrez :
-```
-✓ Interprétation Commandes Vocales
-✓ Analyse Contractuelle  
-✓ Extraction Filtres de Recherche
-✓ Génération IA (DeepSeek/OpenAI)
+### 2. **Module de Recouvrement IA** 💰
+- Accédez à `/recouvrement`
+- Scoring client automatique (0-100).
+- Relances WhatsApp & Email en un clic.
 
-🎉 TOUS LES TESTS RÉUSSIS (4/4)
-```
-
-### Test Manuel Rapide
-
-1. **LexAI Chat** (Coin bas-droit)
-   - Cliquez sur l'icône Bot 🤖
-   - Posez : *"Quel est le délai d'appel en droit OHADA ?"*
-   - ✅ Vous devez avoir une réponse avec sources
-
-2. **Commandes Vocales** (Coin bas-gauche)
-   - Cliquez sur le micro 🎤
-   - Dites : *"Créer une note que le client a appelé"*
-   - ✅ Une tâche doit apparaître dans le dashboard
-
-3. **Analyse Contrat**
-   - Menu → **LexAI Assistant** → Onglet **Analyse Contractuelle**
-   - Collez un contrat ou cliquez Upload
-   - ✅ Risques juridiques détectés
-
-4. **Calculateur Indemnités**
-   - Menu → **Outils & Ressources** → Onglet **Indemnités**
-   - Salaire: 500000, Ancienneté: 5 ans
-   - ✅ Calcul automatique affiché
+### 3. **Calculateur Succession Pro** ⚖️
+- Accédez à `/succession`
+- 10 méthodes conformes au Code de la Famille.
+- Liquidation, Réserve, Usufruit et Partage PDF.
 
 ---
 
-## 📊 Tableau de Bord IA
+## 🧪 Tester les Fonctions Avancées
 
-### Voir les Statistiques
-```javascript
-// Dans la console développeur (F12)
-const { aiAnalytics } = await import('/lib/ai-analytics')
-console.log(aiAnalytics.getStats())
-```
+### 1. **OCR Réel (Nouveau)** 🔍
+- Allez dans un **Dossier** → Onglet **Documents**.
+- Uploadez un PDF scanné ou une photo.
+- ✅ Le texte est extrait fidèlement via Tesseract.js.
 
-Résultat :
-```json
-{
-  "totalCalls": 42,
-  "cacheHitRate": "65%",
-  "totalCost": "0.0124 $",
-  "costSaved": "0.0027 $",
-  "byModel": { "deepseek": 38, "openai": 0, "fallback": 4 }
-}
-```
+### 2. **Analyse de Risques IA** 🤖
+- Allez dans **LexAI Assistant** → **Analyse Adverse**.
+- Collez les conclusions de la partie adverse.
+- ✅ L'IA identifie les points faibles et suggère des répliques.
+
+### 3. **Pilotage Financier** 📈
+- Émettez une facture de test dans le menu **Factures**.
+- Revenez sur le **Dashboard Exécutif** (`/executive`).
+- ✅ Les graphiques et KPI se mettent à jour instantanément.
 
 ---
 
 ## 🔧 Dépannage Rapide
 
-### "Mode dégradé actif"
-**Cause** : Aucune clé API configurée  
+### "Erreur de connexion base de données"
+**Solution** : Vérifiez que l'IP de votre machine est autorisée dans les paramètres "Network Access" de votre cluster MongoDB Atlas.
+
+### "L'IA ne répond plus"
 **Solution** : 
-```bash
-# Ajoutez dans .env.local
-DEEPSEEK_API_KEY="sk-..."  # OU
-OPENAI_API_KEY="sk-..."
+1. Vérifiez votre solde sur DeepSeek/OpenAI.
+2. Vérifiez la clé dans `.env.local`.
+3. Redémarrez le serveur (`Ctrl+C` puis `npm run dev`).
 
-# Redémarrez
-npm run dev
-```
-
-### "Cannot find module '@/lib/ai'"
-**Cause** : Problème de build TypeScript  
-**Solution** :
-```bash
-rm -rf .next
-npm run dev
-```
-
-### Cache ne fonctionne pas
-**Solution** :
-```javascript
-// Console F12
-const { aiCache } = await import('/lib/ai-cache')
-aiCache.clear()  // Vide le cache
-```
-
-### Commandes vocales non reconnues
-**Cause** : Navigateur non supporté  
-**Solution** : Utilisez **Chrome** ou **Edge** (pas Safari)
+### "WhatsApp ne s'envoie pas"
+**Cause** : Nécessite une clé API Twilio ou WhatsApp Business active.
+**Solution** : Configurez les variables `TWILIO_...` dans votre fichier `.env`.
 
 ---
 
-## 📈 Optimisations Activées
+## 📈 Optimisations 2.0 Activées
 
-✅ **Cache Intelligent** :
-- Durée : 24h
-- Économies : ~$0.0001 par requête en cache
-- Hit rate cible : >60%
-
-✅ **Analytics Automatiques** :
-- Tracking tokens
-- Coûts par modèle
-- Recommandations auto
-
-✅ **Fallback Automatique** :
-```
-DeepSeek (1er choix, -80% coût)
-    ↓ Si erreur
-OpenAI (2ème choix)
-    ↓ Si erreur
-Mode Dégradé RAG Local (toujours marche)
-```
+✅ **Cache Intelligent** : Hit rate cible >65% (Économie de tokens).
+✅ **Multilingual** : Support Français & Wolof (LexAI).
+✅ **OCR Multi-format** : PDF, JPG, PNG, DOCX supportés nativement.
+✅ **Responsive** : Utilisation fluide sur Tablette (War Room) et Mobile.
 
 ---
 
-## 🎯 Fonctionnalités Clés
+## 🎯 Comparatif 1.0 vs 2.0
 
-| Fonctionnalité | Avec API | Sans API |
-|----------------|----------|----------|
-| LexAI Chat | ✅ IA complète | ✅ RAG local |
-| Analyse Contrats | ✅ Détection avancée | ✅ Regex basique |
-| Rédaction Actes | ✅ Génération | ✅ Templates |
-| Commandes Vocales | ✅ NLP | ✅ Patterns |
-| Recherche | ✅ Sémantique | ✅ Mots-clés |
-
----
-
-## 📚 Next Steps
-
-1. ✅ **Production** → Voir `docs/DEPLOYMENT.md` (TODO)
-2. ✅ **Formation équipe** → Démo 15min avec cas pratiques
-3. ✅ **Monitoring** → Dashboard analytics IA (TODO)
-4. ✅ **Fine-tuning** → Modèle spécialisé (longue échéance)
+| Fonctionnalité | Version 1.0 | Version 2.0 |
+|----------------|-------------|-------------|
+| **Pilotage** | Dashboard basique | **Cockpit Exécutif (KPI, Alertes)** |
+| **Recouvrement** | Manuel | **Smart Recovery (Scoring IA, WhatsApp)** |
+| **Succession** | Simple (Calculatrice) | **Expert (10 méthodes, Acte PDF)** |
+| **OCR** | Simulé | **Réel (Extraction full-text)** |
+| **IA** | Chat simple | **Analyse stratégique & Prédiction** |
 
 ---
 
-## 💡 Astuces Pro
+## 📚 Ressources Utiles
 
-### Économiser des Coûts
-```bash
-# 1. Privilégier DeepSeek (5x moins cher)
-DEEPSEEK_API_KEY="sk-..."
-
-# 2. Augmenter TTL cache (si besoin)
-# Dans lib/ai-cache.ts : ttl = 48h au lieu de 24h
-
-# 3. Limiter max_tokens
-# Dans lib/ai.ts : max_tokens: 1000 au lieu de 2000
-```
-
-### Améliorer Précision
-```bash
-# Questions plus précises
-❌ "licenciement"
-✅ "Calcul indemnité licenciement sans faute après 5 ans ancienneté"
-
-# Spécifier le contexte
-✅ "En droit sénégalais, ..."
-✅ "Selon l'OHADA, ..."
-```
+1. 📘 [Guide Utilisateur Complet 2026](../LexPremium_Guide_Utilisateur_Complet_2026_V2.md)
+2. 📊 [Présentation PowerPoint 2.0](../LexPremium_Presentation_Complete_2026_V2.md)
+3. ⚖️ [Documentation des Méthodes de Succession](../METHODES_SUCCESSION.md)
 
 ---
 
-**Support** : Consultez `docs/AI_CONFIGURATION.md` pour troubleshooting avancé
+**Version** : 2.0.0 | **Mis à jour** : Janvier 2026 | **Auteur** : LexPremium Team 🇸🇳
 
-**Version** : 1.0.0 | **Mis à jour** : Décembre 2024

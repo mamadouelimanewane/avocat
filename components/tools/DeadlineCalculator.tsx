@@ -21,7 +21,7 @@ const PROCEDURES: Record<ProcedureType, { label: string, duration: number, unit:
     "PREAVIS_BAIL": { label: "Préavis Congé Bail Commercial", duration: 6, unit: 'months', description: "Durée minimale du préavis (Acte Uniforme OHADA Droit Commercial)." },
 }
 
-import { createEvent, getDossiersList } from "@/app/actions"
+import { createEvent, getDossiersList, createDocumentFromTemplate } from "@/app/actions"
 import { useToast } from "@/components/ui/use-toast"
 import { useEffect } from "react"
 
@@ -149,15 +149,44 @@ export function DeadlineCalculator() {
                             </div>
                         )}
 
-                        <Button
-                            onClick={handleSaveToAgenda}
-                            disabled={isSaving}
-                            variant="outline"
-                            className="w-full mt-4 border-indigo-200 text-indigo-700 hover:bg-indigo-100"
-                        >
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {isSaving ? "Enregistrement..." : "Ajouter à l'Agenda"}
-                        </Button>
+                        <div className="flex gap-2 mt-4">
+                            <Button
+                                onClick={handleSaveToAgenda}
+                                disabled={isSaving}
+                                variant="outline"
+                                className="flex-1 border-indigo-200 text-indigo-700 hover:bg-indigo-100 h-10"
+                            >
+                                <Calendar className="mr-2 h-4 w-4" />
+                                {isSaving ? "Enregistrement..." : "Agenda"}
+                            </Button>
+
+                            <Button
+                                variant="secondary"
+                                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200 h-10"
+                                onClick={async () => {
+                                    setIsSaving(true)
+                                    try {
+                                        const resultDoc = await createDocumentFromTemplate(
+                                            selectedDossier || "677c7774e54823467f555555",
+                                            "tpl_procedure_001", // Conclusions / Requête
+                                            {
+                                                CLIENT_NOM: "M. Ndiaye",
+                                                TRIBUNAL: "Tribunal de Grande Instance de Dakar",
+                                                ECHEANCE: format(result.date, "dd/MM/yyyy")
+                                            }
+                                        )
+                                        if (resultDoc.success) {
+                                            toast({ title: "Acte préparé", description: "Le brouillon de conclusions a été généré." })
+                                        }
+                                    } finally {
+                                        setIsSaving(false)
+                                    }
+                                }}
+                            >
+                                <ArrowRight className="mr-2 h-4 w-4" />
+                                Automatiser
+                            </Button>
+                        </div>
 
                         <div className="mt-4 text-xs text-slate-500 border-t border-indigo-200 pt-2">
                             * Ce calcul est indicatif. Vérifiez toujours les jours fériés spécifiques au Sénégal.

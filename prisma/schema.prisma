@@ -72,6 +72,7 @@ model Client {
   
   accountingCode String? // Code auxiliaire (e.g., 41100001) for Accounting Link
   accessCode     String? // Code d'accès portail (pin code)
+  metadata       String? // Flexible JSON for AI/Extra data
   
   dossiers  Dossier[]
   factures  Facture[]
@@ -119,6 +120,7 @@ model Dossier {
   carpaTransactions CarpaTransaction[]
   meetings    Meeting[]
   communications CommunicationLog[]
+  metadata       String? // Flexible JSON metadata
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -168,6 +170,13 @@ model Document {
   
   versions  DocumentVersion[]
   
+  metadata    String? // Flexible JSON metadata
+  
+  // Signature Fields
+  signatureAt    DateTime?
+  signatureHash  String?
+  signatureProof String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -387,6 +396,7 @@ model CabinetSettings {
   defaultHourlyRate Float @default(200.0)
   tvaRate           Float @default(18.0) // 18% Senegal
   internalHourlyRate Float @default(50.0) // Internal cost for analytics
+  annualTarget      Float? @default(100000000) // Goal for CA
   
 
   updatedAt DateTime @updatedAt

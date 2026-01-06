@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Calculator, Dna, Share2, Download, RefreshCw, TrendingUp } from "lucide-react"
+import { createDocumentFromTemplate } from "@/app/actions"
+import { useToast } from "@/components/ui/use-toast"
+
 
 export function QuantumSimulator() {
     const [salary, setSalary] = useState([500000])
@@ -18,6 +21,43 @@ export function QuantumSimulator() {
 
     // Animation state
     const [displayTotal, setDisplayTotal] = useState(0)
+    const [isGenerating, setIsGenerating] = useState(false)
+    const { toast } = useToast()
+
+    const handleGenerateLetter = async () => {
+        setIsGenerating(true)
+        try {
+            const variables = {
+                SALARIE: "M. Moussa DIALLO",
+                ENTREPRISE: "TechCorp SA",
+                REMUNERATION: `${salary[0].toLocaleString('fr-FR')} FCFA`,
+                ANCIENNETE: `${years[0]} ans`,
+                TOTAL_DU: `${total.toLocaleString('fr-FR')} FCFA`
+            }
+
+            const result = await createDocumentFromTemplate(
+                "677c7774e54823467f555555", // Simulated Dossier
+                "tpl_travail_001", // Simulated Template
+                variables
+            )
+
+            if (result.success) {
+                toast({
+                    title: "Brouillon généré !",
+                    description: "Le projet de lettre de licenciement a été créé avec les calculs."
+                })
+            }
+        } catch (e) {
+            console.error(e)
+            toast({
+                variant: "destructive",
+                title: "Erreur",
+                description: "Échec de l'automatisation."
+            })
+        } finally {
+            setIsGenerating(false)
+        }
+    }
 
     useEffect(() => {
         // Complex OHADA/Senegal Calculation Logic Simulation
@@ -183,8 +223,13 @@ export function QuantumSimulator() {
 
                     {/* Actions */}
                     <div className="flex gap-3 mt-4">
-                        <Button className="flex-1 bg-white text-slate-900 hover:bg-slate-200 font-bold">
-                            <Download className="mr-2 h-4 w-4" /> Export PDF
+                        <Button
+                            className="flex-1 bg-white text-slate-900 hover:bg-slate-200 font-bold"
+                            onClick={handleGenerateLetter}
+                            disabled={isGenerating}
+                        >
+                            {isGenerating ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                            {isGenerating ? "Génération..." : "Automatiser l'Acte"}
                         </Button>
                         <Button variant="outline" className="border-slate-700 text-indigo-400 hover:text-white hover:bg-indigo-600">
                             <RefreshCw className="mr-2 h-4 w-4" /> Reset

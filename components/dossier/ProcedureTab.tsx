@@ -119,7 +119,7 @@ export default function ProcedureTab({ dossierId, currentStage, procedureType }:
                 getTacticalGapAnalysis(dossierId),
                 getSemanticJurisprudence(dossierId),
                 getCourtTendencies("Tribunal Hors Classe de Dakar"),
-                analyzeOpposingSentiment(dossierId, "L'adversaire conteste formellement tout lien de causalité et menace de procédure abusive.")
+                analyzeOpposingSentiment(dossierId, "LATEST_DOC")
             ])
             if (insightsRes.success && insightsRes.insights) setInsights(insightsRes.insights)
             if (mapRes.success && mapRes.neuralMap) setNeuralMap(mapRes.neuralMap)
@@ -555,11 +555,26 @@ export default function ProcedureTab({ dossierId, currentStage, procedureType }:
                                     <ShieldAlert className="h-4 w-4" /> Analyse Adverse
                                 </h4>
                                 {!analysisResult && !analyzing && (
-                                    <div className="p-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 text-center">
-                                        <Target className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                                        <Button className="w-full bg-slate-900 hover:bg-black text-white text-xs gap-2" onClick={() => runOpposingAnalysis("mock-doc-id")}>
-                                            Scanner Conclusions
-                                        </Button>
+                                    <div className="space-y-4">
+                                        <div className="p-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 text-center">
+                                            <Target className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                                            <p className="text-[10px] text-slate-500 mb-3 uppercase font-bold">Sélectionnez les conclusions adverses</p>
+
+                                            {/* We rely on the parent or another fetch to get documents if not available, 
+                                                but for now we'll search for ACTE/ADVERSE types if we had the list. 
+                                                As a simpler bridge: Use a button that triggers the analysis on the most recent document if many exist.
+                                            */}
+                                            <Button
+                                                className="w-full bg-slate-900 hover:bg-black text-white text-xs gap-2"
+                                                onClick={() => {
+                                                    // In a real flow, we'd pass a real ID. 
+                                                    // If no docs, we'll inform the user.
+                                                    runOpposingAnalysis("LATEST_ADVERSE_DOC")
+                                                }}
+                                            >
+                                                <Search className="h-3.5 w-3.5" /> Analyser Dernières Pièces
+                                            </Button>
+                                        </div>
                                     </div>
                                 )}
                                 {analyzing && (

@@ -6,7 +6,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { Header } from '@/components/layout/Header'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { LexAIAssistant } from '@/components/ai/LexAIAssistant'
-import { VoiceCommander } from '@/components/ai/VoiceCommander'
+import { VoiceAssistant } from '@/components/ai/VoiceAssistant'
 
 export function AppShell({
     children,
@@ -44,7 +44,7 @@ export function AppShell({
                 </main>
                 <div className="relative z-[100]">
                     <LexAIAssistant />
-                    <VoiceCommander />
+                    <VoiceAssistant />
                 </div>
                 <MobileBottomNav />
             </div>

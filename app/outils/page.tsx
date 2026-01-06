@@ -8,9 +8,12 @@ import { SherlockScanner } from "@/components/tools/SherlockScanner"
 import { ExecutionCommander } from "@/components/tools/ExecutionCommander"
 
 import { NexusGraph } from "@/components/ai/NexusGraph"
+import { LandTaxCalculator } from "@/components/tools/LandTaxCalculator"
+import { LegalNewsFeed } from "@/components/tools/LegalNewsFeed"
+import { LegalTranscription } from "@/components/tools/LegalTranscription"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Calculator, Clock, BookOpen, ScanSearch, ShieldAlert, Network, Gavel, Eye, Crosshair } from "lucide-react"
+import { Calculator, Clock, BookOpen, ScanSearch, ShieldAlert, Network, Gavel, Eye, Crosshair, Zap, Landmark, Mic } from "lucide-react"
 
 
 
@@ -26,12 +29,21 @@ export default function ToolsPage() {
             </div>
 
             <Tabs defaultValue="deadlines" className="w-full">
-                <TabsList className="grid w-full grid-cols-6 bg-slate-100 p-1 rounded-xl">
+                <TabsList className="grid w-full grid-cols-6 lg:grid-cols-11 bg-slate-100 p-1 rounded-xl">
                     <TabsTrigger value="deadlines" className="gap-2">
                         <Clock className="h-4 w-4" /> Délais
                     </TabsTrigger>
+                    <TabsTrigger value="news" className="gap-2 text-indigo-700 font-medium">
+                        <Zap className="h-4 w-4" /> Veille Flash
+                    </TabsTrigger>
+                    <TabsTrigger value="dictation" className="gap-2 text-rose-700 font-medium">
+                        <Mic className="h-4 w-4" /> Dictée IA
+                    </TabsTrigger>
                     <TabsTrigger value="indemnity" className="gap-2">
                         <Calculator className="h-4 w-4" /> Indemnités
+                    </TabsTrigger>
+                    <TabsTrigger value="tax-land" className="gap-2 text-emerald-700 font-medium">
+                        <Landmark className="h-4 w-4" /> Fiscalité Foncier
                     </TabsTrigger>
                     <TabsTrigger value="conflicts" className="gap-2">
                         <ShieldAlert className="h-4 w-4" /> Conflits
@@ -64,8 +76,20 @@ export default function ToolsPage() {
                     <DeadlineCalculator />
                 </TabsContent>
 
+                <TabsContent value="news" className="mt-6">
+                    <LegalNewsFeed />
+                </TabsContent>
+
+                <TabsContent value="dictation" className="mt-6">
+                    <LegalTranscription />
+                </TabsContent>
+
                 <TabsContent value="indemnity" className="mt-6">
                     <QuantumSimulator />
+                </TabsContent>
+
+                <TabsContent value="tax-land" className="mt-6">
+                    <LandTaxCalculator />
                 </TabsContent>
 
 

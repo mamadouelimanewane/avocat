@@ -242,7 +242,7 @@ export function procedureStepEmailTemplate(lawyerName: string, dossierTitle: str
     `
 }
 
-export function paymentReminderEmailTemplate(clientName: string, invoiceNumber: string, remainingAmount: number, dueDate: string) {
+export function paymentReminderEmailTemplate(clientName: string, invoiceNumber: string, remainingAmount: number, dueDate: string, message?: string) {
     return `
     <!DOCTYPE html>
     <html>
@@ -268,7 +268,7 @@ export function paymentReminderEmailTemplate(clientName: string, invoiceNumber: 
             </div>
             <div class="content">
                 <p>Bonjour <strong>${clientName}</strong>,</p>
-                <p>Sauf erreur de notre part, le paiement de la facture suivante n'a pas encore été intégralement reçu par notre cabinet :</p>
+                <p>${message || "Sauf erreur de notre part, le paiement de la facture suivante n'a pas encore été intégralement reçu par notre cabinet :"}</p>
                 
                 <div class="reminder-box">
                     <h2>Facture N° ${invoiceNumber}</h2>

@@ -64,6 +64,8 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
         { name: 'International', href: '/international', icon: Globe },
         { name: 'Comptabilité', href: '/comptabilite', icon: Calculator },
         { name: 'Pilotage', href: '/comptabilite/pilotage', icon: BarChart3 },
+        { name: 'IA Prédictive', href: '/ai/predictive', icon: BrainCircuit },
+        { name: 'Expansion & Paiements', href: '/expansion', icon: Rocket },
         { name: 'Archives', href: '/archives', icon: Archive },
         { name: 'Rapports', href: '/rapports', icon: BarChart3 },
         { name: 'Outils', href: '/outils', icon: BookOpen },

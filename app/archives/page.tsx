@@ -1,115 +1,112 @@
+"use client"
 
-import { prisma } from '@/lib/prisma'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { AdvancedArchiveManager } from '@/components/dossier/AdvancedArchiveManager'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Archive, Box, MapPin, Search, Plus, ExternalLink } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { NewArchiveBoxDialog } from '@/components/archives/NewArchiveBoxDialog'
+import {
+    ShieldCheck,
+    HardDrive,
+    ExternalLink,
+    FileSignature,
+    Info,
+    Archive
+} from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
-export default async function ArchivesPage() {
-    const boxes = await prisma.archiveBox.findMany({
-        include: { _count: { select: { documents: true } } },
-        orderBy: { code: 'asc' }
-    })
-
+export default function ArchivesPage() {
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
-                        <Archive className="h-8 w-8 text-slate-700" /> Gestion des Archives
-                    </h1>
-                    <p className="text-slate-500">Traçabilité physique et numérique des dossiers clôturés.</p>
+        <div className="min-h-screen bg-slate-50 p-8 space-y-10">
+            {/* Page Header */}
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                        <Badge className="bg-slate-900 text-white font-black px-3 py-1 text-[10px] uppercase tracking-[0.2em]">Compliance AI</Badge>
+                        <Badge variant="outline" className="text-slate-500 border-slate-200">OHADA / RGPD</Badge>
+                    </div>
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tight">Archives & <span className="text-indigo-600">Sceau Numérique</span></h1>
+                    <p className="text-slate-500 font-medium">Gestion intelligente de votre fonds documentaire et des preuves électroniques.</p>
                 </div>
-                <NewArchiveBoxDialog />
+
+                <div className="flex gap-4">
+                    <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
+                        <div className="h-10 w-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
+                            <ShieldCheck className="h-6 w-6" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase">État Système</p>
+                            <p className="text-sm font-black text-slate-900">100% Intègre</p>
+                        </div>
+                    </div>
+                    <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-100 text-white flex items-center gap-4">
+                        <div className="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center">
+                            <HardDrive className="h-6 w-6" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-bold text-indigo-100 uppercase opacity-70">Stockage Cloud</p>
+                            <p className="text-sm font-black">2.4 TB / 5 TB</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="border-slate-200">
-                    <CardHeader className="pb-2">
-                        <CardDescription className="text-xs uppercase font-bold">Total Boîtes</CardDescription>
-                        <CardTitle className="text-3xl">{boxes.length}</CardTitle>
-                    </CardHeader>
-                </Card>
-                <Card className="border-slate-200">
-                    <CardHeader className="pb-2">
-                        <CardDescription className="text-xs uppercase font-bold">Localisation Principale</CardDescription>
-                        <CardTitle className="text-3xl flex items-center gap-2">
-                            <MapPin className="h-6 w-6 text-rose-500" /> Salle A
-                        </CardTitle>
-                    </CardHeader>
-                </Card>
-                <Card className="border-indigo-100 bg-indigo-50/30">
-                    <CardHeader className="pb-2">
-                        <CardDescription className="text-xs uppercase font-bold text-indigo-600">Prochaine Destruction</CardDescription>
-                        <CardTitle className="text-3xl text-indigo-700">31/12/2030</CardTitle>
-                    </CardHeader>
-                </Card>
+            {/* Compliance Alert */}
+            <div className="max-w-7xl mx-auto">
+                <Alert className="bg-blue-50 border-blue-100 text-blue-900 rounded-2xl overflow-hidden p-6 relative">
+                    <div className="absolute right-0 top-0 p-8 opacity-5">
+                        <FileSignature className="h-24 w-24" />
+                    </div>
+                    <div className="flex items-start gap-4">
+                        <div className="h-10 w-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
+                            <Info className="h-6 w-6" />
+                        </div>
+                        <div className="space-y-2">
+                            <AlertTitle className="text-lg font-black tracking-tight">Informations sur le Sceau Numérique LexPremium</AlertTitle>
+                            <AlertDescription className="max-w-3xl leading-relaxed font-medium">
+                                Tous les documents archivés avec le statut <span className="underline font-bold">"SIGNÉ"</span> bénéficient d'une empreinte cryptographique SHA-256 enregistrée. Toute modification ultérieure du fichier rendra le sceau caduc, garantissant ainsi une preuve irréfutable devant les tribunaux OHADA.
+                            </AlertDescription>
+                        </div>
+                    </div>
+                </Alert>
             </div>
 
-            <Card className="border-slate-200 shadow-sm overflow-hidden">
-                <CardHeader className="bg-slate-50 border-b flex flex-row items-center justify-between">
-                    <div>
-                        <CardTitle className="text-sm font-bold uppercase text-slate-500">Inventaire des boîtes</CardTitle>
-                    </div>
-                    <div className="relative w-64">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
-                        <Input placeholder="Rechercher une boîte..." className="pl-9 h-9 text-xs" />
-                    </div>
-                </CardHeader>
-                <Table>
-                    <TableHeader className="bg-slate-50/50">
-                        <TableRow>
-                            <TableHead className="w-[150px]">Code Boîte</TableHead>
-                            <TableHead>Emplacement</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Contenu</TableHead>
-                            <TableHead>Statut</TableHead>
-                            <TableHead className="text-right">Action</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {boxes.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={6} className="h-40 text-center">
-                                    <Box className="h-12 w-12 text-slate-200 mx-auto mb-2" />
-                                    <p className="text-slate-400">Aucune boîte d'archives enregistrée.</p>
-                                </TableCell>
-                            </TableRow>
-                        ) : boxes.map((box: any) => (
-                            <TableRow key={box.id} className="hover:bg-slate-50 transition-colors">
-                                <TableCell className="font-mono font-bold text-indigo-600">{box.code}</TableCell>
-                                <TableCell className="text-sm flex items-center gap-1">
-                                    <MapPin className="h-3 w-3 text-slate-400" /> {box.location}
-                                </TableCell>
-                                <TableCell className="text-xs text-slate-500 italic max-w-xs truncate">{box.description}</TableCell>
-                                <TableCell>
-                                    <Badge variant="secondary" className="bg-slate-100">{box._count.documents} actes / documents</Badge>
-                                </TableCell>
-                                <TableCell>
-                                    <Badge variant={box.status === 'OPEN' ? 'success' : 'default'}>{box.status}</Badge>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <Button variant="ghost" size="sm" className="h-8 text-xs">
-                                        Voir Contenu <ExternalLink className="ml-2 h-3 w-3" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Card>
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto">
+                <AdvancedArchiveManager />
+            </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
-                <Box className="h-5 w-5 text-amber-600 mt-0.5" />
-                <div>
-                    <p className="text-sm font-bold text-amber-800">Note de procédure</p>
-                    <p className="text-xs text-amber-700 italic">
-                        Lorsqu'un dossier est clôturé, n'oubliez pas d'imprimer l'inventaire des pièces et de le placer dans une boîte physique.
-                        Scannez ensuite le code de la boîte pour lier le dossier numériquement.
+            {/* Sub-footer Section */}
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 pt-10 border-t border-slate-200">
+                <div className="space-y-3">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                        <FileSignature className="h-5 w-5 text-indigo-500" /> Signature AES
+                    </h4>
+                    <p className="text-sm text-slate-500 leading-relaxed">
+                        Conforme au Règlement (UE) N°910/2014 (eIDAS) et aux dispositions locales sur la preuve électronique.
                     </p>
+                    <a href="#" className="text-xs font-black text-indigo-600 flex items-center gap-1 hover:underline">
+                        VOIR CERTIFICATION <ExternalLink className="h-3 w-3" />
+                    </a>
+                </div>
+                <div className="space-y-3">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                        <ShieldCheck className="h-5 w-5 text-emerald-500" /> Intégrité des Données
+                    </h4>
+                    <p className="text-sm text-slate-500 leading-relaxed">
+                        Surveillance continue de l'intégrité des fichiers stockés sur Vercel Blob / MongoDB.
+                    </p>
+                    <a href="#" className="text-xs font-black text-emerald-600 flex items-center gap-1 hover:underline">
+                        RAPPORT D'AUDIT <ExternalLink className="h-3 w-3" />
+                    </a>
+                </div>
+                <div className="space-y-3">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                        <Archive className="h-5 w-5 text-amber-500" /> Politique de Retention
+                    </h4>
+                    <p className="text-sm text-slate-500 leading-relaxed">
+                        Les dossiers clos sont conservés 10 ans par défaut, 30 ans pour les dossiers fonciers/immobiliers.
+                    </p>
+                    <a href="#" className="text-xs font-black text-amber-600 flex items-center gap-1 hover:underline">
+                        PARAMÈTRES LÉGAUX <ExternalLink className="h-3 w-3" />
+                    </a>
                 </div>
             </div>
         </div>

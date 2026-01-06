@@ -1,55 +1,51 @@
 
-# 🚀 Guide de Déploiement : GitHub & Vercel
+# 🚀 Guide de Déploiement : GitHub & Vercel (V2.0)
 
-Ce guide vous accompagne pour mettre en ligne votre application **LexPremium** afin de réaliser des démonstrations sur Desktop et Mobile.
+Ce guide vous accompagne pour mettre en ligne votre application **LexPremium 2.0** afin de réaliser des démonstrations sur Desktop et Mobile avec toutes les fonctionnalités d'IA et de pilotage.
 
 ## 1. GitHub (Code Source)
-Le code est prêt et "commité" localement. Vous devez maintenant l'envoyer sur le cloud.
-
-1.  Allez sur [GitHub.com/new](https://github.com/new) et créez un nouveau répertoire (ex: `lexpremium-erp`).
-2.  Ne cochez **pas** "Initialize with README".
-3.  Copiez l'URL HTTPS du repo (ex: `https://github.com/votre-user/lexpremium-erp.git`).
-4.  Dans votre terminal local (ou demandez-moi), lancez :
+Le code est prêt et inclut les nouveaux modules (Executive, Recouvrement, Succession).
+1.  Allez sur [GitHub.com/new](https://github.com/new).
+2.  Copiez l'URL du repo.
+3.  Dans votre terminal :
     ```bash
-    git remote add origin https://github.com/VOTRE_USER/lexpremium-erp.git
-    git branch -M main
     git push -u origin main
     ```
 
 ## 2. Base de Données (MongoDB Atlas)
-Pour que la démonstration fonctionne sur Vercel (Cloud), vous ne pouvez pas utiliser votre base locale.
+1.  Utilisez votre Cluster MongoDB Atlas existant ou créez-en un nouveau.
+2.  Récupérez la chaîne de connexion `DATABASE_URL`.
 
-1.  Créez un compte gratuit sur [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-2.  Créez un Cluster (M0 Sandbox est gratuit).
-3.  Créez un utilisateur Database (ex: `app_user` / `password123`).
-4.  Récupérez la chaîne de connexion ("Connect" > "Drivers" > "Node.js").
-    *   Format : `mongodb+srv://app_user:password123@cluster0.p8xyz.mongodb.net/lexpremium?retryWrites=true&w=majority`
+## 3. Vercel (Configuration App 2.0)
 
-## 3. Vercel (Hébergement)
+1.  Importez votre projet sur Vercel.
+2.  **Variables d'Environnement (Crucial pour la V2.0) :**
+    Ajoutez ces variables dans les paramètres du projet Vercel :
+    *   `DATABASE_URL` : Votre lien MongoDB Atlas.
+    *   `DEEPSEEK_API_KEY` : Votre clé DeepSeek (prioritaire).
+    *   `OPENAI_API_KEY` : Votre clé OpenAI (fallback).
+    *   `NEXT_PUBLIC_APP_URL` : L'URL de votre site (ex: `https://lex-app.vercel.app`).
+    *   `TWILIO_ACCOUNT_SID` & `TWILIO_AUTH_TOKEN` : Si vous activez les relances WhatsApp.
 
-1.  Allez sur [Vercel.com](https://vercel.com) et connectez-vous avec GitHub.
-2.  Cliquez sur **"Add New..."** > **"Project"**.
-3.  Importez le répertoire `lexpremium-erp` depuis votre liste GitHub.
-4.  **Important : Configuration des variables d'environnement**
-    *   Dans la section "Environment Variables", ajoutez :
-        *   `DATABASE_URL` = (Votre chaîne de connexion MongoDB Atlas ci-dessus)
-5.  Cliquez sur **"Deploy"**.
+3.  Cliquez sur **"Deploy"**.
 
-## 4. Finalisation (Seed)
-Une fois déployé, votre base de données sera vide. Pour la remplir avec les données de démonstration (CRM, RH, Dossiers) :
+## 4. Initialisation des Données Stratégiques (Seed)
+Pour que votre cockpit exécutif et vos calculs successoraux soient probants, peuplez la base avec les nouveaux scripts :
 
-1.  Sur votre machine locale, modifiez votre fichier `.env` pour mettre temporairement l'URL de MongoDB Atlas.
-2.  Lancez la commande de validation qui va peupler la base distante :
+1.  Dans votre terminal local connecté à la base distante :
     ```bash
+    npx prisma generate
     npx prisma db push
-    node check-system.mjs
-    node prisma/seed-crm.mjs
-    node prisma/seed-directory.mjs
-    node prisma/seed-audiences.mjs
+    # Scripts de peuplement stratégique
+    node scripts/seed-executive.mjs
+    node scripts/seed-recouvrement.mjs
+    node scripts/seed-succession.mjs
     ```
-3.  Vos données sont maintenant dans le Cloud et visibles sur l'URL Vercel !
 
-## 5. Démo Mobile
-L'application est "Responsive".
-*   Ouvrez l'URL Vercel (ex: `lexpremium.vercel.app`) sur votre smartphone.
-*   Le menu latéral est masqué et accessible via le bouton "Menu" en haut à gauche.
+## 5. Expérience "War Room" sur Tablette/Mobile
+LexPremium 2.0 est optimisé pour les tablettes au tribunal.
+*   **Accès Hors Ligne** : Les pièces consultées sont mises en cache pour le mode "Palais de Justice".
+*   **Responsive Pro** : Interface optimisée pour iPad et tablettes Android en mode paysage.
+
+---
+**Version** : 2.0.0 | **Mis à jour** : Janvier 2026

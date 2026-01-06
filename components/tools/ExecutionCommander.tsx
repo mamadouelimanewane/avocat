@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { MapPin, Crosshair, DollarSign, Building, Truck, AlertOctagon, CheckCircle2, Lock, Navigation } from "lucide-react"
+import { MapPin, Crosshair, DollarSign, Building, Truck, AlertOctagon, CheckCircle2, Lock, Navigation, FileSignature } from "lucide-react"
+import { createDocumentFromTemplate } from "@/app/actions"
+import { useToast } from "@/components/ui/use-toast"
 
 // Mock Targets
 const TARGETS = [
@@ -19,9 +21,56 @@ const TARGETS = [
 export function ExecutionCommander() {
     const [selectedTarget, setSelectedTarget] = useState<any>(null)
     const [recovered, setRecovered] = useState(45000000)
+    const [isGenerating, setIsGenerating] = useState(false)
+    const { toast } = useToast()
     const totalDebt = 217000000
 
     const progress = (recovered / totalDebt) * 100
+
+    const handleCommandExecution = async () => {
+        if (!selectedTarget) return
+
+        setIsGenerating(true)
+        toast({
+            title: "Génération du document...",
+            description: `Préparation de l'acte de ${selectedTarget.type === 'BANQUE' ? 'Saisie-Attribution' : 'Saisie-Vente'} pour ${selectedTarget.name}.`,
+        })
+
+        try {
+            // Using flexible slugs that our fallback in actions.ts will catch
+            const templateSlug = selectedTarget.type === 'BANQUE' ? 'PROCEDURE_saisie_conservatoire' : 'PROCEDURE_saisie_vente'
+
+            const result = await createDocumentFromTemplate(
+                "677c7774e54823467f555555", // Simulated Dossier ID
+                templateSlug,
+                {
+                    DEMANDEUR: "Banque de l'Habitat du Sénégal (BHS)",
+                    DEFENDEUR: "M. Abdou DIOP",
+                    MONTANT_ESTIME: selectedTarget.amount,
+                    CREANCIER: "BHS SA",
+                    DEBITEUR: "Société X",
+                    TRIBUNAL: "Tribunal de Commerce de Dakar"
+                }
+            )
+
+            if (result.success) {
+                toast({
+                    title: "Acte généré !",
+                    description: `L'acte de saisie pour ${selectedTarget.name} a été ajouté au dossier.`,
+                })
+            } else {
+                throw new Error("Erreur lors de la génération")
+            }
+        } catch (error: any) {
+            toast({
+                title: "Erreur de génération",
+                description: "Impossible de générer le document. Vérifiez la configuration du modèle.",
+                variant: "destructive",
+            })
+        } finally {
+            setIsGenerating(false)
+        }
+    }
 
     return (
         <Card className="border-none shadow-2xl bg-slate-900 text-white overflow-hidden relative min-h-[600px] flex flex-col">
@@ -157,8 +206,17 @@ export function ExecutionCommander() {
                                 </div>
                             </div>
 
-                            <Button className="w-full bg-white text-slate-900 hover:bg-slate-200 font-bold mt-8">
-                                <Navigation className="mr-2 h-4 w-4" /> Voir le Rapport
+                            <Button
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold mt-8"
+                                onClick={handleCommandExecution}
+                                disabled={isGenerating}
+                            >
+                                {isGenerating ? <Navigation className="mr-2 h-4 w-4 animate-spin" /> : <FileSignature className="mr-2 h-4 w-4" />}
+                                {isGenerating ? "Génération..." : `Saisir la Cible (${selectedTarget.type === 'BANQUE' ? 'Attribution' : 'Vente'})`}
+                            </Button>
+
+                            <Button variant="ghost" className="w-full text-slate-400 text-xs mt-2 hover:bg-slate-800">
+                                <Navigation className="mr-2 h-3 w-3" /> Ouvrir le dossier complet
                             </Button>
                         </div>
                     </div>

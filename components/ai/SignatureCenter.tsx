@@ -84,8 +84,16 @@ export function SignatureCenter() {
 
         setIsSigning(true)
         try {
-            // const result = await signDocument(selectedDoc.id, signatureData) // Temporarily disabled
-            const result = { success: true, message: "Signature enregistrée (mode simulation)" } // Temporary mock
+            const response = await fetch('/api/documents/sign', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    documentId: selectedDoc.id,
+                    signatureDataUrl: signatureData
+                })
+            })
+            const result = await response.json()
+
             if (result.success) {
                 setDocuments(prev => prev.map(doc =>
                     doc.id === selectedDoc.id
@@ -93,14 +101,16 @@ export function SignatureCenter() {
                         : doc
                 ))
                 toast({
-                    title: "✅ Succès",
-                    description: result.message
+                    title: "✅ Signature Apposée",
+                    description: "Le document a été scellé avec un certificat numérique."
                 })
+            } else {
+                throw new Error(result.error)
             }
-        } catch (error) {
+        } catch (error: any) {
             toast({
-                title: "Erreur",
-                description: "Échec de l'authentification de la signature.",
+                title: "Erreur de signature",
+                description: error.message || "Échec de l'authentification de la signature.",
                 variant: "destructive"
             })
         } finally {
