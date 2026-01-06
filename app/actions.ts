@@ -13,6 +13,84 @@ import { join } from 'path'
 import mammoth from 'mammoth'
 import { createWorker } from 'tesseract.js'
 
+// --- NOTES MANAGEMENT ---
+
+export async function createNote(data: any) {
+    try {
+        const userId = cookies().get('auth_token')?.value
+        if (!userId) return { success: false, message: "Non connecté" }
+
+        await prisma.note.create({
+            data: {
+                title: data.title || (data.type === 'AUDIO' ? 'Note Audio' : 'Sans titre'),
+                content: data.content,
+                audioContent: data.audioContent,
+                type: data.type || 'TEXT',
+                color: data.color || 'blue',
+                isPinned: data.isPinned || false,
+                userId: userId,
+                tags: JSON.stringify(data.tags || [])
+            }
+        })
+        revalidatePath('/notes')
+        return { success: true }
+    } catch (e) {
+        console.error("Create note error:", e)
+        return { success: false, message: "Erreur lors de la création de la note" }
+    }
+}
+
+export async function getUserNotes() {
+    try {
+        const userId = cookies().get('auth_token')?.value
+        if (!userId) return []
+
+        return await prisma.note.findMany({
+            where: { userId },
+            orderBy: [
+                { isPinned: 'desc' },
+                { updatedAt: 'desc' }
+            ]
+        })
+    } catch (e) {
+        return []
+    }
+}
+
+export async function deleteNote(noteId: string) {
+    try {
+        const userId = cookies().get('auth_token')?.value
+        if (!userId) return { success: false, message: "Non connecté" }
+
+        await prisma.note.delete({
+            where: { id: noteId, userId } // Ensure ownership
+        })
+        revalidatePath('/notes')
+        return { success: true }
+    } catch (e) {
+        return { success: false, message: "Erreur suppression" }
+    }
+}
+
+export async function updateNote(noteId: string, data: any) {
+    try {
+        const userId = cookies().get('auth_token')?.value
+        if (!userId) return { success: false }
+
+        await prisma.note.update({
+            where: { id: noteId, userId },
+            data: {
+                ...data, // Allow updating any field passed
+                tags: data.tags ? JSON.stringify(data.tags) : undefined
+            }
+        })
+        revalidatePath('/notes')
+        return { success: true }
+    } catch (e) {
+        return { success: false }
+    }
+}
+
 // Validation schema
 const CreateDossierSchema = z.object({
     title: z.string().min(3, { message: "Le titre doit faire au moins 3 caractères" }),

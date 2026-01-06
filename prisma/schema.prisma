@@ -32,6 +32,24 @@ model User {
   tasks             Task[]            @relation("AssignedTask")
   documentVersions  DocumentVersion[] @relation("UploadedBy")
   leaveRequests     LeaveRequest[]    @relation("UserLeaveRequest")
+  notes             Note[]
+}
+
+model Note {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String?
+  content   String?
+  audioContent String? // Base64 content for small audio notes
+  type      String   @default("TEXT") // TEXT, AUDIO
+  tags      String?  // JSON array of tags
+  isPinned  Boolean  @default(false)
+  color     String   @default("blue") // blue, green, yellow, red, purple
+
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Role {

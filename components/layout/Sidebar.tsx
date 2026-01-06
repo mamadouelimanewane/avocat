@@ -74,6 +74,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
         { name: 'CRM', href: '/crm', icon: Rocket },
         { name: 'Conflits d\'Intérêts', href: '/conflits', icon: ShieldAlert },
         { name: 'Communication', href: '/communication', icon: MessageCircle },
+        { name: 'Notes & Mémos', href: '/notes', icon: FileMsg },
         { name: 'RH & Talents', href: '/rh', icon: GraduationCap },
         { name: 'Documentation', href: '/admin/documentation', icon: BookOpen },
         { name: 'Paramètres', href: '/admin', icon: Settings },
