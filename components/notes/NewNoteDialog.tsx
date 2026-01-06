@@ -14,6 +14,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
 } from "@/components/ui/dialog"
 import {
     Form,
@@ -274,10 +275,10 @@ export function NewNoteDialog({ children }: { children?: React.ReactNode }) {
                                                         <FormItem key={color} className="flex items-center space-x-3 space-y-0">
                                                             <FormControl>
                                                                 <RadioGroupItem value={color} className={`w-8 h-8 rounded-full border-2 ${color === 'blue' ? 'bg-blue-100 border-blue-500 text-blue-600' :
-                                                                        color === 'green' ? 'bg-green-100 border-green-500 text-green-600' :
-                                                                            color === 'yellow' ? 'bg-yellow-100 border-yellow-500 text-yellow-600' :
-                                                                                color === 'red' ? 'bg-red-100 border-red-500 text-red-600' :
-                                                                                    'bg-purple-100 border-purple-500 text-purple-600'
+                                                                    color === 'green' ? 'bg-green-100 border-green-500 text-green-600' :
+                                                                        color === 'yellow' ? 'bg-yellow-100 border-yellow-500 text-yellow-600' :
+                                                                            color === 'red' ? 'bg-red-100 border-red-500 text-red-600' :
+                                                                                'bg-purple-100 border-purple-500 text-purple-600'
                                                                     }`} />
                                                             </FormControl>
                                                         </FormItem>
