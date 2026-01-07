@@ -5188,3 +5188,38 @@ export async function structureLegalNote(transcript: string) {
     }
 }
 
+
+export async function initJurisprudenceLibrary() {
+    try {
+        const count = await prisma.jurisprudence.count()
+        if (count === 0) {
+            // Seed logic is in seed.mjs, but we can do a quick check/init here if empty
+            // For now, assume seed.mjs is used.
+            return { success: true, message: "Base vide. Veuillez initialiser avec seed." }
+        }
+        return { success: true, message: "Base chargée" }
+    } catch (e) {
+        return { success: false }
+    }
+}
+
+export async function searchJurisprudenceAdvanced(query: string) {
+    try {
+        const results = await prisma.jurisprudence.findMany({
+            where: {
+                OR: [
+                    { title: { contains: query, mode: 'insensitive' } },
+                    { summary: { contains: query, mode: 'insensitive' } },
+                    { content: { contains: query, mode: 'insensitive' } },
+                    { keywords: { contains: query, mode: 'insensitive' } }
+                ]
+            },
+            take: 20
+        })
+        return { success: true, results }
+    } catch (e) {
+        return { success: false, results: [], message: "Erreur recherche" }
+    }
+}
+
+export const searchJurisprudence = searchJurisprudenceAdvanced; // Alias for backward compatibility
