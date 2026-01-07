@@ -2231,55 +2231,6 @@ export async function generateInvoiceItems(description: string) {
     }
 }
 
-export async function searchJurisprudenceAdvanced(query: string) {
-    try {
-        const prompt = `Tu es un expert en recherche juridique (Droit OHADA & Sénégalais). Trouve des textes de loi, articles, ou jurisprudences pertinents pour : "${query}".
-        
-        RETOURNE UN JSON :
-        [
-            {
-                "id": "jur-adv-1",
-                "title": "Arrêt n° 005/2021 CCJA",
-                "reference": "CCJA, 3e Ch., 15 janvier 2021",
-                "court": "CCJA",
-                "date": "2021-01-15",
-                "type": "JURISPRUDENCE",
-                "summary": "Sur l'interprétation de l'article 13 de l'Acte Uniforme portant recouvrement...",
-                "content": "La Cour a statué que...",
-                "relevance": 95
-            },
-            {
-                "id": "jur-adv-2",
-                "title": "Code des Obligations Civiles et Commerciales (Sénégal)",
-                "reference": "Article 118 et suivants",
-                "court": "SENEGAL",
-                "date": "2020-01-01",
-                "type": "LOI",
-                "summary": "Dispositions relatives à la responsabilité contractuelle.",
-                "content": "Article 118 : Le contrat est la convention...",
-                "relevance": 88
-            }
-        ]`
-
-        const { generateCompletion } = await import('@/lib/ai')
-        const data = await generateCompletion(prompt, [], 'RESEARCH')
-
-        let result = []
-        try {
-            if (data) {
-                const jsonStr = data.includes('```') ? data.split('```')[1].replace('json', '').trim() : data.trim()
-                result = JSON.parse(jsonStr)
-            }
-        } catch (e) {
-            console.error("JSON Parse error in Juris Search", e)
-        }
-
-        return { success: true, results: result }
-
-    } catch (error) {
-        return { success: false, message: "Erreur de recherche jurisprudentielle." }
-    }
-}
 
 export async function classifyTransaction(description: string) {
     try {
@@ -3808,28 +3759,6 @@ export async function createJurisprudence(data: {
     }
 }
 
-export async function searchJurisprudence(query: string) {
-    if (!query) return await prisma.jurisprudence.findMany({
-        where: { status: 'VALIDATED' },
-        orderBy: { date: 'desc' },
-        take: 20
-    })
-
-    // Hybrid Search Logic (Keyword now, Vector ready)
-    return await prisma.jurisprudence.findMany({
-        where: {
-            status: 'VALIDATED', // ONLY VALIDATED TEXTS FOR RAG
-            OR: [
-                { title: { contains: query } },
-                { keywords: { contains: query } },
-                { content: { contains: query } },
-            ]
-        },
-        orderBy: { date: 'desc' },
-        take: 20
-    })
-}
-
 // ============ CRAWLER & VALIDATION WORKFLOW ============
 
 import { processUrl, discoverLinks } from '@/lib/crawler'
@@ -3964,37 +3893,7 @@ export async function rejectDocument(id: string) {
     }
 }
 
-export async function initJurisprudenceLibrary() {
-    // Check if empty
-    const count = await prisma.jurisprudence.count()
-    if (count > 0) return
 
-    // Seed initial OHADA basic texts
-    await prisma.jurisprudence.createMany({
-        data: [
-            {
-                title: "Acte Uniforme portant Droit Commercial Général",
-                type: "LOI", // ACTE_UNIFORME
-                court: "OHADA",
-                date: new Date("2010-12-15"),
-                reference: "AUDCG",
-                summary: "Texte fondamental régissant les commerçants et les actes de commerce.",
-                content: "Article 1 : Tout commerçant... (Texte simulé pour démo)",
-                keywords: '["commercial", "bail", "fonds de commerce"]'
-            },
-            {
-                title: "Arrêt N° 025/2018 CCJA - Validité de la Saisie",
-                type: "JURISPRUDENCE",
-                court: "CCJA",
-                date: new Date("2018-04-26"),
-                reference: "J-2018-025",
-                summary: "La CCJA rappelle les conditions de validité d'une saisie-attribution.",
-                content: "La Cour Commune de Justice et d'Arbitrage... (Texte simulé)",
-                keywords: '["saisie", "recouvrement", "banque"]'
-            }
-        ]
-    })
-}
 
 export async function addDirectoryContact(data: {
     name: string
