@@ -52,12 +52,25 @@ export default function LoginPage() {
                 <CardContent>
                     <form action={formAction} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email professionnel</Label>
-                            <Input id="email" name="email" type="email" placeholder="maitre@lexpremium.sn" required />
+                            <Label htmlFor="email" className="text-slate-700">Email professionnel</Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="maitre@lexpremium.sn"
+                                required
+                                className="bg-white text-slate-900 border-slate-300 focus:border-slate-900 focus:ring-slate-900"
+                            />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Mot de passe</Label>
-                            <Input id="password" name="password" type="password" required />
+                            <Label htmlFor="password" className="text-slate-700">Mot de passe</Label>
+                            <Input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                className="bg-white text-slate-900 border-slate-300 focus:border-slate-900 focus:ring-slate-900"
+                            />
                         </div>
                         {state.message && (
                             <div className="text-sm text-red-500 bg-red-50 p-2 rounded flex items-center gap-2">
