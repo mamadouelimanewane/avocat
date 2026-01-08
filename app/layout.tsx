@@ -31,7 +31,7 @@ export default async function RootLayout({
     if (userId) {
         user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { name: true, role: true }
+            include: { userRole: true }
         });
     }
 

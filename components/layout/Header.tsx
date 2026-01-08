@@ -22,15 +22,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
-    user?: {
-        name: string | null;
-        role: string | null;
-    } | null;
+    user?: any;
 }
 
 export function Header({ user }: HeaderProps) {
     const userName = user?.name || "Invité";
-    const userRole = user?.role || "Visiteur";
+    const userRole = user?.userRole?.name || user?.role || "Visiteur";
     const initials = userName
         .split(' ')
         .map((n) => n[0])
