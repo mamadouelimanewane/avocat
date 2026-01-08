@@ -12,7 +12,7 @@ const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
-    transpilePackages: ['react-day-picker', 'date-fns', '@react-pdf/renderer'],
+    transpilePackages: ['react-day-picker', 'date-fns'],
     experimental: {
         serverComponentsExternalPackages: ['@prisma/client', '@react-pdf/renderer'],
         serverActions: {
