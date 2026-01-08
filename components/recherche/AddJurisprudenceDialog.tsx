@@ -64,7 +64,7 @@ export function AddJurisprudenceDialog() {
             <DialogContent className="max-w-xl">
                 <DialogHeader>
                     <DialogTitle>Enrichir la Base de Connaissance</DialogTitle>
-                    <DialogDescription>Ajoutez une jurisprudence, une loi ou un acte uniforme pour alimenter l'IA.</DialogDescription>
+                    <DialogDescription>Ajoutez une jurisprudence, une loi ou un acte uniforme pour alimenter l&apos;IA.</DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-4 py-4">
@@ -96,7 +96,7 @@ export function AddJurisprudenceDialog() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label>{formData.type === 'LOI' ? 'Titre de la Loi / Acte' : "Titre de l'arrêt"}</Label>
+                        <Label>{formData.type === 'LOI' ? 'Titre de la Loi / Acte' : "Titre de l&apos;arrêt"}</Label>
                         <Input
                             placeholder={formData.type === 'LOI' ? "ex: Acte Uniforme portant droit commercial général" : "ex: Arrêt N°15 - Affaire X c/ Y"}
                             value={formData.title}
@@ -117,7 +117,7 @@ export function AddJurisprudenceDialog() {
                                         <SelectItem value="CCJA">CCJA (Abidjan)</SelectItem>
                                         <SelectItem value="COUR_SUPREME">Cour Suprême</SelectItem>
                                         <SelectItem value="TRIBUNAL_COMMERCE">Tribunal Commerce</SelectItem>
-                                        <SelectItem value="CA_DAKAR">Cour d'Appel Dakar</SelectItem>
+                                        <SelectItem value="CA_DAKAR">Cour d&apos;Appel Dakar</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -135,12 +135,12 @@ export function AddJurisprudenceDialog() {
                     <div className="grid gap-2">
                         <Label>Contenu Intégral (Texte brut ou Extrait)</Label>
                         <Textarea
-                            placeholder="Copiez ici le texte de loi ou l'arrêt complet pour que l'IA puisse l'analyser..."
+                            placeholder="Copiez ici le texte de loi ou l&apos;arrêt complet pour que l&apos;IA puisse l&apos;analyser..."
                             className="h-48 font-mono text-xs"
                             value={formData.content}
                             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                         />
-                        <p className="text-xs text-slate-500">C'est ce texte qui servira de base aux réponses de l'IA (RAG).</p>
+                        <p className="text-xs text-slate-500">C&apos;est ce texte qui servira de base aux réponses de l&apos;IA (RAG).</p>
                     </div>
 
                     <div className="grid gap-2">

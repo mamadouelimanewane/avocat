@@ -38,7 +38,7 @@ export default function InterrogationComptePage() {
             <div className="flex justify-between items-end">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Interrogation de Compte</h1>
-                    <p className="text-slate-500">Consultez et lettrer les mouvements d'un compte.</p>
+                    <p className="text-slate-500">Consultez et lettrer les mouvements d&apos;un compte.</p>
                 </div>
             </div>
 

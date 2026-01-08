@@ -172,8 +172,8 @@ export function MobileMoneyPayment({
                 {/* Payment Result */}
                 {paymentResult && (
                     <div className={`p-4 rounded-lg border-2 ${paymentResult.success
-                            ? 'bg-emerald-50 border-emerald-200'
-                            : 'bg-red-50 border-red-200'
+                        ? 'bg-emerald-50 border-emerald-200'
+                        : 'bg-red-50 border-red-200'
                         }`}>
                         <div className="flex items-start gap-3">
                             {paymentResult.success ? (
@@ -220,7 +220,7 @@ export function MobileMoneyPayment({
                             )}
                             {provider === 'WAVE' && (
                                 <>
-                                    <li>Ouvrez l'application Wave sur votre téléphone</li>
+                                    <li>Ouvrez l&apos;application Wave sur votre téléphone</li>
                                     <li>Vérifiez la notification de paiement</li>
                                     <li>Confirmez avec votre code PIN ou empreinte digitale</li>
                                     <li>Le paiement sera validé instantanément</li>
@@ -229,7 +229,7 @@ export function MobileMoneyPayment({
                             {provider === 'FREE_MONEY' && (
                                 <>
                                     <li>Composez <span className="font-mono font-bold">*145#</span> sur votre téléphone Free</li>
-                                    <li>Sélectionnez l'option "Paiement marchand"</li>
+                                    <li>Sélectionnez l&apos;option &quot;Paiement marchand&quot;</li>
                                     <li>Entrez le code de transaction</li>
                                     <li>Confirmez avec votre code secret</li>
                                 </>
@@ -264,7 +264,7 @@ export function MobileMoneyPayment({
 
                 {/* Security Notice */}
                 <div className="text-xs text-center text-slate-500 pt-2 border-t">
-                    🔒 Paiement sécurisé et chiffré • Aucune donnée bancaire n'est stockée
+                    🔒 Paiement sécurisé et chiffré • Aucune donnée bancaire n&apos;est stockée
                 </div>
             </CardContent>
         </Card>

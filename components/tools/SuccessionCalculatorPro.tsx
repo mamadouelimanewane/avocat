@@ -381,7 +381,7 @@ export function SuccessionCalculatorPro() {
                             <CardContent>
                                 <p className="text-sm text-red-700 mb-3">
                                     Les donations et legs dépassent la quotité disponible de <strong>{totalExces.toLocaleString('fr-FR')} FCFA</strong>.
-                                    Une réduction est nécessaire conformément à l'Art. 711 du Code de la Famille.
+                                    Une réduction est nécessaire conformément à l&apos;Art. 711 du Code de la Famille.
                                 </p>
                                 <div className="space-y-2">
                                     {legsReduits.map((lr, i) => (

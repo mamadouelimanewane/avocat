@@ -12,13 +12,17 @@ const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
-    transpilePackages: ['react-day-picker', 'date-fns'],
+    transpilePackages: ['react-day-picker', 'date-fns', '@react-pdf/renderer'],
     experimental: {
         serverComponentsExternalPackages: ['@prisma/client', '@react-pdf/renderer'],
+        serverActions: {
+            bodySizeLimit: '2mb',
+        },
     },
     webpack: (config) => {
         config.resolve.alias['date-fns'] = path.resolve(__dirname, 'node_modules', 'date-fns');
         config.resolve.alias.canvas = false;
+        config.resolve.alias.encoding = false;
         return config;
     },
 };

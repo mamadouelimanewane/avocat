@@ -121,7 +121,7 @@ export function WorkflowBoard({ initialColumns, clients }: { initialColumns: Col
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuItem onClick={() => handleDeleteColumn(col.id)} className="text-red-600">
-                                    <Trash2 className="mr-2 h-4 w-4" /> Supprimer l'étape
+                                    <Trash2 className="mr-2 h-4 w-4" /> Supprimer l&apos;étape
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -180,7 +180,7 @@ export function WorkflowBoard({ initialColumns, clients }: { initialColumns: Col
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="title">Titre de l'étape</Label>
+                            <Label htmlFor="title">Titre de l&apos;étape</Label>
                             <Input
                                 id="title"
                                 placeholder="Ex: En attente de pièces"
@@ -193,7 +193,7 @@ export function WorkflowBoard({ initialColumns, clients }: { initialColumns: Col
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsAddColumnOpen(false)}>Annuler</Button>
                         <Button onClick={handleAddColumn} disabled={loading}>
-                            {loading ? 'Création...' : 'Créer l\'étape'}
+                            {loading ? 'Création...' : 'Créer l&apos;étape'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

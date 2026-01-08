@@ -95,9 +95,9 @@ export function LegalNewsFeed() {
                                 <div className="flex items-start justify-between mb-2">
                                     <div className="flex items-center gap-2">
                                         <Badge className={`${item.category === 'SOCIAL' ? 'bg-blue-50 text-blue-700' :
-                                                item.category === 'OHADA' ? 'bg-indigo-50 text-indigo-700' :
-                                                    item.category === 'FISCAL' ? 'bg-amber-50 text-amber-700' :
-                                                        'bg-emerald-50 text-emerald-700'
+                                            item.category === 'OHADA' ? 'bg-indigo-50 text-indigo-700' :
+                                                item.category === 'FISCAL' ? 'bg-amber-50 text-amber-700' :
+                                                    'bg-emerald-50 text-emerald-700'
                                             } border-none font-bold text-[10px]`}>
                                             {item.category}
                                         </Badge>
@@ -126,7 +126,7 @@ export function LegalNewsFeed() {
                             <Newspaper className="h-10 w-10 text-indigo-400 mb-3 opacity-50" />
                             <h5 className="text-sm font-bold text-indigo-900">Intelligence LexAI Veille</h5>
                             <p className="text-xs text-indigo-600 mt-1 max-w-[250px]">
-                                Notre crawler analyse chaque nuit les publications légales pour mettre à jour votre "Bible".
+                                Notre crawler analyse chaque nuit les publications légales pour mettre à jour votre &quot;Bible&quot;.
                             </p>
                             <Button size="sm" className="mt-4 bg-indigo-600">Configurer mes thématiques</Button>
                         </div>

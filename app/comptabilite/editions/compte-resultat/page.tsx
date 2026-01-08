@@ -54,7 +54,7 @@ export default async function CompteResultatPrint() {
             </table>
 
             <div className="mt-12 text-center text-xs text-slate-400">
-                <p>Les montants entre parenthèses ou précédés d'un signe moins indiquent des charges ou diminutions du résultat.</p>
+                <p>Les montants entre parenthèses ou précédés d&apos;un signe moins indiquent des charges ou diminutions du résultat.</p>
             </div>
 
             <style>{`

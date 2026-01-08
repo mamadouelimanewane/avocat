@@ -118,7 +118,7 @@ export default function TiersPage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Ajouter {type}</DialogTitle>
-                        <DialogDescription>Création d'un compte auxiliaire {type === 'CLIENT' ? '411' : '401'}.</DialogDescription>
+                        <DialogDescription>Création d&apos;un compte auxiliaire {type === 'CLIENT' ? '411' : '401'}.</DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">

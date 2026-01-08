@@ -202,8 +202,8 @@ export function LiveChat({ dossierId, clientName = "Client", avocatName = "Me. D
                                         </Avatar>
                                         <div className={`flex flex-col ${message.sender === 'CLIENT' ? 'items-end' : 'items-start'}`}>
                                             <div className={`px-4 py-2 rounded-2xl ${message.sender === 'CLIENT'
-                                                    ? 'bg-blue-600 text-white rounded-tr-sm'
-                                                    : 'bg-slate-100 text-slate-900 rounded-tl-sm'
+                                                ? 'bg-blue-600 text-white rounded-tr-sm'
+                                                : 'bg-slate-100 text-slate-900 rounded-tl-sm'
                                                 }`}>
                                                 <p className="text-sm">{message.content}</p>
                                             </div>

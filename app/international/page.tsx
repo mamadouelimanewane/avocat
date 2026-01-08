@@ -186,7 +186,7 @@ export default function InternationalToolsPage() {
                                         <Shield className="h-4 w-4 text-green-600" />
                                         <span className="font-medium text-slate-700">Conforme eIDAS (EU) & OHADA</span>
                                     </div>
-                                    Signatures électroniques valides juridiquement dans l'espace OHADA.
+                                    Signatures électroniques valides juridiquement dans l&apos;espace OHADA.
                                 </div>
                             </CardContent>
                         </Card>
@@ -273,7 +273,7 @@ export default function InternationalToolsPage() {
                                 Portail Client Sécurisé
                             </CardTitle>
                             <CardDescription>
-                                Offrez un accès en temps réel à vos clients internationaux sur l'avancement de leurs dossiers.
+                                Offrez un accès en temps réel à vos clients internationaux sur l&apos;avancement de leurs dossiers.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -313,8 +313,8 @@ export default function InternationalToolsPage() {
                                     <div>
                                         <div className="font-medium text-slate-900">Configuration Requise</div>
                                         <div className="text-sm text-slate-500 mt-1">
-                                            Pour activer le portail client, configurez votre domaine dans les paramètres d'administration.
-                                            L'accès client sera sécurisé par authentification à deux facteurs (2FA).
+                                            Pour activer le portail client, configurez votre domaine dans les paramètres d&apos;administration.
+                                            L&apos;accès client sera sécurisé par authentification à deux facteurs (2FA).
                                         </div>
                                         <Button variant="outline" size="sm" className="mt-3">
                                             <ExternalLink className="mr-2 h-3 w-3" />

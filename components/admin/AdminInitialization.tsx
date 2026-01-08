@@ -39,11 +39,11 @@ export function AdminInitialization() {
                 <div>
                     <h3 className="font-semibold text-lg">Initialisation du Système</h3>
                     <p className="text-sm text-slate-500 mb-4">
-                        Créez les données de base indispensables au fonctionnement de l'application (Plan comptable SYSCOHADA, Journaux par défaut, Exercice fiscal).
+                        Créez les données de base indispensables au fonctionnement de l&apos;application (Plan comptable SYSCOHADA, Journaux par défaut, Exercice fiscal).
                         À utiliser lors de la première installation.
                     </p>
                     <Button onClick={handleInit} disabled={status === 'LOADING' || status === 'SUCCESS'}>
-                        {status === 'LOADING' ? "Initialisation en cours..." : "Lancer l'initialisation"}
+                        {status === 'LOADING' ? "Initialisation en cours..." : "Lancer l&apos;initialisation"}
                     </Button>
                 </div>
             </div>

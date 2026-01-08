@@ -47,7 +47,7 @@ export default function AdminSecurityPage() {
                             Sauvegarde des Données
                         </CardTitle>
                         <CardDescription>
-                            Exportez l'intégralité de la base de données au format JSON chiffré.
+                            Exportez l&apos;intégralité de la base de données au format JSON chiffré.
                             Conservez ce fichier en lieu sûr (Disque Externe, Cloud Sécurisé).
                         </CardDescription>
                     </CardHeader>
@@ -69,7 +69,7 @@ export default function AdminSecurityPage() {
                             <ShieldCheck className="h-4 w-4 text-blue-600" />
                             <AlertTitle>Politique de Sauvegarde</AlertTitle>
                             <AlertDescription className="text-xs mt-1">
-                                Il est recommandé d'effectuer une sauvegarde manuelle :
+                                Il est recommandé d&apos;effectuer une sauvegarde manuelle :
                                 <ul className="list-disc pl-4 mt-1">
                                     <li>Chaque vendredi soir</li>
                                     <li>Avant chaque mise à jour majeure</li>
@@ -119,7 +119,7 @@ export default function AdminSecurityPage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Activity className="h-5 w-5 text-slate-600" />
-                        Journal d'Audit (Activités Récentes)
+                        Journal d&apos;Audit (Activités Récentes)
                     </CardTitle>
                 </CardHeader>
                 <CardContent>

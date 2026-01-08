@@ -30,7 +30,7 @@ export function LeaveList({ requests }: { requests: any[] }) {
                                     Du {format(new Date(req.startDate), 'dd MMM')} au {format(new Date(req.endDate), 'dd MMM yyyy', { locale: fr })}
                                 </span>
                             </div>
-                            {req.reason && <p className="text-xs text-slate-400 mt-1 italic">"{req.reason}"</p>}
+                            {req.reason && <p className="text-xs text-slate-400 mt-1 italic">&quot;{req.reason}&quot;</p>}
                         </div>
 
                         <div className="flex items-center gap-2">

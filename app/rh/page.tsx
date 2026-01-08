@@ -77,7 +77,7 @@ export default async function RHPage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex items-center justify-between text-sm">
-                                <span>Présents aujourd'hui</span>
+                                <span>Présents aujourd&apos;hui</span>
                                 <span className="font-bold text-emerald-600">{(users?.length || 0) - (requests?.filter((r: any) => r.status === 'APPROVED' && new Date() >= new Date(r.startDate) && new Date() <= new Date(r.endDate)).length || 0)}</span>
                             </div>
                             <div className="flex items-center justify-between text-sm">

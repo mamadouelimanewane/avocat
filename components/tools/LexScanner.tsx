@@ -169,7 +169,7 @@ SOUS TOUTES RÉSERVES
                             <div className="space-y-1">
                                 <h3 className="font-semibold text-slate-900">Collez ou Importez un texte</h3>
                                 <p className="text-sm text-slate-500 max-w-sm mx-auto">
-                                    Copiez-collez le texte des conclusions adverses ou d'un contrat pour détecter failles et délais.
+                                    Copiez-collez le texte des conclusions adverses ou d&apos;un contrat pour détecter failles et délais.
                                 </p>
                             </div>
                         </div>
@@ -192,7 +192,7 @@ SOUS TOUTES RÉSERVES
                                     </>
                                 ) : (
                                     <>
-                                        <ScanSearch className="mr-2 h-4 w-4" /> Lancer l'Analyse
+                                        <ScanSearch className="mr-2 h-4 w-4" /> Lancer l&apos;Analyse
                                     </>
                                 )}
                             </Button>
@@ -204,7 +204,7 @@ SOUS TOUTES RÉSERVES
                             <div className="border-b px-4">
                                 <TabsList className="bg-transparent w-full justify-start h-12 p-0 space-x-6">
                                     <TabsTrigger value="overview" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-indigo-600 data-[state=active]:shadow-none rounded-none px-0 pb-3 pt-2">
-                                        Vue d'ensemble
+                                        Vue d&apos;ensemble
                                     </TabsTrigger>
                                     <TabsTrigger value="dates" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-indigo-600 data-[state=active]:shadow-none rounded-none px-0 pb-3 pt-2">
                                         Dates & Délais
@@ -256,7 +256,7 @@ SOUS TOUTES RÉSERVES
                                                             {d.date}
                                                         </p>
                                                         <p className="font-medium text-slate-900">{d.label}</p>
-                                                        <p className="text-xs text-slate-500 mt-1">Ajouter à l'agenda</p>
+                                                        <p className="text-xs text-slate-500 mt-1">Ajouter à l&apos;agenda</p>
                                                     </div>
                                                 </div>
                                             ))}
@@ -317,7 +317,7 @@ SOUS TOUTES RÉSERVES
                                                 </div>
                                                 <div className="max-w-xs">
                                                     <h3 className="font-medium text-slate-900">Générer un premier jet</h3>
-                                                    <p className="text-sm text-slate-500 mt-1">Laissez l'IA rédiger une ébauche de conclusions basée sur l'analyse des failles adverses.</p>
+                                                    <p className="text-sm text-slate-500 mt-1">Laissez l&apos;IA rédiger une ébauche de conclusions basée sur l&apos;analyse des failles adverses.</p>
                                                 </div>
                                                 <Button onClick={handleGenerateDraft} className="bg-indigo-600 hover:bg-indigo-700">
                                                     <Sparkles className="mr-2 h-4 w-4" /> Générer Réplique

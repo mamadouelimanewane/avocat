@@ -88,7 +88,7 @@ export function IndemnityCalculator() {
                 <CardHeader className="bg-indigo-50/50">
                     <CardTitle className="flex items-center gap-2">
                         <Calculator className="h-5 w-5 text-indigo-600" />
-                        Calculateur d'Indemnités
+                        Calculateur d&apos;Indemnités
                     </CardTitle>
                     <CardDescription>
                         Estimations basées sur le Code du Travail Sénégalais
@@ -96,7 +96,7 @@ export function IndemnityCalculator() {
                 </CardHeader>
                 <CardContent className="space-y-4 pt-6">
                     <div className="grid gap-2">
-                        <Label>Type d'Indemnité</Label>
+                        <Label>Type d&apos;Indemnité</Label>
                         <Select value={type} onValueChange={setType}>
                             <SelectTrigger>
                                 <SelectValue />
@@ -196,9 +196,9 @@ export function IndemnityCalculator() {
                                 )}
                                 {type === "retraite" && (
                                     <>
-                                        <p>• Indemnité minimale après 5 ans d'ancienneté</p>
+                                        <p>• Indemnité minimale après 5 ans d&apos;ancienneté</p>
                                         <p>• Calcul: 1/12e du salaire par année</p>
-                                        <p>• Non cumulable avec l'indemnité de licenciement</p>
+                                        <p>• Non cumulable avec l&apos;indemnité de licenciement</p>
                                     </>
                                 )}
                                 {type === "prejudice" && (

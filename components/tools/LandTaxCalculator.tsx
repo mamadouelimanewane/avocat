@@ -90,7 +90,7 @@ export function LandTaxCalculator() {
                         <Calculator className="h-5 w-5 text-indigo-600" />
                         Paramètres de la Transaction
                     </CardTitle>
-                    <CardDescription>Saisissez les détails financiers de l'acte</CardDescription>
+                    <CardDescription>Saisissez les détails financiers de l&apos;acte</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
@@ -133,7 +133,7 @@ export function LandTaxCalculator() {
                         </Label>
                         <div className="grid grid-cols-2 gap-2 mt-2">
                             <div className="space-y-1">
-                                <Label className="text-[10px]">Prix d'acquisition</Label>
+                                <Label className="text-[10px]">Prix d&apos;acquisition</Label>
                                 <Input type="number" size={1} value={purchasePrice || ''} onChange={(e) => setPurchasePrice(Number(e.target.value))} className="h-8 text-xs" />
                             </div>
                             <div className="space-y-1">
@@ -157,7 +157,7 @@ export function LandTaxCalculator() {
                     <CardContent className="p-8">
                         <div className="flex justify-between items-start">
                             <div>
-                                <p className="text-indigo-100 text-sm font-medium uppercase tracking-wider mb-1">Total à prévoir par l'Acquéreur</p>
+                                <p className="text-indigo-100 text-sm font-medium uppercase tracking-wider mb-1">Total à prévoir par l&apos;Acquéreur</p>
                                 <h3 className="text-4xl font-bold">{totalWithTaxes.toLocaleString()} <span className="text-lg font-normal">FCFA</span></h3>
                             </div>
                             <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">Simulation Pro</Badge>
@@ -181,12 +181,12 @@ export function LandTaxCalculator() {
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm flex items-center gap-2">
                                 <Receipt className="h-4 w-4 text-emerald-600" />
-                                Taxes de l'État (DGID)
+                                Taxes de l&apos;État (DGID)
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             <div className="flex justify-between text-sm">
-                                <span className="text-slate-500">Droits d'enregistrement ({isReducedRate ? '3%' : '5%'})</span>
+                                <span className="text-slate-500">Droits d&apos;enregistrement ({isReducedRate ? '3%' : '5%'})</span>
                                 <span className="font-semibold text-slate-800">{registrationRights.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between text-sm">
@@ -235,7 +235,7 @@ export function LandTaxCalculator() {
                     <div>
                         <h4 className="text-sm font-bold text-slate-900">Conseil LexAI</h4>
                         <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                            Conformément à la Loi de Finances, les droits d'enregistrement au Sénégal peuvent être réduits à 3% dans certains cas de première acquisition ou de promotion immobilière agréée. Ce simulateur utilise le taux de droit commun.
+                            Conformément à la Loi de Finances, les droits d&apos;enregistrement au Sénégal peuvent être réduits à 3% dans certains cas de première acquisition ou de promotion immobilière agréée. Ce simulateur utilise le taux de droit commun.
                         </p>
                         <div className="mt-3 flex gap-2">
                             <Button

@@ -82,7 +82,7 @@ export function ExecutionCommander() {
                     </div>
                     <div>
                         <h2 className="text-lg font-black uppercase tracking-wider text-emerald-400">Execution Commander</h2>
-                        <p className="text-[10px] text-slate-400 font-mono">Pilotage Temps Réel des Voies d'Exécution</p>
+                        <p className="text-[10px] text-slate-400 font-mono">Pilotage Temps Réel des Voies d&apos;Exécution</p>
                     </div>
                 </div>
                 <div className="text-right">
@@ -184,7 +184,7 @@ export function ExecutionCommander() {
 
                                 <div>
                                     <div className="text-xs text-slate-500 uppercase font-bold mb-1 flex items-center gap-2">
-                                        <Truck className="h-3 w-3" /> Agent d'Exécution
+                                        <Truck className="h-3 w-3" /> Agent d&apos;Exécution
                                     </div>
                                     <p className="text-indigo-400 font-medium">{selectedTarget.agent}</p>
                                 </div>

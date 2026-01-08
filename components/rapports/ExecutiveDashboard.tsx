@@ -179,7 +179,7 @@ export function ExecutiveDashboard({ analytics }: ExecutiveDashboardProps) {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-base">Évolution CA vs Objectifs</CardTitle>
-                                <CardDescription>Chiffre d'affaires mensuel comparé aux objectifs</CardDescription>
+                                <CardDescription>Chiffre d&apos;affaires mensuel comparé aux objectifs</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <ResponsiveContainer width="100%" height={300}>

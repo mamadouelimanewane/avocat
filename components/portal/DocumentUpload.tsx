@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import {
     Upload,
     FileText,
-    Image,
+    Image as ImageIcon,
     FileArchive,
     CheckCircle2,
     XCircle,
@@ -133,7 +133,7 @@ export function DocumentUpload({ dossierId, onUploadComplete }: DocumentUploadPr
         if (e.dataTransfer.files) {
             handleFileSelect(e.dataTransfer.files)
         }
-    }, [category])
+    }, [handleFileSelect])
 
     const removeFile = (id: string) => {
         setFiles(prev => prev.filter(f => f.id !== id))
@@ -148,7 +148,7 @@ export function DocumentUpload({ dossierId, onUploadComplete }: DocumentUploadPr
     }
 
     const getFileIcon = (type: string) => {
-        if (type.startsWith('image/')) return <Image className="h-5 w-5" />
+        if (type.startsWith('image/')) return <ImageIcon className="h-5 w-5" />
         if (type.includes('pdf')) return <FileText className="h-5 w-5 text-red-500" />
         if (type.includes('zip') || type.includes('rar')) return <FileArchive className="h-5 w-5" />
         return <FileText className="h-5 w-5" />

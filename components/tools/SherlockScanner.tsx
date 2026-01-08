@@ -108,7 +108,7 @@ export function SherlockScanner() {
                         <div className="p-3 rounded-lg bg-rose-950/30 border border-rose-900/50 text-[10px] text-rose-200/70 flex gap-2">
                             <Lock className="h-4 w-4 shrink-0" />
                             <p>
-                                Ce module n'utilise que des données publiques (OSINT). L'utilisation à des fins d'espionnage privé est illégale. Usage professionnel uniquement.
+                                Ce module n&apos;utilise que des données publiques (OSINT). L&apos;utilisation à des fins d&apos;espionnage privé est illégale. Usage professionnel uniquement.
                             </p>
                         </div>
                     </CardContent>
@@ -205,7 +205,7 @@ export function SherlockScanner() {
                         </div>
                         <h3 className="text-lg font-bold text-slate-500">En attente de cible</h3>
                         <p className="text-sm max-w-xs text-center mt-2">
-                            Entrez le nom d'une personne ou d'une entreprise pour lancer l'investigation numérique.
+                            Entrez le nom d&apos;une personne ou d&apos;une entreprise pour lancer l&apos;investigation numérique.
                         </p>
                     </div>
                 )}

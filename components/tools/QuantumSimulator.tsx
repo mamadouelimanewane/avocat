@@ -104,6 +104,7 @@ export function QuantumSimulator() {
         } else {
             setDisplayTotal(total)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [total])
 
     return (
@@ -229,7 +230,7 @@ export function QuantumSimulator() {
                             disabled={isGenerating}
                         >
                             {isGenerating ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                            {isGenerating ? "Génération..." : "Automatiser l'Acte"}
+                            {isGenerating ? "Génération..." : "Automatiser l&apos;Acte"}
                         </Button>
                         <Button variant="outline" className="border-slate-700 text-indigo-400 hover:text-white hover:bg-indigo-600">
                             <RefreshCw className="mr-2 h-4 w-4" /> Reset

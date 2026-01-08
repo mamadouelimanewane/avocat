@@ -70,7 +70,7 @@ export function WebWatchDialog() {
                         <Sparkles className="mr-2 h-5 w-5 text-amber-500" /> Agent de Veille Juridique
                     </DialogTitle>
                     <DialogDescription>
-                        L'IA parcourt les sources juridiques (OHADA.org, Cour Suprême...) pour trouver les dernières décisions.
+                        L&apos;IA parcourt les sources juridiques (OHADA.org, Cour Suprême...) pour trouver les dernières décisions.
                     </DialogDescription>
                 </DialogHeader>
 

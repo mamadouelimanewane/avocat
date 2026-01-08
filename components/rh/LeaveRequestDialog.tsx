@@ -56,7 +56,7 @@ export function LeaveRequestDialog({ users }: { users: any[] }) {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Nouvelle demande d'absence</DialogTitle>
+                    <DialogTitle>Nouvelle demande d&apos;absence</DialogTitle>
                     <DialogDescription>Soumettez votre demande de congés.</DialogDescription>
                 </DialogHeader>
 
@@ -76,7 +76,7 @@ export function LeaveRequestDialog({ users }: { users: any[] }) {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label>Type d'absence</Label>
+                        <Label>Type d&apos;absence</Label>
                         <Select value={type} onValueChange={setType}>
                             <SelectTrigger>
                                 <SelectValue />

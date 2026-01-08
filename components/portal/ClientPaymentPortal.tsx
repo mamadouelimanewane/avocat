@@ -94,7 +94,7 @@ export function ClientPaymentPortal({ invoiceId, amount, clientName }: PaymentPo
                             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-start gap-3">
                                 <AlertCircle className="h-4 w-4 text-slate-400 mt-0.5" />
                                 <p className="text-[11px] text-slate-500 font-medium">
-                                    En cliquant sur "Procéder au paiement", vous allez être redirigé vers l'interface sécurisée de <span className="font-bold">{method === 'WAVE' ? 'Wave' : 'Orange Money'}</span>.
+                                    En cliquant sur &quot;Procéder au paiement&quot;, vous allez être redirigé vers l&apos;interface sécurisée de <span className="font-bold">{method === 'WAVE' ? 'Wave' : 'Orange Money'}</span>.
                                 </p>
                             </div>
 

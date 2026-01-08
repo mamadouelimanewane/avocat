@@ -74,7 +74,7 @@ export function ConflictChecker() {
                     <ShieldAlert className="h-5 w-5 text-indigo-600" />
                     <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">Nouveau Module IA</Badge>
                 </div>
-                <CardTitle>Contrôle des Conflits d'Intérêts</CardTitle>
+                <CardTitle>Contrôle des Conflits d&apos;Intérêts</CardTitle>
                 <CardDescription>Vérifiez instantanément si un nouveau client ou une partie a déjà un historique avec le cabinet.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -152,7 +152,7 @@ export function ConflictChecker() {
                             <div className="py-12 text-center bg-emerald-50/50 border border-dashed border-emerald-200 rounded-3xl">
                                 <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
                                 <h4 className="text-lg font-bold text-emerald-900">Aucun Conflit Détecté</h4>
-                                <p className="text-emerald-700/70 text-sm max-w-xs mx-auto">Le nom "{query}" n'apparaît dans aucun dossier actif ou passé en tant que partie adverse ou tiers incohérent.</p>
+                                <p className="text-emerald-700/70 text-sm max-w-xs mx-auto">Le nom &quot;{query}&quot; n&apos;apparaît dans aucun dossier actif ou passé en tant que partie adverse ou tiers incohérent.</p>
                                 <div className="mt-6 flex justify-center gap-2">
                                     <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">
                                         <UserPlus className="h-4 w-4 mr-2" /> Ouvrir Dossier

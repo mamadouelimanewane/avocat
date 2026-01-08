@@ -258,7 +258,7 @@ export default function AccountingPage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <Label>Libellé de l'opération</Label>
+                                    <Label>Libellé de l&apos;opération</Label>
                                     <Input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Ex: Paiement Facture F2024-001" />
                                 </div>
                                 <div>
@@ -319,7 +319,7 @@ export default function AccountingPage() {
                                 </div>
                             </div>
                             <DialogFooter>
-                                <Button onClick={handleSaveTransaction}>Enregistrer l'écriture</Button>
+                                <Button onClick={handleSaveTransaction}>Enregistrer l&apos;écriture</Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>

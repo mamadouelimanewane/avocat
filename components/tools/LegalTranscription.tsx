@@ -101,7 +101,7 @@ export function LegalTranscription() {
                         </div>
                         <div>
                             <CardTitle className="text-xl">Dictée Juridique LexAI</CardTitle>
-                            <CardDescription className="text-slate-400">Notes d'audiences et mémos vocaux structurés</CardDescription>
+                            <CardDescription className="text-slate-400">Notes d&apos;audiences et mémos vocaux structurés</CardDescription>
                         </div>
                     </div>
                     <Badge variant="outline" className="border-indigo-400 text-indigo-400">V3.0 High-Precision</Badge>

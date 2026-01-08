@@ -103,7 +103,7 @@ export default function CommunicationPage() {
                                     <SelectItem value="TRANSMISSION">Transmission Simple (Info)</SelectItem>
                                     <SelectItem value="TASK">Création de Tâche (Traitement)</SelectItem>
                                     <SelectItem value="VALIDATION">Circuit de Validation (Facture/Acte)</SelectItem>
-                                    <SelectItem value="CLASSEMENT">Procédure d'Archivage</SelectItem>
+                                    <SelectItem value="CLASSEMENT">Procédure d&apos;Archivage</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -120,7 +120,7 @@ export default function CommunicationPage() {
                         )}
                         {workflowType === 'VALIDATION' && (
                             <div className="p-3 bg-emerald-50 text-emerald-700 text-sm rounded-md">
-                                Le document sera bloqué jusqu'à validation électronique par un associé.
+                                Le document sera bloqué jusqu&apos;à validation électronique par un associé.
                             </div>
                         )}
 
@@ -272,7 +272,7 @@ export default function CommunicationPage() {
                                             <div className="mt-1"><Badge variant="outline" className="text-xs">14 Mai</Badge></div>
                                             <div>
                                                 <p className="font-semibold text-slate-800">Réponse Barreau</p>
-                                                <p className="text-sm text-slate-500">Dest : Bâtonnier de l'Ordre</p>
+                                                <p className="text-sm text-slate-500">Dest : Bâtonnier de l&apos;Ordre</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -346,7 +346,7 @@ export default function CommunicationPage() {
                                         <div>
                                             <div className="font-semibold text-slate-900">Consultation - M. Ba</div>
                                             <div className="text-sm text-slate-500 flex items-center gap-2">
-                                                <CalendarIcon className="h-3 w-3" /> Aujourd'hui, 14:00 • 45 min
+                                                <CalendarIcon className="h-3 w-3" /> Aujourd&apos;hui, 14:00 • 45 min
                                             </div>
                                         </div>
                                     </div>

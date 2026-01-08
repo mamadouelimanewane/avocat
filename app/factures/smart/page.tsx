@@ -17,7 +17,7 @@ export default function SmartInvoicePage() {
                 </Button>
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-indigo-900">IA Facturation</h1>
-                    <p className="text-slate-500">Générez des factures complexes à partir d'une simple description.</p>
+                    <p className="text-slate-500">Générez des factures complexes à partir d&apos;une simple description.</p>
                 </div>
             </div>
 

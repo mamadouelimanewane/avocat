@@ -89,7 +89,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
                         <Scale className="h-6 w-6 text-amber-500" />
                         <span>LEX<span className="text-amber-500">PREMIUM</span></span>
                     </Link>
-                    <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">SCP d'Avocats Dia et Associés</p>
+                    <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">SCP d&apos;Avocats Dia et Associés</p>
                 </div>
 
                 {/* Navigation */}

@@ -137,7 +137,7 @@ export default function AdminRolesPage({ roles }: { roles: any[] }) {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-xl font-bold tracking-tight text-slate-900">Gestion des Rôles</h2>
-                    <p className="text-slate-500">Créez et configurez les rôles d'accès du cabinet.</p>
+                    <p className="text-slate-500">Créez et configurez les rôles d&apos;accès du cabinet.</p>
                 </div>
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>

@@ -89,7 +89,7 @@ export function DeadlineCalculator() {
                     <Calculator className="h-5 w-5 text-indigo-600" />
                     <CardTitle>Calculateur de Délais Procéduraux</CardTitle>
                 </div>
-                <CardDescription>Estimez vos dates limites selon le CPCC et l'OHADA.</CardDescription>
+                <CardDescription>Estimez vos dates limites selon le CPCC et l&apos;OHADA.</CardDescription>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
                 <div className="space-y-4">
@@ -132,7 +132,7 @@ export function DeadlineCalculator() {
                     </div>
 
                     <Button onClick={calculate} disabled={!procedure || !baseDate} className="w-full bg-indigo-600 hover:bg-indigo-700">
-                        Calculer l'Échéance
+                        Calculer l&apos;Échéance
                     </Button>
                 </div>
 
