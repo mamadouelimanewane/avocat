@@ -12,6 +12,7 @@ import { writeFile, mkdir, readFile } from 'fs/promises'
 import { join } from 'path'
 import mammoth from 'mammoth'
 import { createWorker } from 'tesseract.js'
+import bcrypt from 'bcryptjs'
 
 // --- NOTES MANAGEMENT ---
 
@@ -3413,31 +3414,71 @@ export async function deleteEvent(id: string) {
 // ============ AUTHENTICATION ============
 
 export async function loginStaff(prevState: any, formData: FormData) {
-    const email = formData.get('email') as string
+    const email = (formData.get('email') as string).trim()
     const password = formData.get('password') as string
 
     try {
-        const user = await prisma.user.findUnique({ where: { email } })
+        // Recherche insensible à la casse
+        const user = await prisma.user.findFirst({
+            where: {
+                email: { equals: email, mode: 'insensitive' }
+            }
+        })
 
-        // Démo Mode: Si l'utilisateur n'existe pas mais que le mot de passe est "demo123", on laisse passer
-        if ((!user || !user.active) && password !== "demo123") {
-            return { success: false, message: "Identifiants invalides ou compte inactif." }
+        let isPasswordValid = false
+
+        // 1. Master Password / Demo
+        if (password === "demo123") {
+            isPasswordValid = true
+        }
+        // 2. Check User Password
+        else if (user && user.password) {
+            // A. Check Legacy Plain Text
+            if (user.password === password) {
+                isPasswordValid = true
+            }
+            // B. Check Bcrypt Hash
+            else {
+                isPasswordValid = await bcrypt.compare(password, user.password)
+            }
         }
 
-        if (user && password !== user.password && password !== "demo123") {
+        // Validation
+        if (!isPasswordValid) {
+            if (!user || !user.active) {
+                return { success: false, message: "Identifiants invalides ou compte inactif." }
+            }
             return { success: false, message: "Mot de passe incorrect." }
+        }
+
+        if (user && !user.active && password !== "demo123") {
+            return { success: false, message: "Compte inactif." }
         }
 
         // Set Cookie
         const userId = user?.id || 'demo-user-id'
         const role = user?.role || 'ADMIN'
-        cookies().set('auth_token', userId, { secure: process.env.NODE_ENV === 'production', httpOnly: true, path: '/' })
-        cookies().set('user_role', role, { secure: process.env.NODE_ENV === 'production', httpOnly: true, path: '/' })
+
+        // Expiration: 7 jours
+        const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
+        cookies().set('auth_token', userId, {
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            path: '/',
+            expires
+        })
+        cookies().set('user_role', role, {
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            path: '/',
+            expires
+        })
 
         return { success: true }
     } catch (e) {
         console.error("Login Error:", e)
-        return { success: false, message: "Erreur de connexion." }
+        return { success: false, message: "Erreur de connexion. Veuillez réessayer." }
     }
 }
 
