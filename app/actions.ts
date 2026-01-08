@@ -718,6 +718,33 @@ export async function updateUser(prevState: any, formData: FormData) {
     }
 }
 
+export async function updateUserPasswordAdmin(userId: string, newPassword: string) {
+    try {
+        const adminId = cookies().get('auth_token')?.value
+        if (!adminId) return { success: false, message: "Non connecté" }
+
+        // Security check: Verify the requester is an ADMIN
+        const admin = await prisma.user.findUnique({
+            where: { id: adminId },
+            include: { userRole: true }
+        })
+
+        if (admin?.role !== 'ADMIN' && admin?.userRole?.name !== 'ADMIN') {
+            return { success: false, message: "Accès refusé. Privilèges insuffisants." }
+        }
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: newPassword }
+        })
+
+        return { success: true, message: "Mot de passe réinitialisé avec succès." }
+    } catch (e) {
+        console.error('Admin Update Password Error:', e)
+        return { success: false, message: "Erreur lors de la réinitialisation." }
+    }
+}
+
 export async function getRoles() {
     return await prisma.role.findMany({
         orderBy: { name: 'asc' }

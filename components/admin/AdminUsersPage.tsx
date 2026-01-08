@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { createUser, updateUserStatus, updateUserPermissions, updateUserRole, updateUser } from '@/app/actions'
+import { createUser, updateUserStatus, updateUserPermissions, updateUserRole, updateUser, updateUserPasswordAdmin } from '@/app/actions'
 import { Checkbox } from "@/components/ui/checkbox"
 
 // Define available permissions
@@ -105,6 +105,8 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
     const [selectedUser, setSelectedUser] = useState<any>(null)
     const [selectedPerms, setSelectedPerms] = useState<string[]>([])
     const [editData, setEditData] = useState({ name: '', email: '', roleId: '', hourlyRate: '' })
+    const [isPasswordOpen, setIsPasswordOpen] = useState(false)
+    const [newPassword, setNewPassword] = useState('')
 
     const [newUser, setNewUser] = useState({ name: '', email: '', password: '', roleId: roles[0]?.id || '', hourlyRate: '200' })
 
@@ -180,6 +182,23 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
         await updateUser(null, formData)
         setIsEditOpen(false)
         window.location.reload()
+    }
+
+    const openPasswordDialog = (user: any) => {
+        setSelectedUser(user)
+        setNewPassword('')
+        setIsPasswordOpen(true)
+    }
+
+    const handleUpdatePassword = async () => {
+        if (!selectedUser || !newPassword) return
+        const res = await updateUserPasswordAdmin(selectedUser.id, newPassword)
+        if (res.success) {
+            alert(res.message)
+            setIsPasswordOpen(false)
+        } else {
+            alert(res.message)
+        }
     }
 
     return (
@@ -378,6 +397,35 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+
+                {/* Password Reset Dialog */}
+                <Dialog open={isPasswordOpen} onOpenChange={setIsPasswordOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Réinitialiser le mot de passe</DialogTitle>
+                            <DialogDescription>
+                                Définir un nouveau mot de passe pour {selectedUser?.name}.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4 space-y-4">
+                            <div className="grid gap-2">
+                                <Label>Nouveau mot de passe</Label>
+                                <Input
+                                    type="password"
+                                    placeholder="Ex: LexPremium2026!"
+                                    value={newPassword}
+                                    onChange={e => setNewPassword(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsPasswordOpen(false)}>Annuler</Button>
+                            <Button onClick={handleUpdatePassword} className="bg-slate-900 text-white">
+                                <Key className="mr-2 h-4 w-4" /> Réinitialiser
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <Card>
@@ -432,8 +480,11 @@ export default function AdminUsersPage({ users, roles }: { users: any[], roles: 
                                             <Button variant="ghost" size="sm" onClick={() => openEditDialog(user)} title="Modifier les informations">
                                                 <Edit className="h-4 w-4" />
                                             </Button>
+                                            <Button variant="ghost" size="sm" onClick={() => openPasswordDialog(user)} title="Changer le mot de passe">
+                                                <Key className="h-4 w-4 text-amber-600" />
+                                            </Button>
                                             <Button variant="ghost" size="sm" onClick={() => openPerms(user)} title="Gérer les privilèges">
-                                                <Key className="h-4 w-4" />
+                                                <Shield className="h-4 w-4" />
                                             </Button>
                                             <Button variant="ghost" size="sm" onClick={() => toggleStatus(user.id, user.active)}>
                                                 {user.active ? 'Désactiver' : 'Activer'}
