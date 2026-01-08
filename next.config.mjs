@@ -12,15 +12,15 @@ const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
-    transpilePackages: ['react-day-picker', 'date-fns'],
+    // CRITIQUE : Il faut absolument transpiler ce package pour qu'il soit traité comme ESM
+    transpilePackages: ['@react-pdf/renderer', 'react-day-picker', 'date-fns'],
     experimental: {
-        serverComponentsExternalPackages: ['@prisma/client', '@react-pdf/renderer'],
+        serverComponentsExternalPackages: ['@prisma/client'],
         serverActions: {
             bodySizeLimit: '2mb',
         },
     },
     webpack: (config) => {
-        config.resolve.alias['date-fns'] = path.resolve(__dirname, 'node_modules', 'date-fns');
         config.resolve.alias.canvas = false;
         config.resolve.alias.encoding = false;
         return config;
