@@ -10,7 +10,11 @@ import {
     Plane,
     Hotel,
     Scale,
-    Users
+    Users,
+    Home,
+    Landmark,
+    Building2,
+    Leaf
 } from "lucide-react"
 
 export const dynamic = 'force-dynamic'
