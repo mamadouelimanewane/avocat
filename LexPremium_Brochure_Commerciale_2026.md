@@ -1,5 +1,5 @@
-# DOSSIER COMMERCIAL : LEXPREMIUM - L'AVOCAT AUGMENTÉ 2026
-## *Plus qu'un logiciel. Une arme de guerre juridique et financière.*
+# DOSSIER COMMERCIAL : LEXPREMIUM - L'EXCELLENCE JURIDIQUE 2026
+## *Plus qu'un logiciel. Votre avantage stratégique décisif.*
 
 ---
 
@@ -17,7 +17,15 @@ C'est ici que vous laissez la concurrence derrière vous.
 
 ---
 
-### III. LA PUISSANCE DE L'IA & DU CALCUL EXPERT
+### III. L'ARSENAL JURIDIQUE SUPRÊME (SENTINELLE v9.0)
+Imaginez avoir accès à chaque contrat, chaque acte, chaque standard mondial instantanément.
+- **Index Suprême™** : Plus de 10,000 actes et contrats couvrant 33 pôles économiques (Deep Tech, BioTech, Énergie, Maritime, Sport Pro, Finance).
+- **Sentinelle Crawler™** : Une veille mondiale automatisée qui injecte quotidiennement les nouveaux standards contractuels internationaux directement dans votre bibliothèque.
+- **Unification v9.1** : Fusionnez vos propres modèles de cabinet avec l'arsenal Sentinelle pour une force de frappe juridique sans égale.
+
+---
+
+### IV. LA PUISSANCE DE L'IA & DU CALCUL EXPERT
 - **Succession Pro™** : Liquidation successorale complexe (10 méthodes) conforme au Code de la Famille sénégalais. Ce qui prenait 3 jours d'expertise se calcule désormais en 9 minutes.
 - **LexAI Predict** : Probabilité de succès calculée par IA sur la base des dernières tendances jurisprudentielles.
 - **Quantum Simulator** : Simulations d'indemnités sociales et foncières ultra-précises en temps réel.
@@ -25,7 +33,7 @@ C'est ici que vous laissez la concurrence derrière vous.
 
 ---
 
-### IV. INGÉNIERIE FINANCIÈRE & RECOUVREMENT
+### V. INGÉNIERIE FINANCIÈRE & RECOUVREMENT
 - **Smart Recovery Engine™** : Automatisez vos relances impayées. Scoring IA du risque client (0-100), relances multi-canaux (WhatsApp/Email) et génération de mises en demeure juridiques.
 - **Execution Commander** : Carte interactive des actifs saisis et pilotage des huissiers.
 - **Centif Guard** : Protection anti-blanchiment automatique sur chaque transaction CARPA.
@@ -33,14 +41,14 @@ C'est ici que vous laissez la concurrence derrière vous.
 
 ---
 
-### V. EXPERIENCE CLIENT & MOBILITÉ
+### VI. EXPERIENCE CLIENT & MOBILITÉ
 - **War Room Tablette** : Votre cabinet dans votre sacoche. Dossiers accessibles hors-ligne pour les plaidoiries en région.
 - **WhatsApp Bridge** : Communication automatisée et sécurisée. Vos clients reçoivent leurs notifications de procédure sur l'application qu'ils utilisent déjà.
 - **Dossier Express** : Portail client VIP pour le dépôt de pièces et le suivi financier en temps réel.
 
 ---
 
-### VI. LE SOCLE DE CONFIANCE
+### VII. LE SOCLE DE CONFIANCE
 - **Souveraineté des Données** : Hébergement sécurisé et backups redondants.
 - **Conformité Totale** : Code de la Famille, OHADA, et Loi sur la Protection des Données Personnelles (Sénégal).
 
