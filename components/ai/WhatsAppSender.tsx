@@ -19,9 +19,9 @@ import { useToast } from "@/components/ui/use-toast"
 import { logCommunication } from "@/app/actions"
 
 export function WhatsAppSender() {
-    const [phone, setPhone] = useState("")
-    const [message, setMessage] = useState("")
-    const [clientName, setClientName] = useState("")
+    const [phone, setPhone] = useState("+221777529288") // Pre-filled for demo
+    const [message, setMessage] = useState("Bonjour M. Wane, ceci est un message test depuis LexPremium Pro pour valider l'intégration WhatsApp. Cordialement, Le Cabinet.")
+    const [clientName, setClientName] = useState("M. Mamadou Elimane Wane")
     const { toast } = useToast()
 
     const handleSend = () => {

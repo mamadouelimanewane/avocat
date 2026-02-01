@@ -1,0 +1,8 @@
+🔐 Identifiants de test (Portail Pro)
+Client	Email	Code PIN
+M. Mamadou Elimane Wane	mamadouelimane@gmail.com	777000
+Banque Atlantique Sénégal	juridique@banque-atlantique.sn	882910
+🌐 Accès aux interfaces
+URL du Portail Client : http://localhost:3000/portal/login
+URL de l'Interface Avocat : http://localhost:3000/login
+📁 Différences avec la version Lite

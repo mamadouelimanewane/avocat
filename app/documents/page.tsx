@@ -18,14 +18,20 @@ async function getDocuments(query: string) {
         where.name = { contains: query }
     }
 
-    const docs = await prisma.document.findMany({
-        where,
-        orderBy: { updatedAt: 'desc' },
-        include: {
-            dossier: { select: { title: true, reference: true, client: { select: { name: true } } } },
-            versions: { orderBy: { version: 'desc' }, take: 1 }
-        }
-    })
+    let docs: any[] = [];
+    try {
+        docs = await prisma.document.findMany({
+            where,
+            orderBy: { updatedAt: 'desc' },
+            include: {
+                dossier: { select: { title: true, reference: true, client: { select: { name: true } } } },
+                versions: { orderBy: { version: 'desc' }, take: 1 }
+            }
+        })
+    } catch (e) {
+        console.error("Failed to fetch documents:", e)
+        docs = [];
+    }
     return docs
 }
 

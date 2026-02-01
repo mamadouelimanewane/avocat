@@ -20,6 +20,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { WhatsAppSender } from '@/components/ai/WhatsAppSender'
+import { EmailSender } from '@/components/ai/EmailSender'
 import { createMeeting, logCommunication } from '../actions'
 
 export default function CommunicationPage() {
@@ -365,27 +366,7 @@ export default function CommunicationPage() {
                 <TabsContent value="whatsapp" className="mt-6">
                     <div className="grid md:grid-cols-2 gap-6">
                         <WhatsAppSender />
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <MessageSquare className="h-5 w-5 text-indigo-600" />
-                                    Journal des échanges
-                                </CardTitle>
-                                <CardDescription>Historique des communications enregistrées.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    <div className="flex items-start gap-3 text-sm">
-                                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 mt-0.5">WhatsApp</Badge>
-                                        <div>
-                                            <p className="font-medium text-slate-900">Envoi pièces dossier TechCorp</p>
-                                            <p className="text-xs text-slate-500">Hier à 10:23 • Vers Client</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <EmailSender />
                     </div>
                 </TabsContent>
             </Tabs>

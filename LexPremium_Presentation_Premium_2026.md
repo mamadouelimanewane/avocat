@@ -86,16 +86,27 @@
 
 ---
 
-### SLIDE 10 : LA BIBLE DES MODÈLES
-**Titre** : Standardisez l'Excellence.
+### SLIDE 10 : L'ARSENAL JURIDIQUE SUPRÊME (SENTINELLE v9.0)
+**Titre** : L'Index de l'Économie Mondiale.
 **Détails** :
-- Bibliothèque centrale de modèles de contrats et d'actes d'élite.
-- Générateur dynamique liant les données clients aux modèles.
-- Réduction du risque d'erreur humaine de 95%.
+- **10,000+ Actes & Contrats** : Couverture de 33 pôles (Deep Tech, Énergie, Sport Pro).
+- **Sentinelle Crawler™** : Veille automatisée et injection quotidienne de standards mondiaux.
+- **Unification v9.1** : Vos modèles de cabinet fusionnés avec l'index global pour une force de frappe unique.
+- **Réduction du Risque d'Erreur** : Balisage systématique par IA de 95% des clauses critiques.
 
 ---
 
-### SLIDE 11 : LE PILOTAGE FINANCIER & CARPA
+### SLIDE 11 : LA FORGE JURIDIQUE - UNIFICATION
+**Titre** : Votre Savoir, Augmenté par le Monde.
+**Points clés** :
+- **Hybridation** : Fusionnez vos archives privées avec les standards internationaux.
+- **Moteur de Recherche Global** : Une seule interface pour tout vos actifs documentaires.
+- **Génération Dynamique** : Liaison instantanée Client/Dossier vers l'Arsenal.
+- **Propriété Intellectuelle** : Vos modèles restent sécurisés et sanctuarisés.
+
+---
+
+### SLIDE 12 : LE PILOTAGE FINANCIER & CARPA
 **Titre** : La Déontologie au cœur de la Technologie.
 **Usage** :
 - Gestion rigoureuse des fonds tiers (CARPA).
@@ -104,7 +115,7 @@
 
 ---
 
-### SLIDE 12 : SMART RECOVERY™ - RECOUVREMENT DE NOUVELLE GÉNÉRATION
+### SLIDE 13 : SMART RECOVERY™ - RECOUVREMENT DE NOUVELLE GÉNÉRATION
 **Titre** : Vos créances n'ont plus d'excuses.
 **Contenu** :
 - **Scoring Risque Client** : Analyse IA de la solvabilité et du comportement payeur.
@@ -113,7 +124,7 @@
 
 ---
 
-### SLIDE 13 : JUSTICE PREDICTOR™ - L'ANALYSE PRÉDICTIVE
+### SLIDE 14 : JUSTICE PREDICTOR™ - L'ANALYSE PRÉDICTIVE
 **Titre** : Prévoir pour mieux Gagner.
 **Points** :
 - Simulation des chances de succès basée sur la jurisprudence.
@@ -122,7 +133,7 @@
 
 ---
 
-### SLIDE 14 : AGENDA & CALCULATEUR DE DÉLAIS
+### SLIDE 15 : AGENDA & CALCULATEUR DE DÉLAIS
 **Titre** : La fin du stress procédural.
 **Points** :
 - Calcul automatique des dates limites (Sénégal & OHADA).
@@ -131,7 +142,7 @@
 
 ---
 
-### SLIDE 15 : LE "WAR ROOM" - PLAIDOIRIE MOBILE
+### SLIDE 16 : LE "WAR ROOM" - PLAIDOIRIE MOBILE
 **Titre** : Le Palais de Justice dans votre poche.
 **Usage** :
 - Accès offline complet aux pièces au tribunal.
@@ -140,7 +151,7 @@
 
 ---
 
-### SLIDE 16 : PORTAIL CLIENT EXTRA-PREMIUM
+### SLIDE 17 : PORTAIL CLIENT EXTRA-PREMIUM
 **Titre** : L'Expérience Client Redéfinie.
 **Focus** :
 - Transparence totale (Suivi "Amazon" des dossiers).
@@ -149,7 +160,7 @@
 
 ---
 
-### SLIDE 17 : SÉCURITÉ DE CLASSE BANCAIRE
+### SLIDE 18 : SÉCURITÉ DE CLASSE BANCAIRE
 **Titre** : Le Secret Professionnel Sanctuarisé.
 **Technique** :
 - Chiffrement AES-256 et authentification multifacteur (MFA).
@@ -158,7 +169,7 @@
 
 ---
 
-### SLIDE 18 : MOBILITÉ TOTALE
+### SLIDE 19 : MOBILITÉ TOTALE
 **Titre** : Travaillez Partout, Sans Limite.
 **Contenu** :
 - Application responsive optimisée pour Smartphones et Tablettes.
@@ -167,7 +178,7 @@
 
 ---
 
-### SLIDE 19 : ANALYSE DES PERFORMANCES (KPI PRO)
+### SLIDE 20 : ANALYSE DES PERFORMANCES (KPI PRO)
 **Titre** : Prenez des décisions basées sur la donnée.
 **Détails** :
 - Rentabilité par dossier, par client et par collaborateur.
@@ -176,7 +187,7 @@
 
 ---
 
-### SLIDE 20 : ACCOMPAGNEMENT & FORMATION MAGISTRALE
+### SLIDE 21 : ACCOMPAGNEMENT & FORMATION MAGISTRALE
 **Titre** : Un partenaire, pas juste un fournisseur.
 **Contenu** :
 - Déploiement éclair en moins de 48h.
@@ -185,7 +196,7 @@
 
 ---
 
-### SLIDE 21 : POURQUOI LEXPREMIUM 2.0 EN 2026 ?
+### SLIDE 22 : POURQUOI LEXPREMIUM 2.0 EN 2026 ?
 **Titre** : L'Avantage Compétitif Décisif.
 **Contenu** :
 - Gain de temps administratif : +15h par avocat/mois.
@@ -194,19 +205,19 @@
 
 ---
 
-### SLIDE 22 : TÉMOIGNAGE & RÉUSSITE
+### SLIDE 23 : TÉMOIGNAGE & RÉUSSITE
 **Titre** : Ils font confiance à l'Excellence.
 **Citation** : "LexPremium 2.0 a donné à mon cabinet une dimension internationale." - Me. Sylla, Associé Gérant.
 
 ---
 
-### SLIDE 23 : DÉMONSTRATION EN DIRECT
+### SLIDE 24 : DÉMONSTRATION EN DIRECT
 **Titre** : Voyez la Puissance en Action.
 **Lien** : https://avocat-tito.vercel.app
 
 ---
 
-### SLIDE 24 : CONTACT & CLÔTURE
+### SLIDE 25 : CONTACT & CLÔTURE
 **Titre** : Entrons dans l'Excellence.
 **Contact** : contact@lexpremium.sn | +221 XX XXX XX XX
 

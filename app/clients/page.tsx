@@ -8,14 +8,20 @@ import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 
 export default async function ClientsPage() {
-    const clients = await prisma.client.findMany({
-        orderBy: { createdAt: 'desc' },
-        include: {
-            _count: {
-                select: { dossiers: true }
+    let clients: any[] = [];
+    try {
+        clients = await prisma.client.findMany({
+            orderBy: { createdAt: 'desc' },
+            include: {
+                _count: {
+                    select: { dossiers: true }
+                }
             }
-        }
-    })
+        });
+    } catch (error) {
+        console.error("Failed to fetch clients:", error);
+        clients = [];
+    }
 
     return (
         <div className="space-y-6">

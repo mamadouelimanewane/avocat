@@ -29,10 +29,15 @@ export default async function RootLayout({
 
     let user = null;
     if (userId) {
-        user = await prisma.user.findUnique({
-            where: { id: userId },
-            include: { userRole: true }
-        });
+        try {
+            user = await prisma.user.findUnique({
+                where: { id: userId },
+                include: { userRole: true }
+            });
+        } catch (error) {
+            console.error("Error fetching user in RootLayout:", error);
+            // Fallback to null user (guest mode) if DB fails
+        }
     }
 
     return (

@@ -1,21 +1,5 @@
 import { PrismaClient } from '@prisma/client'
 import LibraryClient from './LibraryContent'
-import {
-    Cpu,
-    Film,
-    Newspaper,
-    Trophy,
-    HeartPulse,
-    Wheat,
-    Plane,
-    Hotel,
-    Scale,
-    Users,
-    Home,
-    Landmark,
-    Building2,
-    Leaf
-} from "lucide-react"
 
 export const dynamic = 'force-dynamic'
 
@@ -24,7 +8,7 @@ const prisma = new PrismaClient()
 const libraryData = [
     {
         category: "Foncier & Immobilier",
-        icon: Home,
+        icon: "Home",
         color: "text-emerald-500",
         bg: "bg-emerald-500/10",
         documents: [
@@ -38,7 +22,7 @@ const libraryData = [
     },
     {
         category: "Banque & Finance",
-        icon: Landmark,
+        icon: "Landmark",
         color: "text-blue-500",
         bg: "bg-blue-500/10",
         documents: [
@@ -51,7 +35,7 @@ const libraryData = [
     },
     {
         category: "Tech & Digital",
-        icon: Cpu,
+        icon: "Cpu",
         color: "text-indigo-500",
         bg: "bg-indigo-500/10",
         documents: [
@@ -64,7 +48,7 @@ const libraryData = [
     },
     {
         category: "Société & Gouvernance",
-        icon: Building2,
+        icon: "Building2",
         color: "text-slate-600",
         bg: "bg-slate-600/10",
         documents: [
@@ -76,7 +60,7 @@ const libraryData = [
     },
     {
         category: "RH & Travail",
-        icon: Users,
+        icon: "Users",
         color: "text-violet-500",
         bg: "bg-violet-500/10",
         documents: [
@@ -88,7 +72,7 @@ const libraryData = [
     },
     {
         category: "Transport & Logistique",
-        icon: Plane,
+        icon: "Plane",
         color: "text-sky-500",
         bg: "bg-sky-500/10",
         documents: [
@@ -100,7 +84,7 @@ const libraryData = [
     },
     {
         category: "Énergie & Environnement",
-        icon: Leaf,
+        icon: "Leaf",
         color: "text-green-500",
         bg: "bg-green-500/10",
         documents: [

@@ -66,10 +66,22 @@ interface Document {
 
 interface Section {
     category: string;
-    icon: any;
+    icon: string | any;
     color: string;
     bg: string;
     documents: Document[];
+}
+
+const IconMap: Record<string, any> = {
+    Home,
+    Landmark,
+    Cpu,
+    Building2,
+    Users,
+    Plane,
+    Leaf,
+    Star,
+    Scaling: Zap // or whatever appropriate
 }
 
 export default function LibraryClient({
@@ -226,7 +238,14 @@ export default function LibraryClient({
                         <div key={section.category} className="break-inside-avoid flex flex-col">
                             <div className="flex items-center gap-x-4 mb-8 pl-6">
                                 <div className={`p-5 rounded-[2rem] ${section.bg} shadow-lg shadow-black/5`}>
-                                    <section.icon className={`h-10 w-10 ${section.color}`} />
+                                    {typeof section.icon === 'string' ? (
+                                        (() => {
+                                            const Icon = IconMap[section.icon] || FileStack
+                                            return <Icon className={`h-10 w-10 ${section.color}`} />
+                                        })()
+                                    ) : (
+                                        <section.icon className={`h-10 w-10 ${section.color}`} />
+                                    )}
                                 </div>
                                 <div className="flex flex-col">
                                     <h3 className="text-2xl font-black uppercase tracking-tighter text-foreground leading-none">{section.category}</h3>

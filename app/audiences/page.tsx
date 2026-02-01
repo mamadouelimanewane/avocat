@@ -14,17 +14,30 @@ const prisma = new PrismaClient()
 
 export default async function AudiencesPage() {
     // Fetch upcoming audiences
-    const audiences = await prisma.event.findMany({
-        where: { type: 'AUDIENCE' },
-        include: { dossier: { include: { client: true } } },
-        orderBy: { startDate: 'asc' }
-    })
+    let audiences: any[] = [];
+    let dossiersList: any[] = [];
 
-    // Fetch Dossiers for the Dialog
-    const dossiersList = await prisma.dossier.findMany({
-        select: { id: true, title: true, reference: true },
-        orderBy: { updatedAt: 'desc' }
-    })
+    try {
+        audiences = await prisma.event.findMany({
+            where: { type: 'AUDIENCE' },
+            include: { dossier: { include: { client: true } } },
+            orderBy: { startDate: 'asc' }
+        });
+    } catch (error) {
+        console.error("Failed to fetch audiences:", error);
+        audiences = [];
+    }
+
+    try {
+        dossiersList = await prisma.dossier.findMany({
+            select: { id: true, title: true, reference: true },
+            orderBy: { updatedAt: 'desc' }
+        });
+    } catch (error) {
+        console.error("Failed to fetch dossiers for audiences:", error);
+        dossiersList = [];
+    }
+
 
     // Group by Date
     const today = new Date()

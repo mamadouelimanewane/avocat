@@ -9,12 +9,25 @@ import Link from "next/link"
 import { Wand2 } from "lucide-react"
 
 export default async function FacturesPage() {
-    const factures = await prisma.facture.findMany({
-        orderBy: { issueDate: 'desc' },
-        include: { client: true }
-    })
+    let factures: any[] = [];
+    let clients: any[] = [];
 
-    const clients = await prisma.client.findMany({ orderBy: { name: 'asc' } })
+    try {
+        factures = await prisma.facture.findMany({
+            orderBy: { issueDate: 'desc' },
+            include: { client: true }
+        });
+    } catch (error) {
+        console.error("Failed to fetch invoices:", error);
+        factures = [];
+    }
+
+    try {
+        clients = await prisma.client.findMany({ orderBy: { name: 'asc' } });
+    } catch (error) {
+        console.error("Failed to fetch clients for invoices:", error);
+        clients = [];
+    }
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">

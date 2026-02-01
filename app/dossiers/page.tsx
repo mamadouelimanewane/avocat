@@ -8,20 +8,33 @@ import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 
 export default async function DossiersPage() {
-    const dossiers = await prisma.dossier.findMany({
-        orderBy: { updatedAt: 'desc' },
-        include: {
-            client: true,
-            _count: {
-                select: { documents: true, events: true, timeEntries: true }
-            }
-        }
-    })
+    let dossiers: any[] = [];
+    let clientsList: any[] = [];
 
-    const clientsList = await prisma.client.findMany({
-        select: { id: true, name: true },
-        orderBy: { name: 'asc' }
-    })
+    try {
+        dossiers = await prisma.dossier.findMany({
+            orderBy: { updatedAt: 'desc' },
+            include: {
+                client: true,
+                _count: {
+                    select: { documents: true, events: true, timeEntries: true }
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Failed to fetch dossiers:", error);
+        dossiers = [];
+    }
+
+    try {
+        clientsList = await prisma.client.findMany({
+            select: { id: true, name: true },
+            orderBy: { name: 'asc' }
+        });
+    } catch (error) {
+        console.error("Failed to fetch client list for dossiers:", error);
+        clientsList = [];
+    }
 
     return (
         <div className="space-y-6">

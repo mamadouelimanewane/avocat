@@ -13,11 +13,21 @@ import { toast } from '@/components/ui/use-toast'
 
 export default function ClientLoginPage() {
     const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState('')
+    const [code, setCode] = useState('')
     const router = useRouter()
 
-    async function handleSubmit(formData: FormData) {
-        const email = formData.get('email') as string
-        const code = formData.get('code') as string
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault()
+
+        if (!email || !code) {
+            toast({
+                title: "Champs manquants",
+                description: "Veuillez remplir tous les champs.",
+                variant: "destructive"
+            })
+            return
+        }
 
         setLoading(true)
         const res = await loginClientPortal(email, code)
@@ -30,7 +40,11 @@ export default function ClientLoginPage() {
                 name: res.name
             }))
             toast({ title: "Connexion réussie", description: `Bienvenue, ${res.name}` })
-            router.push('/portal')
+
+            // Use window.location for more reliable redirect
+            setTimeout(() => {
+                window.location.href = '/portal'
+            }, 500)
         } else {
             toast({
                 title: "Échec de connexion",
@@ -60,19 +74,37 @@ export default function ClientLoginPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form action={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="email" className="text-slate-700">Votre Email</Label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                                    <Input id="email" name="email" type="email" placeholder="client@exemple.sn" className="pl-10" required />
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="client@exemple.sn"
+                                        className="pl-10"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="code" className="text-slate-700">Code d'accès (PIN)</Label>
                                 <div className="relative">
                                     <Key className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                                    <Input id="code" name="code" type="password" placeholder="••••••" className="pl-10 tracking-widest" required />
+                                    <Input
+                                        id="code"
+                                        name="code"
+                                        type="password"
+                                        placeholder="••••••"
+                                        className="pl-10 tracking-widest"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                        required
+                                    />
                                 </div>
                             </div>
                             <Button type="submit" disabled={loading} className="w-full bg-slate-900 hover:bg-slate-800 h-11 text-white shadow-lg">

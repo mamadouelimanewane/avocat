@@ -25,3 +25,15 @@ next-env.d.ts
 .DS_Store
 .vercel
 .env*.local
+*.bmp
+~$*
+*.tmp
+.next/
+node_modules/
+.env.local
+*.log
+release*.docx
+release*.pptx
+release*.pdf
+manuel1pdf
+*_temp
