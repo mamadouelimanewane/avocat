@@ -4728,6 +4728,14 @@ export async function loginClientPortal(email: string, accessCode: string) {
 
         if (!client) return { success: false, message: "Email ou code d'accès invalide." }
 
+        // Set cookie for server-side layout access
+        cookies().set('portal_token', client.id, {
+            httpOnly: false, // Allow client-side access for consistency
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 7 // 7 days
+        })
+
         return { success: true, clientId: client.id, name: client.name }
     } catch (e) {
         console.error("Login Portal Error:", e)
