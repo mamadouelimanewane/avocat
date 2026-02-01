@@ -1,14 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Conditional import to avoid build errors when package is optional
+let Resend: any = null
+let resend: any = null
+
+try {
+    const resendModule = require('resend')
+    Resend = resendModule.Resend
+    if (process.env.RESEND_API_KEY) {
+        resend = new Resend(process.env.RESEND_API_KEY)
+    }
+} catch (e) {
+    // Resend package not installed - fallback mode will be used
+}
 
 export async function POST(req: NextRequest) {
     try {
         const { to, subject, html } = await req.json()
 
-        if (!process.env.RESEND_API_KEY) {
-            // Fallback: Return mailto link if no API key configured
+        if (!resend || !process.env.RESEND_API_KEY) {
+            // Fallback: Return mailto link if no API key configured or package not installed
             return NextResponse.json({
                 success: false,
                 fallback: true,
