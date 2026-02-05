@@ -2,7 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Clock, Gavel } from 'lucide-react'
+import {
+    ArrowLeft,
+    Clock,
+    Gavel,
+    Sparkles,
+    Brain
+} from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -15,7 +21,6 @@ import { JusticePredictor } from '@/components/ai/JusticePredictor'
 import { LexAIPanel } from '@/components/dossier/LexAIPanel'
 import { WarRoomMode } from '@/components/dossier/WarRoomMode'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
 
 interface DossierDetailClientProps {
     dossier: any
@@ -59,6 +64,14 @@ export default function DossierDetailClient({ dossier, templates, expenses }: Do
                     </div>
 
                     <div className="flex gap-2">
+                        <Link href={`/dossiers/${dossier.id}/war-room`}>
+                            <Button
+                                size="sm"
+                                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-black gap-2 shadow-[0_0_15px_rgba(79,70,229,0.4)] border-none"
+                            >
+                                <Brain className="h-4 w-4" /> LEXVISION WAR ROOM
+                            </Button>
+                        </Link>
                         <Button
                             variant="outline"
                             size="sm"
@@ -70,12 +83,12 @@ export default function DossierDetailClient({ dossier, templates, expenses }: Do
                         <Button
                             variant="outline"
                             size="sm"
-                            className="bg-amber-500 hover:bg-amber-600 text-black border-amber-500 font-bold gap-2"
+                            className="bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-200 font-bold gap-2"
                             onClick={() => setIsWarRoomOpen(true)}
                         >
                             <Gavel className="h-4 w-4" /> Mode Audience
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="hidden lg:flex">
                             <Clock className="mr-2 h-4 w-4" /> Saisir Temps
                         </Button>
                         <Button size="sm" className="bg-slate-900 text-white">Facturer</Button>
