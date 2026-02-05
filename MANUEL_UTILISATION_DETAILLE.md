@@ -1,420 +1,226 @@
-# MANUEL D'UTILISATION DÉTAILLÉ - LEXPREMIUM ERP
+# MANUEL D'UTILISATION DÉTAILLÉ - LEXPREMIUM ELITE (v2026)
 
-Ce document recense l'intégralité des fonctionnalités de votre espace de travail, module par module, accessible depuis la barre latérale de gauche. Chaque section détaille précisément les informations que vous visualisez à l'écran pour une maîtrise totale de l'outil.
-
----
-
-## 1. TABLEAU DE BORD
-Le centre de pilotage de votre cabinet. Il offre une vision synthétique et immédiate de l'activité, des urgences et de la performance globale.
-
-### 1.1 Informations Affichées
-
-• **Cartes de Synthèse (KPI)** :
-  - **Chiffre d'Affaires** : Affiche le montant total hors taxes qui a été facturé par le cabinet sur la période sélectionnée.
-  - **Dossiers Actifs** : Indique le nombre exact d'affaires juridiques actuellement en cours de traitement au sein du cabinet.
-  - **Prochains Rendez-vous** : Rappelle le nombre d'événements (audiences ou réunions) inscrits à l'agenda pour la journée en cours.
-  - **Taux de Recouvrement** : Exprime en pourcentage le succès de vos encaissements par rapport au total des factures émises.
-
-• **Graphiques Visuels** :
-  - **Évolution du CA** : Présente une courbe temporelle permettant de comparer vos revenus d'un mois à l'autre.
-  - **Répartition par Activité** : Un diagramme circulaire qui segmente votre activité par domaine du droit (Pénal, Civil, Social, etc.).
-
-• **Fil d'Actualité** : Liste chronologique affichant les dernières interventions sur la plateforme (ajout de documents, création de dossiers ou validation de factures).
+Ce document est le guide de référence complet pour **LexPremium Elite**, l'ERP juridique de nouvelle génération utilisé par le Cabinet. Il suit la structure de navigation de l'application pour une prise en main intuitive.
 
 ---
 
-## 2. DOSSIERS
-Le cœur de votre production juridique. Ce module centralise toutes les affaires, leurs pièces, leurs événements et leur facturation.
+## 1. 🧭 PILOTAGE
+*Le cockpit de direction pour une vision stratégique et opérationnelle immédiate.*
 
-### 2.1 Informations Affichées
+### 1.1 Tableau de Bord (Général)
+Le centre de contrôle principal.
+*   **KPIs Financiers** : Chiffre d'Affaires temps réel (facturé vs encaissé), Taux de recouvrement global.
+*   **Activités Clés** : Nombre de dossiers actifs, Audiences du jour, RDV imminents.
+*   **Flux d'Actualité** : "Live Feed" des dernières actions du cabinet (documents ajoutés, dossiers créés).
 
-• **Liste Interactive des Dossiers** : Tableau structuré présentant les colonnes suivantes :
-  - **Référence** : Identifiant unique de l'affaire permettant un archivage et une recherche rapide (ex: DOS-2026-001).
-  - **Client** : Nom de la personne physique ou entité morale associée au dossier.
-  - **Nature/Domaine** : Précise la spécialité juridique concernée par l'affaire.
-  - **Statut** : Indicateur visuel du cycle de vie du dossier (En cours, En attente, Plaidé, Clôturé).
-  - **Dernière Mise à Jour** : Horodatage exact de la dernière action effectuée par un membre du cabinet sur ce dossier.
+### 1.2 Legal Ops (Pilotage Opérationnel)
+Pour les responsables de la production juridique.
+*   **KPIs de Production** : Vélocité de traitement des dossiers, temps moyen par phase procédurale.
+*   **Gestion de la Charge** : Vue de la répartition des dossiers par collaborateur pour éviter les goulots d'étranglement.
+*   **Processus** : Suivi des workflows standardisés et de la conformité aux procédures internes.
 
-• **Espace d'Actions** : Comprend le bouton de création d'un nouveau dossier et la barre de recherche multicritères.
+### 1.3 Sentinelle (Live News)
+Votre veille juridique automatisée et personnalisée.
+*   **Flux Juridique** : Dernières jurisprudences OHADA, Sénégal et International pertinentes pour vos domaines.
+*   **Alertes Secteurs** : Actualités économiques ou législatives impactant vos clients majeurs.
 
----
-
-## 3. CLIENTS
-Votre base de données CRM. Gérez vos contacts, personnes physiques ou morales, avec un historique complet de la relation.
-
-### 3.1 Informations Affichées
-
-• **Répertoire des Clients** :
-  - **Identité** : Nom complet du client ou dénomination sociale pour les entreprises.
-  - **Coordonnées Directes** : Affichage de l'adresse e-mail et du numéro de téléphone principal pour un contact rapide.
-  - **Volume d'Affaires** : Nombre de dossiers juridiques ouverts pour ce client spécifique.
-  - **Solde Débiteur** : Montant des factures restant à payer par le client, permettant de surveiller le risque créance.
-
-• **Consul de Fiche** : Permet d'accéder aux documents d'identification (KYC) et à la timeline complète de la relation client.
+### 1.4 Statistiques Associés
+Pour l'analyse de la performance individuelle.
+*   **Performance Financière** : CA généré par avocat (Apporteur vs Traitant).
+*   **Productivité** : Heures facturables vs heures non-facturables.
+*   **Taux de Succès** : Analyse des issues de dossiers par avocat.
 
 ---
 
-## 4. AGENDA
-Votre gestionnaire de temps synchronisé. Il gère vos rendez-vous, audiences et délais de procédure strictement.
+## 2. ⚖️ EXPERTISE AVOCAT
+*Le cœur du métier : production juridique et judiciaire.*
 
-### 4.1 Informations Affichées
+### 2.1 Dossiers
+La fiche centrale de chaque affaire.
+*   **Résumé & Parties** : Clients, adversaires, juridictions, références.
+*   **Timeline** : Historique chronologique complet (procédure, actes, événements).
+*   **Documents (GED)** : Tous les fichiers liés, classés et indexés.
+*   **Financier** : conventions d'honoraires et état de la facturation du dossier.
 
-• **Grille Calendaire Évolutive** : Vue personnalisable (Jour, Semaine, Mois) affichant tous les créneaux occupés.
-• **Catégories d'Événements** :
-  - **Audiences (Code Rouge)** : Marque les passages obligatoires au tribunal avec les informations de juridiction.
-  - **Rendez-vous (Code Bleu)** : Liste les entretiens clients, réunions d'associés et appels téléphoniques.
-  - **Délais de Procédure (Code Orange)** : Rappelle les dates butoirs pour le dépôt de conclusions ou les voies de recours.
+### 2.2 Agenda & Audiences
+Votre maître du temps.
+*   **Calendrier Unifié** : Audiences, RDV, Délais de procédure (calculs automatiques).
+*   **Synchronisation** : Lié aux agendas personnels (Outlook/Google).
+*   **Rappels Automatiques** : Notifications J-7/J-1 pour les échéances critiques.
 
-• **Agenda du Jour** : Panneau récapitulatif listant heure par heure les engagements de la journée actuelle.
+### 2.3 Palais (Live)
+Connexion directe avec la vie judiciaire.
+*   **Rôles d'Audience** : Suivi des enrôlements et des renvois en temps réel.
+*   **Tournées** : Organisation optimisée des déplacements au tribunal.
+*   **Notes d'Audience** : Saisie rapide des résultats d'audience sur mobile/tablette.
 
----
+### 2.4 Bibliothèque Suprême
+Votre base de connaissances juridique.
+*   **Codes & Lois** : Accès intégral aux textes (OHADA, Code Famille, Pénal, etc.).
+*   **Modèles (Templates)** : Actes types, conclusions, courriers pré-rédigés.
+*   **Doctrine Cabinet** : Mémos et notes internes capitalisant le savoir-faire du cabinet.
 
-## 5. PALAIS & AUDIENCES
-Le suivi spécifique des procédures judiciaires. Connecté à la vie des juridictions.
-
-### 5.1 Informations Affichées
-
-• **Planning des Audiences** : Liste filtrable par tribunal ou cour permettant de grouper vos déplacements.
-• **Détails Procéduraux** :
-  - **Affaire** : Rappel du titre du dossier et des parties en présence.
-  - **Juridiction & Chambre** : Indique précisément où se déroule l'audience (ex: Tribunal de Commerce, Chambre 2).
-  - **Rôle de l'Audience** : Précise s'il s'agit d'une mise en état, d'une plaidoirie ou d'un délibéré.
-  - **Compte-rendu de Renvoi** : Zone de saisie pour noter immédiatement la nouvelle date si l'affaire est renvoyée.
-
----
-
-## 6. FACTURATION
-La gestion commerciale du cabinet. Émettez devis, conventions et factures conformes.
-
-### 6.1 Informations Affichées
-
-• **Suivi des Pièces Comptables** :
-  - **Numérotation Chronologique** : Liste des factures avec leur identifiant officiel conforme à la fiscalité.
-  - **Date d'Échéance** : Indique la date limite de règlement pour chaque facture émise.
-  - **Montants (Net et TTC)** : Détail des honoraires et de la TVA appliquée.
-  - **État du Paiement** : pastille colorée indiquant si la facture est "Payée", "Brouillon" ou "En souffrance".
-
-• **Barre d'Outils Financière** : Accès rapide à la création de conventions d'honoraires et de factures pro-forma.
+### 2.5 Recherche OHADA
+Moteur de recherche spécialisé.
+*   **Jurisprudence CCJA et Nationales** : Recherche par mots-clés, articles ou dates.
+*   **Interprétation IA** : Résumés automatiques des arrêts pertinents.
 
 ---
 
-## 7. RECOUVREMENT MASSIF
-Module dédié à la transformation de vos créances en liquidités. Automatisation des relances.
+## 3. 🏢 GESTION CABINET
+*L'administration et la finance du cabinet.*
 
-### 7.1 Informations Affichées
+### 3.1 Clients (CRM 360°)
+Gestion de la relation client.
+*   **Fiches Clients** : Coordonnées, secteur, contacts clés.
+*   **Historique** : Tous les dossiers, factures et échanges avec ce client.
+*   **KYC** : Documents d'identification et scoring conformité.
 
-• **Analyse des Impayés** :
-  - **Encours Total** : Valeur cumulée de toutes les factures non réglées par vos clients.
-  - **Poids des Créances** : Graphique montrant la répartition des impayés par ancienneté (30j, 60j, 90j+).
+### 3.2 Facturation & Honoraires
+Le cycle financier.
+*   **Émission** : Devis, Conventions, Factures (Proforma/Définitives).
+*   **Suivi** : État des paiements, échéanciers.
+*   **Taxes** : Gestion automatique TVA, VRS.
 
-• **Actions de Relance** :
-  - **Statut de Relance** : Indique si un client a déjà reçu un premier avertissement ou une mise en demeure.
-  - **Canaux de Contact** : Raccourcis pour déclencher une relance immédiate par SMS, Email ou WhatsApp.
+### 3.3 Diligences (Temps)
+Le Timesheet intelligent.
+*   **Saisie des Temps** : Chronomètre ou saisie manuelle par dossier.
+*   **Valorisation** : Conversion automatique en honoraires selon le taux horaire.
+*   **Rapports** : Analyse du temps passé par client/dossier pour la rentabilité.
 
----
+### 3.4 Asset Hunter (OSINT)
+Investigation patrimoniale.
+*   **Recherche d'Actifs** : Identification de biens immobiliers, participations, véhicules.
+*   **Solvabilité** : Évaluation de la capacité financière d'un débiteur ou adversaire.
 
-## 8. CARPA (FONDS TIERS)
-Gestion rigoureuse des fonds détenus pour le compte de clients, séparée de la trésorerie du cabinet.
-
-### 8.1 Informations Affichées
-
-• **Sous-Comptes Affaires** : Tableau listant les fonds disponibles pour chaque dossier spécifique géré par le cabinet.
-• **Historique des Opérations** :
-  - **Flux Entrants** : Détail des dommages-intérêts ou consignations encaissés pour le client.
-  - **Frais d'Émission** : Enregistrement des virements effectués vers les bénéficiaires ou le bâtonnat.
-• **Reporting de Solde** : Montre le total des fonds tiers actuellement sous votre responsabilité.
-
----
-
-## 9. GED / DOCUMENTS
-La Gestion Électronique de Documents. Votre armoire numérique sécurisée et indexée.
-
-### 9.1 Informations Affichées
-
-• **Architecture des Dossiers** : Arborescence visuelle classant les documents par affaire, type de pièce ou année.
-• **Tableau des Fichiers** :
-  - **Aperçu Numérique** : Miniature ou icône du type de fichier (PDF, Word, Image).
-  - **Métadonnées** : Poids du fichier, auteur de l'upload et date de dernière lecture.
-• **Zone de Téléchargement** : Espace interactif permettant d'ajouter des documents par simple glisser-déposer.
+### 3.5 Recouvrement Massif
+Pour transformer vos créances en trésorerie.
+*   **Scénarios de Relance** : Séquences automatiques (SMS, Email, WhatsApp) personnalisées.
+*   **Suivi des Impayés** : Tableau de bord des créances âgées, balance âgée.
+*   **Mises en Demeure** : Génération et envoi en un clic.
 
 ---
 
-## 10. RECHERCHE JURIDIQUE
-Moteur de recherche documentaire interne et externe (Codes, Jurisprudence).
+## 4. 🛡️ AUDIT & CONFORMITÉ
+*La sécurité juridique et déontologique.*
 
-### 10.1 Informations Affichées
+### 4.1 SafeNexus (KYC/CARPA)
+Conformité anti-blanchiment et fonds tiers.
+*   **Vérification KYC** : Contrôle automatique des listes de sanctions.
+*   **Gestion CARPA** : Suivi rigoureux des sous-comptes fonds tiers par affaire.
 
-• **Champ de Saisie "LexSearch"** : Barre de recherche centrale pour interroger les bases légales.
-• **Panneau de Sources** : Liste des codes et textes disponibles (Codes OHADA, Code de la Famille, Jurisprudence CCJA).
-• **Résultats de Recherche** : Liste des textes de loi ou arrêts trouvés, avec mise en avant des passages pertinents.
+### 4.2 LexRedTeam (Attaque IA)
+Simulation de risques.
+*   **Crash Test Juridique** : L'IA tente de "casser" vos contrats ou arguments pour identifier les failles.
+*   **Audit de Vulnérabilité** : Analyse des risques procéduraux.
 
----
+### 4.3 LexCheck (Rédaction)
+Relecture automatique.
+*   **Coquilles & Style** : Correction orthographique et syntaxique avancée.
+*   **Cohérence** : Vérification des références juridiques et de la numérotation.
 
-## 11. ASSISTANT IA (LEXAI)
-Votre copilote intelligent pour l'analyse et la rédaction.
+### 4.4 Conflits d'Intérêts
+Déontologie automatisée.
+*   **Scan Base de Données** : Vérification instantanée des noms (parties, adversaires) dans tout l'historique du cabinet.
+*   **Arbre des Relations** : Visualisation des liens pour détecter les conflits indirects.
 
-### 11.1 Informations Affichées
-
-• **Console Conversationnelle** : Interface interactive où vous pouvez poser vos questions juridiques complexes.
-• **Bibliothèque de Scénarios** : Propose des commandes pré-enregistrées pour générer des actes ou résumer des dossiers.
-• **Historique des Échanges** : Permet de retrouver les conseils ou rédactions précédemment fournis par l'IA.
-
----
-
-## 12. SCANNER ADVERSE
-Outil d'analyse stratégique des écritures de la partie adverse.
-
-### 12.1 Informations Affichées
-
-• **Guichet de Dépôt (OCR)** : Zone pour importer les scans des conclusions de la partie adverse.
-• **Diagnostic Stratégique** :
-  - **Synthèse des Arguments** : Un résumé structuré des prétentions de votre adversaire.
-  - **Détection de Failles** : Identification par l'IA des contradictions ou manques de base légale dans les documents scannés.
-  - **Propositions de Réplique** : Liste de contre-arguments et jurisprudences denses pour votre réponse.
+### 4.5 Parapheur Numérique
+Validation interne.
+*   **Flux de Signature** : Circuit d'approbation des documents avant envoi (Collaborateur -> Associé).
+*   **Signature Électronique** : Intégrée pour les documents internes et externes.
 
 ---
 
-## 13. GÉNÉRATEUR DE CONTRATS
-Outil d'automatisation rédactionnelle (Legal Design).
+## 5. 🧠 CONSEIL & STRATÉGIE
+*Outils d'aide à la décision haut de gamme.*
 
-### 13.1 Informations Affichées
+### 5.1 LexPredict (Succès IA)
+Justice prédictive.
+*   **Analyse de Chances** : Estimation probabiliste de l'issue d'un litige basée sur la jurisprudence similaire.
+*   **Facteurs Clés** : Identification des arguments qui influencent le plus la décision des juges.
 
-• **Catalogue de Modèles Maîtres** : Liste des types d'actes automatisés (Bail commercial, Contrat de travail, Statuts SARL).
-• **Questionnaire Intelligent** : Champs dynamiques à remplir qui adaptent automatiquement les clauses du contrat.
-• **Visualisation du Document** : Fenêtre d'aperçu affichant le texte final du contrat prêt à l'impression ou à la signature.
+### 5.2 LexPersona (Psychologie)
+Profilage judiciaire.
+*   **Profils Magistrats** : Analyse des tendances décisionnelles des juges (sévérité, appétence pour certains arguments).
+*   **Profils Adversaires** : Analyse du style procédural des confrères adverses.
 
----
+### 5.3 Cartographie LexGraph
+Visualisation de données complexes.
+*   **Réseaux d'Affaires** : Visualisation des liens entre sociétés, dirigeants et actifs.
+*   **Chronologies Complexes** : Génération automatique de frises chronologiques pour les dossiers denses.
 
-## 14. RECHERCHE IA GLOBAL
-Moteur de recherche transversal sur TOUTES les données du cabinet (Dossiers, Emails, Docs).
+### 5.4 Smart Escrow (Block)
+Séquestre numérique (si activé).
+*   **Contrats Intelligents** : Gestion automatisée des conditions de libération de fonds via Blockchain (optionnel).
 
-### 14.1 Informations Affichées
-
-• **Console de Recherche Universelle** : Un outil capable de fouiller simultanément dans la base documentaire, les e-mails et la facturation.
-• **Résultats Triés par Catégorie** : Affiche les occurrences trouvées regroupées par leur nature (Pièces, Messages, Calculs financiers).
-
----
-
-## 15. TEMPLATES EMAIL
-Gestion des modèles de courriels récurrents pour uniformiser la communication.
-
-### 15.1 Informations Affichées
-
-• **Liste des Modèles Métiers** : Répertoire des e-mails types (Confirmations de RDV, Envoi de factures, Relances).
-• **Studio de Rédaction** : Éditeur de texte permettant de personnaliser les messages avec des variables automatiques.
+### 5.5 Finance Stratégique
+Analyse financière pour fusions-acquisitions ou contentieux d'affaires.
+*   **Analyse Bilancielle** : Lecture automatique et ratios financiers des états financiers adverses ou clients.
+*   **Évaluation de Préjudice** : Calculs complexes de pertes d'exploitation ou préjudices économiques.
 
 ---
 
-## 16. PARAPHEUR NUMÉRIQUE
-Gestion des workflows de validation et signatures internes.
+## 6. 🤖 NEXUS INTELLIGENCE
+*L'IA générative au service du droit.*
 
-### 16.1 Informations Affichées
+### 6.1 LexAI Co-Counsel
+Votre assistant virtuel personnel.
+*   **Chat Juridique** : Posez des questions en langage naturel sur vos dossiers ou le droit.
+*   **Synthèse** : Résumé automatique de conclusions adverses ou de pièces volumineuses.
 
-• **Flux de Signature** : Liste des documents en attente d'approbation ou de griffe électronique des associés.
-• **Traçabilité des Validations** : Affiche qui a lu, annoté ou signé le document au sein de la hiérarchie du cabinet.
+### 6.2 LexAudio Drafter
+Dictée vocale nouvelle génération.
+*   **Speech-to-Text Juridique** : Transcription précise incluant le vocabulaire juridique spécifique.
+*   **Commande Vocale** : "Crée un dossier pour Client X" ou "Ajoute un RDV demain".
 
----
+### 6.3 Legal Bridge (Traduction)
+Traduction juridique neuronale.
+*   **Multi-langues** : Traduction instantanée de contrats ou actes (Français <-> Anglais/Arabe/Wolof/etc.) en gardant le formatage.
 
-## 17. MONITORING IA
-Tableau de bord technique de l'utilisation de l'Intelligence Artificielle.
+### 6.4 Scanner Adverse IA
+Analyse de la partie adverse.
+*   **OCR Intelligent** : Conversion des scans (PDF/Images) de la partie adverse en texte exploitable.
+*   **Analyse d'Arguments** : Extraction automatique des moyens soulevés par l'adversaire.
 
-### 17.1 Informations Affichées
+### 6.5 LexDMS (Versioning)
+Gestion documentaire avancée.
+*   **Comparaison de Versions** : Redline automatique entre deux versions d'un contrat.
+*   **Historique** : Traçabilité complète des modifications.
 
-• **Tableau de Consommation** : Indique le volume de données traitées et le nombre de jetons (tokens) IA utilisés dans le mois.
-• **Journal de Performance** : Rapports sur la vitesse de traitement et la pertinence des réponses générées par le système.
-
----
-
-## 18. FINANCE STRATÉGIQUE
-Analyse financière avancée pour les associés.
-
-### 18.1 Informations Affichées
-
-• **Analyse de Rentabilité** : Détail précis de la marge générée pour chaque affaire juridique ouverte.
-• **Projecteur de Flux** : Graphe prédictif de votre trésorerie à 30, 60 et 90 jours basé sur vos habitudes d'encaissement.
-
----
-
-## 19. STATISTIQUES ASSOCIÉS
-Performance individuelle des avocats du cabinet.
-
-### 19.1 Informations Affichées
-
-• **Grille de Productivité** :
-  - **Chiffre d'Affaires Individuel** : Revenus générés directement par chaque avocat associé ou collaborateur.
-  - **Volume de Dossiers** : Nombre d'affaires gérées en autonomie ou en supervision par personne.
-  - **Taux de Succès** : Ratio résultats positifs obtenus lors des plaidoiries ou négociations.
+### 6.6 Générateur d'Actes
+Automatisation rédactionnelle.
+*   **Formulaires Intelligents** : Création d'actes complexes en répondant à un questionnaire simple.
+*   **Bibliothèque Dynamique** : Baux, Contrats de travail, Assignations, Statuts, etc.
 
 ---
 
-## 20. ANNUAIRE PRO
-Répertoire qualifié des confrères, juridictions, huissiers et notaires.
+## 7. 🖇️ RESSOURCES
+*Outils de support et communication.*
 
-### 20.1 Informations Affichées
+### 7.1 Wiki & Doctrine
+Base de savoir collaborative.
+*   **Procédures Internes** : Guides du cabinet pour les collaborateurs.
+*   **Fiches Pratiques** : Mémos juridiques à jour.
 
-• **Base de Données des Partenaires** : Cartes de contact avec adresses, téléphones et spécialisations des professionnels externes.
-• **Moteur de Recherche Géographique** : Permet de trouver un huissier ou un confrère correspondant par zone de juridiction.
+### 7.2 Portail Client 3.0
+L'interface vue par vos clients.
+*   **Extranet Sécurisé** : Accès 24/7 pour les clients à leurs dossiers (documents, état d'avancement, factures).
+*   **Messagerie** : Canal de communication direct et sécurisé.
 
----
+### 7.3 Annuaire Pro
+Carnet d'adresses professionnel.
+*   **Intervenants** : Huissiers, Notaires, Experts, Juridictions.
+*   **Confrères** : Liste des avocats (au barreau et correspondants).
 
-## 21. INTERNATIONAL
-Gestion des dossiers transfrontaliers et correspondants étrangers.
+### 7.4 RH & Talents
+Gestion de l'équipe.
+*   **Congés & Absences** : Planning de l'équipe.
+*   **Fiches Collaborateurs** : Compétences, spécialités, évaluations.
 
-### 21.1 Informations Affichées
-
-• **Cartographie Mondiale des Dossiers** : Vue globale situant géographiquement vos intérêts et dossiers à l'international.
-• **Annuaire des Correspondants** : Coordonnées des cabinets partenaires à l'étranger pour la postulation.
-
----
-
-## 22. COMPTABILITÉ GÉNÉRALE (SYSCOHADA)
-Ce module assure la rigueur financière nécessaire à la pérennité de votre cabinet, en stricte conformité avec les normes OHADA.
-
-### 22.1 Informations Affichées
-
-• **Cartes de Pilotage (KPI)** :
-  - **Trésorerie (Actif)** : Indique le montant total des liquidités disponibles dans vos différents comptes bancaires et en caisse.
-  - **Charges (6xxx)** : Somme de toutes les dépenses engagées pour le fonctionnement du cabinet (loyers, fournitures, salaires).
-  - **Produits (7xxx)** : Représente le chiffre d'affaires total généré par vos prestations juridiques.
-  - **Résultat Net** : Affiche la rentabilité réelle de votre activité (Bénéfice en vert ou Perte en rouge).
-
-• **Plan de Comptes (Balance)** : Tableau structuré listant chaque compte comptable (ex: 5121 - Banque SGBS) avec son solde actuel débiteur ou créditeur.
-
-• **Actions du Comptable** : Boutique de boutons pour lancer la saisie d'écritures, l'édition du Grand Livre ou du Bilan Bétail.
+### 7.5 Cabinet Academy
+Formation continue.
+*   **E-Learning** : Modules de formation pour les nouveaux arrivants ou sur les nouvelles lois.
+*   **Webinaires** : Replays des sessions de formation internes.
 
 ---
-
-## 23. PILOTAGE
-Tableau de bord décisionnel synthétique pour la Gérance.
-
-### 23.1 Informations Affichées
-
-• **Tableau des Signaux Faibles** : Synthèse consolidant les risques identifiés dans les autres modules (retards, dépassements budgétaires).
-• **Gouvernance et Objectifs** : Affiche les objectifs annuels fixés et le niveau d'atteinte actuel pour le cabinet.
-
----
-
-## 24. IA PRÉDICTIVE
-Outil d'anticipation des décisions de justice.
-
-### 24.1 Informations Affichées
-
-• **Radar de Succès** :
-  - **Jauge de Probabilité** : Un score en pourcentage estimant vos chances de gain de cause basé sur l'historique jurisprudentiel.
-  - **Facteurs Positifs/Négatifs** : Liste textuelle expliquant les points qui renforcent ou affaiblissent votre position.
-• **Portail de Recherche Sémantique** : Moteur de recherche d'arrêts capables de comprendre le sens juridique de votre problématique.
-
----
-
-## 25. EXPANSION & PAIEMENTS
-Gestion des paiements numériques et de la croissance.
-
-### 25.1 Informations Affichées
-
-• **Relevé des Paiements Mobiles** : Suivi en temps réel des encaissements via Wave ou Orange Money.
-• **Fabrique de Liens** : Outil permettant de créer un lien de paiement unique à copier-coller dans vos factures ou WhatsApp client.
-
----
-
-## 26. ARCHIVES
-Gestion des dossiers clôturés et de l'archivage légal.
-
-### 26.1 Informations Affichées
-
-• **Bibliothèque d'Archives** : Liste des dossiers dormants stockés en dehors de la vue active pour ne pas encombrer le quotidien.
-• **Fonction de Désarchivage** : Bouton permettant de ramener une affaire clôturée dans le cycle actif si de nouveaux faits surviennent.
-
----
-
-## 27. RAPPORTS
-Générateur de rapports d'activité formels (PDF).
-
-### 27.1 Informations Affichées
-
-• **Menu de Génération de Rapports** : Sélecteur de types de comptes-rendus (Mensuels pour les clients, Annuels pour les impôts).
-• **Options de Sortie** : Permet de prévisualiser le document avant de le transformer en format PDF scellé.
-
----
-
-## 28. OUTILS
-Boîte à outils divers (Calculateurs, Convertisseurs, etc.).
-
-### 28.1 Informations Affichées
-
-• **Boîte à Outils Pratiques** : Accès à des utilitaires rapides comme le calcul d'intérêts moratoires ou les simulateurs d'indemnités de licenciement.
-
----
-
-## 29. MODÈLES (BIBLIOTHÈQUE)
-La base de connaissance des modèles et précédents du cabinet.
-
-### 29.1 Informations Affichées
-
-• **Rayonnages Digitaux** : Liste des modèles de courriers, conclusions et mémos internes organisés par tags et dossiers thématiques.
-
----
-
-## 30. CRM
-Customer Relationship Management avancé (Prospection).
-
-### 30.1 Informations Affichées
-
-• **Pipeline de Développement** : Vue en colonnes montrant la progression des prospects (De "Premier Contact" à "Signature Convention").
-• **Liste des Lead** : Tableau regroupant les opportunités d'affaires potentielles avec leur valeur estimée.
-
----
-
-## 31. CONFLITS D'INTÉRÊTS
-Outil de vérification déontologique avant d'accepter une affaire.
-
-### 31.1 Informations Affichées
-
-• **Radar de Conflits** : Champ de recherche permettant de vérifier si le nom d'un futur client ou de son adversaire existe déjà dans votre base.
-• **Diagnostic Interne** : Résultat clair précisant si une opposition d'intérêts a été détectée entre vos dossiers passés ou présents.
-
----
-
-## 32. COMMUNICATION
-Centre de messagerie unifiée (WhatsApp, SMS, Email).
-
-### 32.1 Informations Affichées
-
-• **Station de Messages Unifiée** : Un guichet unique centralisant tous les échanges électroniques du cabinet.
-• **Fil de Chat Client** : Conversation chronologique mélangeant les différentes sources (WhatsApp, SMS) pour un suivi fluide.
-
----
-
-## 33. NOTES & MÉMOS
-Prise de note rapide et post-its virtuels.
-
-### 33.1 Informations Affichées
-
-• **Tableau des Mémos Libres** : Une grille de notes colorées pour vos réflexions rapides ou rappels personnels non structurés.
-
----
-
-## 34. RH & TALENTS
-Gestion des ressources humaines du cabinet (Collaborateurs, Stagiaires).
-
-### 34.1 Informations Affichées
-
-• **Trombinoscope de l'Équipe** : Portraits et fiches signalétiques de tous les membres du personnel du cabinet.
-• **Planning de Présence** : Vue consolidée des congés, maladies et disponibilités de l'équipe de production.
-
----
-
-## 35. DOCUMENTATION
-Accès aux manuels, guides et tutoriels de LexPremium.
-
-### 35.1 Informations Affichées
-
-• **Portail d'Aide en Ligne** : Base de connaissances centralisant les guides d'utilisation et les vidéos de démonstration pour chaque module.
-
----
-
-## 36. PARAMÈTRES
-Configuration globale de l'application.
-
-### 36.1 Informations Affichées
-
-• **Centre de Configuration** : Menus dédiés au réglage des accès utilisateurs, à l'identité visuelle du cabinet (logo sur factures) et aux préférences de notification.
+*© 2026 LexPremium - Tous droits réservés.*

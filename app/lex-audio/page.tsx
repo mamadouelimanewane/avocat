@@ -3,249 +3,276 @@
 import { useState, useEffect, useRef } from "react"
 import {
     Mic,
-    MicOff,
-    Waveform,
+    StopCircle,
+    FileText,
+    Wand2,
+    Sparkles,
+    Save,
+    Share2,
     Play,
     Pause,
-    Square,
-    Save,
-    FileText,
-    Sparkles,
+    History,
     CheckCircle2,
-    Settings,
-    MoreHorizontal,
-    Wand2,
-    Send,
-    Briefcase,
-    Bot,
-    Gavel,
-    ChevronRight,
-    Volume2
+    Loader2,
+    AlignLeft
 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
-const SUGGESTED_TEMPLATES = [
-    { title: "Conclusions en Réplique", icon: Gavel, color: "text-blue-500", bg: "bg-blue-50" },
-    { title: "Mise en Demeure", icon: FileText, color: "text-amber-500", bg: "bg-amber-50" },
-    { title: "Mémoire en Défense", icon: Briefcase, color: "text-emerald-500", bg: "bg-emerald-50" },
+// Simulated Speech Data
+const SIMULATED_TRANSCRIPT = [
+    "Je souhaite rédiger un contrat de bail à usage professionnel.",
+    "Le bailleur est la SCI Teranga, représentée par Monsieur Fall.",
+    "Le preneur est la société Tech Solutions SARL.",
+    "Le local est situé au 45 Avenue de la République, Dakar.",
+    "Loyer mensuel de 1.500.000 FCFA hors taxes.",
+    "Durée de 3 ans renouvelable.",
+    "Dépôt de garantie de 3 mois."
 ]
 
-export default function LexAudioDrafterPage() {
+export default function LexAudioPage() {
     const [isRecording, setIsRecording] = useState(false)
-    const [transcription, setTranscription] = useState("")
-    const [isProcessing, setIsProcessing] = useState(false)
-    const [progress, setProgress] = useState(0)
+    const [transcript, setTranscript] = useState<string[]>([])
+    const [currentText, setCurrentText] = useState("")
+    const [extractedData, setExtractedData] = useState<any>({})
+    const [processingStep, setProcessingStep] = useState(0)
 
-    const handleToggleRecording = () => {
-        setIsRecording(!isRecording)
-        if (!isRecording) {
-            // Start simulation
-            setTranscription("")
-        } else {
-            // Stop and process
-            processAudio()
-        }
+    // Simulation Logic
+    const intervalRef = useRef<NodeJS.Timeout | null>(null)
+    const indexRef = useRef(0)
+
+    const startRecording = () => {
+        setIsRecording(true)
+        setTranscript([])
+        setExtractedData({})
+        setCurrentText("")
+        indexRef.current = 0
+        setProcessingStep(0)
+
+        // Typewriter effect validation
+        let charIndex = 0
+        let sentenceIndex = 0
+
+        intervalRef.current = setInterval(() => {
+            if (sentenceIndex >= SIMULATED_TRANSCRIPT.length) {
+                stopRecording()
+                return
+            }
+
+            const sentence = SIMULATED_TRANSCRIPT[sentenceIndex]
+            const char = sentence[charIndex]
+
+            setCurrentText(prev => prev + char)
+            charIndex++
+
+            if (charIndex >= sentence.length) {
+                // End of sentence
+                setTranscript(prev => [...prev, sentence])
+                setCurrentText("")
+                charIndex = 0
+                sentenceIndex++
+
+                // Real-time Extraction Simulation
+                extractData(sentence)
+            }
+        }, 50) // Speed of typing
     }
 
-    const processAudio = () => {
-        setIsProcessing(true)
-        setProgress(0)
-        const interval = setInterval(() => {
-            setProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(interval)
-                    setIsProcessing(false)
-                    setTranscription("Maître, voici la synthèse de votre dictée : 'Dans l'affaire SGBTP vs Etat du Sénégal, les conclusions en réplique doivent souligner la violation de l'article 42 du Code des Marchés Publics. Les pièces jointes n°4 et 5 prouvent l'absence de notification préalable...'")
-                    return 100
-                }
-                return prev + 5
-            })
-        }, 100)
+    const stopRecording = () => {
+        if (intervalRef.current) clearInterval(intervalRef.current)
+        setIsRecording(false)
+        setCurrentText("")
+        setProcessingStep(1) // Start post-processing
+
+        // Simulate Processing Steps
+        setTimeout(() => setProcessingStep(2), 1500) // Drafting
+        setTimeout(() => setProcessingStep(3), 3000) // Compliance
+        setTimeout(() => setProcessingStep(4), 4500) // Ready
+    }
+
+    const extractData = (sentence: string) => {
+        // Simple heuristic extraction for demo
+        if (sentence.includes("bailleur")) setExtractedData((prev: any) => ({ ...prev, bailleur: "SCI Teranga" }))
+        if (sentence.includes("preneur")) setExtractedData((prev: any) => ({ ...prev, preneur: "Tech Solutions SARL" }))
+        if (sentence.includes("Loyer")) setExtractedData((prev: any) => ({ ...prev, loyer: "1.500.000 FCFA" }))
+        if (sentence.includes("situé")) setExtractedData((prev: any) => ({ ...prev, adresse: "45 Avenue de la République, Dakar" }))
     }
 
     return (
-        <div className="p-8 space-y-8 bg-[#020617] min-h-screen text-slate-100">
+        <div className="min-h-screen bg-slate-950 p-8 text-slate-100 flex flex-col md:flex-row gap-8">
 
-            {/* Header: Studio vibe */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 bg-rose-600 rounded-[1.5rem] flex items-center justify-center text-white shadow-2xl shadow-rose-900/20 ring-4 ring-rose-600/20">
-                        <Mic className="h-8 w-8" />
+            {/* LEFT PANEL: VOICE INTERFACE */}
+            <div className="w-full md:w-1/2 flex flex-col bg-slate-900 rounded-[3rem] border border-slate-800 overflow-hidden relative shadow-2xl">
+
+                {/* Header */}
+                <div className="p-8 border-b border-white/5 flex justify-between items-center z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                            <Mic className="h-6 w-6" />
+                        </div>
+                        <div>
+                            <h1 className="text-xl font-black tracking-tight text-white">LexAudio</h1>
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Dictée Juridique Générative</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-3xl font-black tracking-tight text-white uppercase">Lex<span className="text-rose-500">Audio</span> Drafter</h1>
-                        <p className="text-slate-500 font-medium italic">Dictée vocale intelligente & Génération d&apos;actes multimodale.</p>
-                    </div>
+                    <Badge variant="outline" className={cn(
+                        "transition-all duration-500",
+                        isRecording ? "bg-red-500/10 text-red-500 border-red-500/50 animate-pulse" : "bg-slate-800 text-slate-400 border-slate-700"
+                    )}>
+                        {isRecording ? "ENREGISTREMENT..." : "PRÊT"}
+                    </Badge>
                 </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" className="h-12 border-white/10 bg-white/5 text-white hover:bg-white/10 rounded-xl px-6">
-                        <Settings className="h-4 w-4 mr-2" /> Paramètres Audio
-                    </Button>
+
+                {/* Visualizer Area (Simulation) */}
+                <div className="flex-1 flex flex-col items-center justify-center relative p-8">
+                    {/* Ambient Background */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-indigo-950/20 to-slate-900 pointer-events-none" />
+
+                    {/* Main Button */}
+                    <div className="relative group cursor-pointer" onClick={isRecording ? stopRecording : startRecording}>
+                        <div className={cn(
+                            "absolute inset-0 rounded-full blur-3xl transition-all duration-500 opacity-20 group-hover:opacity-40",
+                            isRecording ? "bg-red-600 scale-150 animate-pulse" : "bg-indigo-600 scale-100"
+                        )} />
+                        <div className={cn(
+                            "h-40 w-40 rounded-full flex items-center justify-center border-8 shadow-2xl transition-all duration-300 relative z-10",
+                            isRecording
+                                ? "bg-slate-900 border-red-500/50 text-red-500 scale-110"
+                                : "bg-slate-800 border-indigo-500/20 text-white hover:border-indigo-500 hover:scale-105"
+                        )}>
+                            {isRecording ? <StopCircle className="h-16 w-16" /> : <Mic className="h-16 w-16" />}
+                        </div>
+                    </div>
+
+                    <p className="mt-8 text-slate-500 font-mono text-sm tracking-widest uppercase">
+                        {isRecording ? "Écoute en cours - Whisper V3" : "Appuyez pour dicter un acte"}
+                    </p>
+                </div>
+
+                {/* Live Transcript Stream */}
+                <div className="h-64 bg-slate-950 p-6 overflow-y-auto space-y-4 border-t border-white/5 font-mono text-sm relative">
+                    <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-slate-950 to-transparent pointer-events-none" />
+                    {transcript.map((line, i) => (
+                        <div key={i} className="text-slate-300 animate-in fade-in slide-in-from-bottom-2">
+                            <span className="text-indigo-500 mr-3">{(i + 1).toString().padStart(2, '0')}</span>
+                            {line}
+                        </div>
+                    ))}
+                    {currentText && (
+                        <div className="text-white border-l-2 border-indigo-500 pl-3 animate-pulse">
+                            {currentText}_
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            {/* RIGHT PANEL: GENERATION & EXTRACTION */}
+            <div className="w-full md:w-1/2 space-y-6">
 
-                {/* Recording Control & Waveform (8 columns) */}
-                <div className="xl:col-span-8 space-y-8">
-                    <Card className="bg-slate-900/50 border-white/10 rounded-[3rem] p-12 flex flex-col items-center justify-center relative overflow-hidden h-[500px]">
-                        {/* Waveform Visualization Mockup */}
-                        <div className="flex items-center gap-1 h-32 mb-12">
-                            {[...Array(40)].map((_, i) => (
-                                <div
-                                    key={i}
-                                    className={cn(
-                                        "w-1.5 rounded-full transition-all duration-300",
-                                        isRecording ? "bg-rose-500" : "bg-slate-700"
-                                    )}
-                                    style={{
-                                        height: isRecording ? `${Math.random() * 100}%` : '5%',
-                                        opacity: isRecording ? 0.5 + Math.random() * 0.5 : 0.3
-                                    }}
-                                />
-                            ))}
-                        </div>
-
-                        <div className="relative group">
-                            {isRecording && (
-                                <div className="absolute inset-0 bg-rose-500 rounded-full blur-[40px] opacity-20 animate-pulse" />
-                            )}
-                            <button
-                                onClick={handleToggleRecording}
-                                className={cn(
-                                    "relative h-28 w-28 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl overflow-hidden",
-                                    isRecording ? "bg-rose-600 scale-110" : "bg-white hover:bg-slate-100"
-                                )}
-                            >
-                                {isRecording ? (
-                                    <Square className="h-10 w-10 text-white fill-white" />
-                                ) : (
-                                    <Mic className="h-10 w-10 text-slate-900" />
-                                )}
-                            </button>
-                        </div>
-
-                        <div className="mt-8 text-center space-y-2">
-                            <p className={cn(
-                                "text-lg font-black uppercase tracking-[0.2em]",
-                                isRecording ? "text-rose-500 animate-pulse" : "text-slate-500"
-                            )}>
-                                {isRecording ? "Enregistrement en cours..." : "Prêt pour la dictée"}
-                            </p>
-                            <p className="text-slate-600 text-sm font-medium italic">
-                                Parlez naturellement. L&apos;IA structure vos idées.
-                            </p>
-                        </div>
-
-                        {/* Background glowing orbs */}
-                        <div className="absolute -top-40 -left-40 w-80 h-80 bg-rose-600/5 rounded-full blur-[100px]" />
-                        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-blue-600/5 rounded-full blur-[100px]" />
+                {/* Status Cards */}
+                <div className="grid grid-cols-2 gap-4">
+                    <Card className="bg-slate-900 border-slate-800">
+                        <CardContent className="p-4 flex items-center justify-between">
+                            <div className="space-y-1">
+                                <p className="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Type Acte</p>
+                                <p className="text-indigo-400 font-black">Bail Commercial</p>
+                            </div>
+                            <FileText className="h-8 w-8 text-slate-700" />
+                        </CardContent>
                     </Card>
+                    <Card className="bg-slate-900 border-slate-800">
+                        <CardContent className="p-4 flex items-center justify-between">
+                            <div className="space-y-1">
+                                <p className="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Confiance IA</p>
+                                <p className="text-emerald-400 font-black">98.5%</p>
+                            </div>
+                            <Sparkles className="h-8 w-8 text-emerald-900" />
+                        </CardContent>
+                    </Card>
+                </div>
 
-                    {/* Output / Transcription Card */}
-                    <Card className="bg-white rounded-[2.5rem] border-none shadow-2xl p-8 text-slate-900">
-                        <div className="flex items-center justify-between mb-8 pb-6 border-b border-slate-100">
-                            <h3 className="text-xl font-black flex items-center gap-3">
-                                <Sparkles className="h-6 w-6 text-rose-500" />
-                                Sortie Intelligente Nexus
-                            </h3>
-                            <div className="flex gap-2">
-                                <Badge className="bg-indigo-50 text-indigo-600 border-none font-black px-3 py-1 text-[10px]">MODE: PROCÉDURE CIVILE</Badge>
-                                <Badge className="bg-emerald-50 text-emerald-600 border-none font-black px-3 py-1 text-[10px]">OHADA CERTIFIED</Badge>
+                {/* Live Extraction Form */}
+                <Card className="bg-white text-slate-900 rounded-[2rem] shadow-xl border-none overflow-hidden h-[600px] flex flex-col relative">
+
+                    {/* Processing Overlay */}
+                    {processingStep > 0 && processingStep < 4 && (
+                        <div className="absolute inset-0 bg-slate-900/90 z-20 flex flex-col items-center justify-center text-white space-y-6 backdrop-blur-sm animate-in fade-in">
+                            <Loader2 className="h-12 w-12 animate-spin text-indigo-500" />
+                            <div className="space-y-2 text-center">
+                                <h3 className="text-xl font-bold">Génération en cours...</h3>
+                                <div className="flex flex-col gap-2 text-xs font-mono text-slate-400 uppercase tracking-widest">
+                                    <span className={processingStep >= 1 ? "text-emerald-400" : ""}>1. Analyse Sémantique {processingStep >= 1 && "✓"}</span>
+                                    <span className={processingStep >= 2 ? "text-emerald-400" : ""}>2. Rédaction Clauses {processingStep >= 2 && "✓"}</span>
+                                    <span className={processingStep >= 3 ? "text-emerald-400" : ""}>3. Contrôle OHADA {processingStep >= 3 && "✓"}</span>
+                                </div>
                             </div>
                         </div>
+                    )}
 
-                        {isProcessing ? (
-                            <div className="py-20 flex flex-col items-center justify-center space-y-6">
-                                <div className="h-12 w-12 border-4 border-slate-100 border-t-rose-500 rounded-full animate-spin" />
-                                <div className="text-center">
-                                    <p className="font-black text-slate-900">Analyse Sémantique & Rédactionnelle...</p>
-                                    <Progress value={progress} className="w-64 h-1.5 mt-4 bg-slate-100" />
-                                </div>
-                            </div>
-                        ) : transcription ? (
-                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 italic text-slate-700 leading-relaxed font-medium">
-                                    "{transcription}"
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <Button className="h-14 bg-slate-900 text-white hover:bg-slate-800 rounded-2xl font-black flex gap-2">
-                                        <FileText className="h-5 w-5 text-rose-500" /> GÉNÉRER LE PROJET WORD
-                                    </Button>
-                                    <Button variant="outline" className="h-14 border-slate-200 hover:bg-slate-50 rounded-2xl font-black flex gap-2">
-                                        <Save className="h-5 w-5 text-blue-500" /> ARCHIVER LA NOTE VOCALE
-                                    </Button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="py-20 text-center opacity-30">
-                                <Bot className="h-16 w-16 mx-auto mb-4" />
-                                <p className="font-medium">Appuyez sur le micro pour commencer à dicter votre stratégie...</p>
-                            </div>
+                    <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                        <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2">
+                            <AlignLeft className="h-5 w-5 text-indigo-600" />
+                            Document Généré
+                        </h2>
+                        {processingStep === 4 && (
+                            <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1 pl-2">
+                                <CheckCircle2 className="h-3 w-3" /> PRÊT
+                            </Badge>
                         )}
-                    </Card>
-                </div>
-
-                {/* Sidebar: Context / Templates (4 columns) */}
-                <div className="xl:col-span-4 space-y-8">
-                    <Card className="bg-white/5 border-white/10 rounded-[2.5rem] p-8">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-6 px-2">Modèles de Rédaction Rapide</h3>
-                        <div className="space-y-3">
-                            {SUGGESTED_TEMPLATES.map((tmpl, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 hover:bg-white/5 rounded-2xl transition-all group cursor-pointer border border-transparent hover:border-white/10">
-                                    <div className="flex items-center gap-4">
-                                        <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shadow-lg", tmpl.bg)}>
-                                            <tmpl.icon className={cn("h-6 w-6", tmpl.color)} />
-                                        </div>
-                                        <span className="text-sm font-bold text-slate-200 uppercase tracking-tight">{tmpl.title}</span>
-                                    </div>
-                                    <ChevronRight className="h-4 w-4 text-slate-600 group-hover:text-white" />
-                                </div>
-                            ))}
-                        </div>
-                    </Card>
-
-                    <Card className="bg-indigo-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
-                        <div className="relative z-10 space-y-4">
-                            <Badge className="bg-white/20 text-white border-none font-black text-[9px] px-2 py-0.5">INSIGHT IA</Badge>
-                            <h4 className="text-xl font-black leading-tight">Transcription Multi-Dossiers</h4>
-                            <p className="text-indigo-200 text-xs font-medium leading-relaxed">
-                                Vous parlez de plusieurs affaires ? Notre IA détecte automatiquement les noms de dossiers cités et ventile vos notes dans les bonnes fiches GED.
-                            </p>
-                            <Button className="w-full bg-white text-indigo-900 hover:bg-indigo-50 rounded-xl font-black h-11 text-xs uppercase tracking-widest mt-4">
-                                Activer le mode Auto-Ventilation
-                            </Button>
-                        </div>
-                        <Wand2 className="absolute bottom-[-20px] right-[-20px] h-32 w-32 text-white/5 rotate-12" />
-                    </Card>
-
-                    <div className="p-8 border border-white/10 rounded-[2.5rem] space-y-6">
-                        <div className="flex items-center gap-3">
-                            <Volume2 className="h-5 w-5 text-rose-500" />
-                            <h4 className="text-sm font-black uppercase tracking-widest text-slate-300">Dernières Dictées</h4>
-                        </div>
-                        <div className="space-y-4">
-                            {[1, 2].map(i => (
-                                <div key={i} className="flex items-center justify-between group cursor-pointer">
-                                    <div className="flex items-center gap-3">
-                                        <Play className="h-4 w-4 text-slate-600 group-hover:text-rose-500" />
-                                        <div>
-                                            <p className="text-xs font-bold text-slate-200">Affaire Banque Atlantique...</p>
-                                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">Aujourd&apos;hui, 10:15 • 2m 45s</p>
-                                        </div>
-                                    </div>
-                                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                </div>
-                            ))}
-                        </div>
                     </div>
-                </div>
 
+                    <ScrollArea className="flex-1 p-8">
+                        <div className="space-y-8 max-w-lg mx-auto draft-content font-serif leading-relaxed text-slate-800">
+
+                            <div className="text-center space-y-4 border-b pb-8 border-slate-200">
+                                <h1 className="text-2xl font-bold uppercase decoration-double underline decoration-slate-300 underline-offset-4">Contrat de Bail Commercial</h1>
+                                <p className="text-sm italic text-slate-500">Soumis aux dispositions de l'Acte Uniforme OHADA</p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-sm uppercase text-slate-400 tracking-widest">I. Les Parties</h3>
+                                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <p><span className="font-bold text-indigo-600">Bailleur:</span> {extractedData.bailleur || "..."}</p>
+                                    <p><span className="font-bold text-indigo-600">Preneur:</span> {extractedData.preneur || "..."}</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-sm uppercase text-slate-400 tracking-widest">II. L'Objet</h3>
+                                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <p><span className="font-bold text-indigo-600">Localisation:</span> {extractedData.adresse || "..."}</p>
+                                    <p>Le Bailleur donne en location à titre professionnel les locaux désignés ci-dessus.</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-sm uppercase text-slate-400 tracking-widest">III. Conditions Financières</h3>
+                                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <p><span className="font-bold text-indigo-600">Loyer Mensuel:</span> {extractedData.loyer || "..."}</p>
+                                    <p>Payable d'avance le 5 de chaque mois.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </ScrollArea>
+
+                    <div className="p-6 bg-slate-50 border-t border-slate-200 flex gap-4">
+                        <Button className="flex-1 h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200" disabled={processingStep !== 4}>
+                            <Save className="h-4 w-4 mr-2" /> ENREGISTRER L'ACTE
+                        </Button>
+                        <Button variant="outline" className="h-12 w-12 rounded-xl border-slate-200" disabled={processingStep !== 4}>
+                            <Share2 className="h-4 w-4 text-slate-600" />
+                        </Button>
+                    </div>
+
+                </Card>
             </div>
+
         </div>
     )
 }

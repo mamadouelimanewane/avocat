@@ -76,37 +76,30 @@
 
 ---
 
-## 📦 Modules Core
+## 🧭 Structure de Navigation Elite (v2.0)
 
-### 🗂️ Gestion Complète
-- **Dossiers** : Illimités, OCR auto, versioning, signature électronique
-- **Clients** : Fiches complètes, portail sécurisé, scoring crédit
-- **Documents** : Upload illimité, IA analyse/génération
-- **Facturation** : Templates, TVA 18%, Mobile Money, export Excel/PDF
-- **Agenda** : Calendrier maître, DeadlinePro IA, alertes J-7/J-3/J-1
+L'application est désormais organisée en 7 pôles stratégiques :
 
-### 🤖 Intelligence Artificielle (8 Modules)
-1. **LexAI Assistant** - Rédaction, recherche, conseils
-2. **JusticePredictor** - Prédiction issues judiciaires
-3. **Adverse Scanner** - Analyse documents adverses
-4. **Contract Analyzer** - Détection clauses dangereuses
-5. **Judge Profiler** - Statistiques + stratégies
-6. **Conflict Checker** - Détection conflits d'intérêts
-7. **Sherlock Scanner** - OSINT solvabilité débiteur
-8. **Execution Commander** - Pilotage voies exécution
+### 1. 🧭 Pilotage
+- **Vue d'ensemble** : Tableau de bord, Legal Ops, Statistiques.
 
-### 🛠️ 11 Outils Juridiques
-1. Calculateur Délais (CPC, OHADA)
-2. Bibliothèque Juridique (Codes + OHADA)
-3. Veille Juridique Flash
-4. Dictée Juridique IA
-5. Fiscalité Foncière
-6. Quantum Simulator (Indemnités sociales)
-7. Conflict Checker
-8. Judge Profiler
-9. Sherlock Scanner
-10. Execution Commander
-11. Nexus Graph (Cartographie réseau)
+### 2. ⚖️ Expertise Avocat
+- **Production** : Dossiers, Agenda, Palais (Audiences Live), Bibliothèque, Recherche OHADA.
+
+### 3. 🏢 Gestion Cabinet
+- **Management** : Clients (CRM), Facturation, Temps (Diligences), Recouvrement Massif.
+
+### 4. 🛡️ Audit & Conformité
+- **Risk Management** : KYC, Conflits d'intérêts, Parapheur, LexCheck.
+
+### 5. 🧠 Conseil & Stratégie
+- **Décisionnel** : LexPredict (IA), LexPersona, Finance Stratégique.
+
+### 6. 🤖 Nexus Intelligence
+- **IA Générative** : LexAI, Audio Drafter, Traduction, Scanner Adverse.
+
+### 7. 🖇️ Ressources
+- **Support** : Wiki, Portail Client, Annuaire, RH.
 
 ### 📊 Comptabilité OHADA
 - Plan comptable SYSCOHADA (500+ comptes)

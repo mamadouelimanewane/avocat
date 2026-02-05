@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Sparkles, Send, Bot, User, FileText, Scale, BookOpen, ChevronRight, Loader2, Paperclip, MoreHorizontal, History } from "lucide-react"
+import { Sparkles, Send, Bot, User, FileText, Scale, BookOpen, ChevronRight, Loader2, Paperclip, MoreHorizontal, History, UserCheck, Gavel, ShieldAlert } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 // Types
 type Message = {
@@ -9,6 +10,7 @@ type Message = {
     role: 'user' | 'assistant'
     content: string
     citations?: Citation[]
+    avatar?: 'lex' | 'aida' | 'procureur'
 }
 
 type Citation = {
@@ -18,7 +20,51 @@ type Citation = {
     excerpt: string
 }
 
-// Mock Database for RAG (Retrieval Augmented Generation) simulation
+type AvatarPersona = {
+    id: 'lex' | 'aida' | 'procureur'
+    name: string
+    title: string
+    description: string
+    icon: any
+    color: string
+    welcomeMessage: string
+    style: string
+}
+
+const AVATARS: AvatarPersona[] = [
+    {
+        id: 'lex',
+        name: "Le Doyen (Ndaje)",
+        title: "Sagesse & Coutume",
+        description: "L'autorité morale. Idéal pour la stratégie et l'éthique.",
+        icon: Gavel,
+        color: "from-amber-700 to-amber-900",
+        welcomeMessage: "As-salam alaykum Maître. La loi est une chose, la sagesse en est une autre. Parlons stratégie.",
+        style: "bg-amber-50 border-amber-200"
+    },
+    {
+        id: 'aida',
+        name: "Aïda",
+        title: "Executive Assistant",
+        description: "Rapide, moderne et précise. Pour la recherche et la rédaction.",
+        icon: UserCheck,
+        color: "from-pink-500 to-rose-500",
+        welcomeMessage: "Bonjour Maître ! Prête à accélérer votre workflow. On rédige quoi aujourd'hui ?",
+        style: "bg-rose-50 border-rose-200"
+    },
+    {
+        id: 'procureur',
+        name: "Le Procureur",
+        title: "Crash Test",
+        description: "Hostile et rigoureux. Pour tester vos défenses.",
+        icon: ShieldAlert,
+        color: "from-slate-700 to-black",
+        welcomeMessage: "Votre dossier me semble bien fragile, Maître. Prouvez-moi le contraire.",
+        style: "bg-slate-100 border-slate-300"
+    }
+]
+
+// Mock Database
 const KNOWLEDGE_BASE = [
     {
         id: "leg-1",
@@ -35,11 +81,13 @@ const KNOWLEDGE_BASE = [
 ]
 
 export default function LexAIPage() {
+    const [activeAvatar, setActiveAvatar] = useState<AvatarPersona>(AVATARS[1]) // Aïda by default
     const [messages, setMessages] = useState<Message[]>([
         {
             id: "welcome",
             role: "assistant",
-            content: "Bonjour Maître. Je suis LexAI, votre assistant juridique avancé. Je peux analyser vos dossiers, rechercher de la jurisprudence ou rédiger des projets de conclusions. Par quoi commençons-nous ?"
+            content: AVATARS[1].welcomeMessage,
+            avatar: 'aida'
         }
     ])
     const [input, setInput] = useState("")
@@ -54,6 +102,17 @@ export default function LexAIPage() {
         scrollToBottom()
     }, [messages])
 
+    // Switch Avatar Handler
+    const handleAvatarSwitch = (avatar: AvatarPersona) => {
+        setActiveAvatar(avatar)
+        setMessages(prev => [...prev, {
+            id: Date.now().toString(),
+            role: 'assistant',
+            content: avatar.welcomeMessage,
+            avatar: avatar.id
+        }])
+    }
+
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!input.trim()) return
@@ -67,136 +126,185 @@ export default function LexAIPage() {
         setInput("")
         setIsTyping(true)
 
-        // Simulation of AI Processing
+        // Simulation of AI Processing with persona style
         setTimeout(() => {
-            // Simple keyword matching for demo
             const relevantCitations = KNOWLEDGE_BASE.filter(k =>
                 input.toLowerCase().includes("licenciement") || input.toLowerCase().includes("travail")
             )
 
+            let aiContent = ""
+
+            if (activeAvatar.id === 'lex') {
+                aiContent = "Mon jeune confrère, regardons cela avec recul. " + (relevantCitations.length > 0 ? "Les textes sont clairs, mais l'esprit de la loi est plus subtil..." : "Je ne vois rien dans nos tablettes pour le moment.")
+            } else if (activeAvatar.id === 'procureur') {
+                aiContent = "C'est tout ce que vous avez ? " + (relevantCitations.length > 0 ? "Ces textes ne vous sauveront pas si les faits sont contre vous." : "Votre argumentation manque cruellement de base légale.")
+            } else {
+                aiContent = "Voici ce que j'ai trouvé Maître. " + (relevantCitations.length > 0 ? "L'analyse est formelle :" : "Je lance une recherche plus approfondie.")
+            }
+
+            if (relevantCitations.length > 0) {
+                aiContent += "\n\nLa jurisprudence est constante : un licenciement exige une cause réelle et sérieuse. La Cour Suprême l'a rappelé."
+            }
+
             const aiResponse: Message = {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
-                content: relevantCitations.length > 0
-                    ? "D'après l'analyse des textes en vigueur et de la jurisprudence récente, voici les éléments de réponse :\n\nLe licenciement doit impérativement reposer sur une **cause réelle et sérieuse**. La Cour Suprême a récemment rappelé que la perte de confiance subjective ne suffit pas."
-                    : "Je n'ai pas trouvé de référence spécifique dans ma base immédiate pour cette requête précise, mais je peux effectuer une recherche approfondie sur les bases Lexis et Dalloz. Souhaitez-vous que je lance cette recherche étendue ?",
-                citations: relevantCitations.length > 0 ? relevantCitations : undefined
+                content: aiContent,
+                citations: relevantCitations.length > 0 ? relevantCitations : undefined,
+                avatar: activeAvatar.id
             }
 
             setMessages(prev => [...prev, aiResponse])
             setIsTyping(false)
-        }, 2000)
+        }, 1500)
     }
 
     return (
         <div className="flex h-[calc(100vh-2rem)] bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200">
 
-            {/* Sidebar History (Left) */}
+            {/* Sidebar Avatars (Left) */}
             <div className="w-80 bg-slate-50 border-r border-slate-100 hidden md:flex flex-col">
                 <div className="p-6 border-b border-slate-100">
-                    <button className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg shadow-slate-200">
-                        <Sparkles className="h-4 w-4" />
-                        Nouvelle Conversation
-                    </button>
+                    <h2 className="text-xl font-bold text-slate-900">Nexus Avatars</h2>
+                    <p className="text-xs text-slate-500 mt-1">Choisissez votre interlocuteur</p>
                 </div>
-                <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                    <p className="px-4 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Aujourd'hui</p>
-                    <button className="w-full text-left p-3 rounded-xl hover:bg-white hover:shadow-sm transition text-sm text-slate-700 truncate font-medium flex items-center gap-2">
-                        <History className="h-4 w-4 text-slate-400" />
-                        Recherche licenciement
-                    </button>
-                    <button className="w-full text-left p-3 rounded-xl hover:bg-white hover:shadow-sm transition text-sm text-slate-700 truncate flex items-center gap-2">
-                        <History className="h-4 w-4 text-slate-400" />
-                        Analyse contrat bail
-                    </button>
+
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                    {AVATARS.map((avatar) => (
+                        <button
+                            key={avatar.id}
+                            onClick={() => handleAvatarSwitch(avatar)}
+                            className={cn(
+                                "w-full text-left p-4 rounded-2xl transition-all border-2 relative overflow-hidden group",
+                                activeAvatar.id === avatar.id
+                                    ? `bg-white border-slate-900 shadow-md`
+                                    : "bg-white border-transparent hover:border-slate-200 hover:shadow-sm"
+                            )}
+                        >
+                            <div className="flex items-center gap-4 relative z-10">
+                                <div className={cn(
+                                    "h-12 w-12 rounded-full flex items-center justify-center text-white shadow-lg bg-gradient-to-br",
+                                    avatar.color
+                                )}>
+                                    <avatar.icon className="h-6 w-6" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-slate-900">{avatar.name}</h3>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{avatar.title}</p>
+                                </div>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-3 pl-16 line-clamp-2 leading-relaxed">
+                                {avatar.description}
+                            </p>
+                            {activeAvatar.id === avatar.id && (
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-slate-100 to-transparent -mr-8 -mt-8 rounded-full z-0 opacity-50" />
+                            )}
+                        </button>
+                    ))}
                 </div>
+
                 <div className="p-4 border-t border-slate-100">
-                    <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                    <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
                         <div className="flex items-center gap-2 mb-1">
-                            <Scale className="h-4 w-4 text-emerald-600" />
-                            <span className="text-xs font-bold text-emerald-700">Jurisprudence Connectée</span>
+                            <Sparkles className="h-4 w-4 text-indigo-600" />
+                            <span className="text-xs font-bold text-indigo-700">Mode Immersif</span>
                         </div>
-                        <p className="text-[10px] text-emerald-600">Base mise à jour : 04 Fév 2026</p>
+                        <p className="text-[10px] text-indigo-600">Activez la voix pour dialoguer vocalement avec les avatars.</p>
                     </div>
                 </div>
             </div>
 
             {/* Main Chat Area */}
-            <div className="flex-1 flex flex-col relative">
+            <div className="flex-1 flex flex-col relative bg-slate-50/50">
                 {/* Header */}
-                <div className="h-16 border-b border-slate-100 flex items-center justify-between px-6 bg-white/80 backdrop-blur-md z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 bg-gradient-to-tr from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-white shadow-md">
-                            <Bot className="h-5 w-5" />
+                <div className="h-20 border-b border-slate-100 flex items-center justify-between px-8 bg-white/80 backdrop-blur-md z-10 sticky top-0">
+                    <div className="flex items-center gap-4">
+                        <div className={cn(
+                            "h-10 w-10 rounded-full flex items-center justify-center text-white shadow-md bg-gradient-to-br",
+                            activeAvatar.color
+                        )}>
+                            <activeAvatar.icon className="h-5 w-5" />
                         </div>
                         <div>
-                            <h2 className="font-bold text-slate-800">LexAI Co-Counsel</h2>
-                            <p className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                Online • GPT-4o Legal Edition
+                            <h2 className="font-bold text-xl text-slate-800">{activeAvatar.name}</h2>
+                            <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                En ligne • {activeAvatar.title}
                             </p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition">
+                        <button className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-400 transition hover:text-slate-600">
                             <BookOpen className="h-5 w-5" />
                         </button>
-                        <button className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition">
+                        <button className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-400 transition hover:text-slate-600">
                             <MoreHorizontal className="h-5 w-5" />
                         </button>
                     </div>
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-slate-50/50">
-                    {messages.map((msg) => (
-                        <div key={msg.id} className={`flex gap-4 max-w-4xl mx-auto ${msg.role === 'user' ? 'justify-end' : ''}`}>
-                            {msg.role === 'assistant' && (
-                                <div className="h-8 w-8 flex-shrink-0 bg-gradient-to-tr from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white mt-1 shadow-sm">
-                                    <Bot className="h-4 w-4" />
-                                </div>
-                            )}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    {messages.map((msg) => {
+                        const isAssistant = msg.role === 'assistant';
+                        const avatarConfig = isAssistant
+                            ? AVATARS.find(a => a.id === (msg.avatar || 'aida'))
+                            : null;
 
-                            <div className={`space-y-4 max-w-[80%]`}>
-                                <div className={`p-5 rounded-2xl shadow-sm leading-relaxed ${msg.role === 'user'
-                                        ? 'bg-slate-900 text-white rounded-br-none'
-                                        : 'bg-white border border-slate-100 text-slate-700 rounded-bl-none'
-                                    }`}>
-                                    <p className="whitespace-pre-wrap text-sm md:text-base">{msg.content}</p>
+                        return (
+                            <div key={msg.id} className={`flex gap-6 max-w-4xl mx-auto group ${!isAssistant ? 'flex-row-reverse' : ''}`}>
+                                {/* Avatar Bubble */}
+                                <div className={cn(
+                                    "h-10 w-10 flex-shrink-0 rounded-full flex items-center justify-center text-white shadow-sm mt-2 transition-transform hover:scale-110",
+                                    isAssistant
+                                        ? `bg-gradient-to-br ${avatarConfig?.color || 'from-slate-400 to-slate-500'}`
+                                        : "bg-slate-200 text-slate-500"
+                                )}>
+                                    {isAssistant ? <avatarConfig.icon className="h-5 w-5" /> : <User className="h-5 w-5" />}
                                 </div>
 
-                                {/* Citations Area */}
-                                {msg.citations && (
-                                    <div className="grid grid-cols-1 gap-2 animate-in slide-in-from-left-4 fade-in duration-500">
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-2">Sources Juridiques</p>
-                                        {msg.citations.map(citation => (
-                                            <div key={citation.id} className="bg-white border-l-4 border-amber-400 p-3 rounded-r-xl shadow-sm hover:shadow-md transition cursor-pointer group">
-                                                <div className="flex items-center justify-between mb-1">
-                                                    <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">{citation.source}</span>
-                                                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-amber-500 transition" />
-                                                </div>
-                                                <h4 className="font-bold text-slate-800 text-sm mb-1">{citation.title}</h4>
-                                                <p className="text-xs text-slate-500 italic line-clamp-2">"{citation.excerpt}"</p>
-                                            </div>
-                                        ))}
+                                <div className={`space-y-3 max-w-[75%]`}>
+                                    {isAssistant && (
+                                        <p className="text-xs font-bold text-slate-400 ml-1">{avatarConfig?.name}</p>
+                                    )}
+
+                                    <div className={cn(
+                                        "p-6 text-sm md:text-base leading-relaxed shadow-sm",
+                                        !isAssistant
+                                            ? 'bg-slate-900 text-white rounded-[2rem] rounded-tr-none'
+                                            : 'bg-white border border-slate-100 text-slate-700 rounded-[2rem] rounded-tl-none'
+                                    )}>
+                                        <p className="whitespace-pre-wrap">{msg.content}</p>
                                     </div>
-                                )}
-                            </div>
 
-                            {msg.role === 'user' && (
-                                <div className="h-8 w-8 flex-shrink-0 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 mt-1">
-                                    <User className="h-4 w-4" />
+                                    {/* Citations Area */}
+                                    {msg.citations && (
+                                        <div className="pl-4 border-l-2 border-slate-200 space-y-2 pt-1 animate-in slide-in-from-left-4 fade-in duration-500">
+                                            {msg.citations.map(citation => (
+                                                <div key={citation.id} className="bg-white border border-slate-100 p-3 rounded-xl hover:border-amber-400 hover:shadow-md transition cursor-pointer group/citation">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <Scale className="h-3 w-3 text-amber-500" />
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase">{citation.source}</span>
+                                                    </div>
+                                                    <h4 className="font-bold text-slate-800 text-xs">{citation.title}</h4>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    ))}
+                            </div>
+                        );
+                    })}
 
                     {isTyping && (
-                        <div className="flex gap-4 max-w-4xl mx-auto">
-                            <div className="h-8 w-8 flex-shrink-0 bg-gradient-to-tr from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white mt-1 shadow-sm">
-                                <Bot className="h-4 w-4" />
+                        <div className="flex gap-6 max-w-4xl mx-auto">
+                            <div className={cn(
+                                "h-10 w-10 flex-shrink-0 rounded-full flex items-center justify-center text-white shadow-sm mt-2 bg-gradient-to-br",
+                                activeAvatar.color
+                            )}>
+                                <activeAvatar.icon className="h-5 w-5" />
                             </div>
-                            <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
+                            <div className="bg-white border border-slate-100 px-6 py-4 rounded-[2rem] rounded-tl-none shadow-sm flex items-center gap-2">
                                 <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" />
                                 <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]" />
                                 <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]" />
@@ -207,19 +315,9 @@ export default function LexAIPage() {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 bg-white border-t border-slate-100">
+                <div className="p-6 bg-white border-t border-slate-100">
                     <div className="max-w-4xl mx-auto relative">
                         <form onSubmit={handleSend} className="relative group">
-                            <div className="absolute bottom-full mb-2 left-0 flex gap-2">
-                                <button type="button" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-xs font-semibold text-slate-600 transition">
-                                    <FileText className="h-3 w-3" />
-                                    Analyser un doc
-                                </button>
-                                <button type="button" className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-xs font-semibold text-slate-600 transition">
-                                    <Scale className="h-3 w-3" />
-                                    Jurisprudence
-                                </button>
-                            </div>
                             <textarea
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
@@ -229,27 +327,29 @@ export default function LexAIPage() {
                                         handleSend(e)
                                     }
                                 }}
-                                placeholder="Posez votre question juridique..."
-                                className="w-full pl-6 pr-14 py-4 bg-slate-50 border border-slate-200 text-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 focus:bg-white transition-all resize-none shadow-inner max-h-32 min-h-[60px]"
+                                placeholder={`Écrivez à ${activeAvatar.name}...`}
+                                className="w-full pl-6 pr-16 py-4 bg-slate-50 border border-slate-200 text-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all resize-none shadow-inner min-h-[64px]"
                             />
-                            <div className="absolute right-2 bottom-2 flex items-center gap-1">
+                            <div className="absolute right-3 bottom-3 flex items-center gap-2">
                                 <button type="button" className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition">
                                     <Paperclip className="h-5 w-5" />
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={!input.trim() || isTyping}
-                                    className={`p-2 rounded-xl transition-all shadow-md ${input.trim() && !isTyping
-                                            ? 'bg-gradient-to-r from-slate-900 to-slate-800 text-white hover:scale-105 active:scale-95'
-                                            : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                                        }`}
+                                    className={cn(
+                                        "p-2 rounded-xl transition-all shadow-md",
+                                        input.trim() && !isTyping
+                                            ? `bg-gradient-to-r ${activeAvatar.color} text-white hover:scale-105 active:scale-95`
+                                            : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                                    )}
                                 >
                                     {isTyping ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                                 </button>
                             </div>
                         </form>
-                        <p className="text-center text-[10px] text-slate-400 mt-2">
-                            LexAI peut faire des erreurs. Vérifiez toujours les sources citées (Code du Travail, COCC, etc.).
+                        <p className="text-center text-[10px] text-slate-400 mt-3">
+                            LexAI v2.0 • Identité Culturelle Africaine • Vérifiez les sources.
                         </p>
                     </div>
                 </div>
