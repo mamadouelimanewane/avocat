@@ -100,7 +100,7 @@ export function FacturesList({ initialFactures }: FacturesListProps) {
                 />
             </div>
 
-            <div className="rounded-md border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="rounded-md border border-slate-200 bg-white shadow-sm overflow-x-auto">
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-slate-50 border-b">

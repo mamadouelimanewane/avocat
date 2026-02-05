@@ -31,7 +31,7 @@ export default function DossierOverview({ dossier }: { dossier: any }) {
                     <CardTitle className="text-lg font-medium">Informations Procédurales</CardTitle>
                     <EditDossierDialog dossier={dossier} />
                 </CardHeader>
-                <CardContent className="grid grid-cols-2 gap-6 mt-2">
+                <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2">
                     <div className="space-y-1">
                         <p className="text-sm font-medium text-slate-500 flex items-center">
                             <Scale className="w-4 h-4 mr-2" /> Juridiction

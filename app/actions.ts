@@ -18,7 +18,8 @@ import bcrypt from 'bcryptjs'
 
 export async function createNote(data: any) {
     try {
-        const userId = cookies().get('auth_token')?.value
+        const cookieStore = await cookies()
+        const userId = cookieStore.get('auth_token')?.value
         if (!userId) return { success: false, message: "Non connecté" }
 
         await prisma.note.create({
@@ -43,7 +44,8 @@ export async function createNote(data: any) {
 
 export async function getUserNotes() {
     try {
-        const userId = cookies().get('auth_token')?.value
+        const cookieStore = await cookies()
+        const userId = cookieStore.get('auth_token')?.value
         if (!userId) return []
 
         return await prisma.note.findMany({
@@ -60,7 +62,8 @@ export async function getUserNotes() {
 
 export async function deleteNote(noteId: string) {
     try {
-        const userId = cookies().get('auth_token')?.value
+        const cookieStore = await cookies()
+        const userId = cookieStore.get('auth_token')?.value
         if (!userId) return { success: false, message: "Non connecté" }
 
         await prisma.note.delete({
@@ -75,7 +78,8 @@ export async function deleteNote(noteId: string) {
 
 export async function updateNote(noteId: string, data: any) {
     try {
-        const userId = cookies().get('auth_token')?.value
+        const cookieStore = await cookies()
+        const userId = cookieStore.get('auth_token')?.value
         if (!userId) return { success: false }
 
         await prisma.note.update({
@@ -721,7 +725,8 @@ export async function updateUser(prevState: any, formData: FormData) {
 
 export async function updateUserPasswordAdmin(userId: string, newPassword: string) {
     try {
-        const adminId = cookies().get('auth_token')?.value
+        const cookieStore = await cookies()
+        const adminId = cookieStore.get('auth_token')?.value
         if (!adminId) return { success: false, message: "Non connecté" }
 
         // Security check: Verify the requester is an ADMIN
@@ -3234,7 +3239,8 @@ export async function verifyClientAccessCode(code: string) {
         }
 
         // Set session cookie
-        cookies().set('client_session', client.id, {
+        const cookieStore = await cookies()
+        cookieStore.set('client_session', client.id, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24 * 7 // 7 days 
@@ -3462,13 +3468,14 @@ export async function loginStaff(prevState: any, formData: FormData) {
         // Expiration: 7 jours
         const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
-        cookies().set('auth_token', userId, {
+        const cookieStore = await cookies()
+        cookieStore.set('auth_token', userId, {
             secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
             path: '/',
             expires
         })
-        cookies().set('user_role', role, {
+        cookieStore.set('user_role', role, {
             secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
             path: '/',
@@ -3487,7 +3494,8 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
     const newPassword = formData.get('newPassword') as string
 
     try {
-        const userId = cookies().get('auth_token')?.value
+        const cookieStore = await cookies()
+        const userId = cookieStore.get('auth_token')?.value
         if (!userId) return { success: false, message: "Non connecté" }
 
         const user = await prisma.user.findUnique({ where: { id: userId } })
@@ -3510,13 +3518,15 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
 }
 
 export async function logout() {
-    cookies().delete('auth_token')
-    cookies().delete('user_role')
+    const cookieStore = await cookies()
+    cookieStore.delete('auth_token')
+    cookieStore.delete('user_role')
     return redirect('/login')
 }
 
 export async function logoutClient() {
-    cookies().delete('portal_token')
+    const cookieStore = await cookies()
+    cookieStore.delete('portal_token')
     return redirect('/portal/login')
 }
 
@@ -3541,7 +3551,8 @@ export async function loginClient(prevState: any, formData: FormData) {
         }
 
         // Set Cookie
-        cookies().set('portal_token', client.id, { secure: true, httpOnly: true, path: '/' })
+        const cookieStore = await cookies()
+        cookieStore.set('portal_token', client.id, { secure: true, httpOnly: true, path: '/' })
 
         return { success: true }
     } catch (e) {
@@ -3551,7 +3562,7 @@ export async function loginClient(prevState: any, formData: FormData) {
 
 
 export async function getPortalDashboardData() {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const clientId = cookieStore.get('portal_token')?.value
 
     if (!clientId) return { success: false, message: "Non connecté" }
@@ -3590,7 +3601,7 @@ export async function getPortalDashboardData() {
 }
 
 export async function getPortalAllDossiers() {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const clientId = cookieStore.get('portal_token')?.value
 
     if (!clientId) return { success: false, message: "Non connecté" }
@@ -3610,7 +3621,7 @@ export async function getPortalAllDossiers() {
 }
 
 export async function getPortalAllInvoices() {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const clientId = cookieStore.get('portal_token')?.value
 
     if (!clientId) return { success: false, message: "Non connecté" }
@@ -3627,7 +3638,7 @@ export async function getPortalAllInvoices() {
 }
 
 export async function getPortalDossierById(dossierId: string) {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const clientId = cookieStore.get('portal_token')?.value
 
     if (!clientId) return { success: false, message: "Non connecté" }
@@ -4721,15 +4732,16 @@ export async function loginClientPortal(email: string, accessCode: string) {
     try {
         const client = await prisma.client.findFirst({
             where: {
-                email: { equals: email },
+                email: { equals: email, mode: 'insensitive' },
                 accessCode
             }
         })
 
         if (!client) return { success: false, message: "Email ou code d'accès invalide." }
 
-        // Set cookie for server-side layout access
-        cookies().set('portal_token', client.id, {
+        // Set cookie for server-side layout access (await cookies() for Next.js 15+)
+        const cookieStore = await cookies()
+        cookieStore.set('portal_token', client.id, {
             httpOnly: false, // Allow client-side access for consistency
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
@@ -5198,3 +5210,174 @@ export async function searchJurisprudenceAdvanced(query: string) {
 }
 
 export const searchJurisprudence = searchJurisprudenceAdvanced; // Alias for backward compatibility
+
+// --- DYNAMIC MAIL & WORKFLOW ACTIONS ---
+
+/**
+ * Récupère tous les courriers avec leurs informations de workflow
+ */
+export async function getMails() {
+    try {
+        const mails = await prisma.mail.findMany({
+            include: {
+                client: { select: { name: true } },
+                dossier: { select: { reference: true, title: true } },
+                workflow: {
+                    include: { steps: { orderBy: { order: 'asc' } } }
+                }
+            },
+            orderBy: { receivedAt: 'desc' }
+        })
+        return mails
+    } catch (e) {
+        console.error("Error fetching mails:", e)
+        return []
+    }
+}
+
+/**
+ * Récupère le détail d'un courrier spécifique
+ */
+export async function getMailDetails(id: string) {
+    try {
+        const mail = await prisma.mail.findUnique({
+            where: { id },
+            include: {
+                client: true,
+                dossier: true,
+                activities: {
+                    include: { user: { select: { name: true, avatarUrl: true } } },
+                    orderBy: { createdAt: 'desc' }
+                },
+                workflow: {
+                    include: { steps: { orderBy: { order: 'asc' } } }
+                }
+            }
+        })
+        return mail
+    } catch (e) {
+        return null
+    }
+}
+
+/**
+ * Récupère tous les modèles de workflows disponibles
+ */
+export async function getMailWorkflows() {
+    try {
+        const workflows = await prisma.mailWorkflow.findMany({
+            where: { isActive: true },
+            include: { steps: { orderBy: { order: 'asc' } } }
+        })
+        return workflows
+    } catch (e) {
+        return []
+    }
+}
+
+/**
+ * Crée un nouveau courrier et initialise son workflow
+ */
+export async function createMail(data: any) {
+    try {
+        const userId = cookies().get('auth_token')?.value
+        if (!userId) return { success: false, message: "Non connecté" }
+
+        // Trouver la première étape du workflow choisi
+        const workflow = await prisma.mailWorkflow.findUnique({
+            where: { id: data.workflowId },
+            include: { steps: { orderBy: { order: 'asc' }, take: 1 } }
+        })
+
+        if (!workflow) return { success: false, message: "Workflow introuvable" }
+
+        const mail = await prisma.mail.create({
+            data: {
+                reference: `COUR-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`,
+                subject: data.subject,
+                type: data.type || 'INBOUND',
+                category: data.category || 'GENERAL',
+                sender: data.sender,
+                recipient: data.recipient,
+                priority: data.priority || 'NORMAL',
+                clientId: data.clientId,
+                dossierId: data.dossierId,
+                workflowId: data.workflowId,
+                currentStepId: workflow.steps[0].id,
+                content: data.content,
+                activities: {
+                    create: {
+                        action: 'RECEPTION',
+                        userId: userId,
+                        comment: "Initialisation du courrier dans le système."
+                    }
+                }
+            }
+        })
+
+        revalidatePath('/courrier')
+        return { success: true, mailId: mail.id }
+    } catch (e) {
+        console.error("Create mail error:", e)
+        return { success: false, message: "Erreur lors de la création du courrier" }
+    }
+}
+
+/**
+ * Fait progresser un courrier dans son workflow
+ */
+export async function transitionMail(mailId: string, nextStepId: string, comment?: string) {
+    try {
+        const userId = cookies().get('auth_token')?.value
+        if (!userId) return { success: false, message: "Non connecté" }
+
+        const mail = await prisma.mail.findUnique({
+            where: { id: mailId },
+            include: { workflow: { include: { steps: true } } }
+        })
+
+        if (!mail) return { success: false, message: "Courrier introuvable" }
+
+        const fromStepId = mail.currentStepId
+        const fromStep = mail.workflow?.steps.find(s => s.id === fromStepId)
+        const toStep = mail.workflow?.steps.find(s => s.id === nextStepId)
+
+        await prisma.mail.update({
+            where: { id: mailId },
+            data: {
+                currentStepId: nextStepId,
+                status: toStep?.label.includes('CLÔTURÉ') || toStep?.label.includes('ENVOI') ? 'VALIDE' : 'EN_COURS',
+                activities: {
+                    create: {
+                        action: 'TRANSITION',
+                        userId: userId,
+                        fromStep: fromStep?.label || "Inconnu",
+                        toStep: toStep?.label || "Inconnu",
+                        comment: comment || `Passage de l'étape ${fromStep?.label} à ${toStep?.label}`
+                    }
+                }
+            }
+        })
+
+        revalidatePath('/courrier')
+        revalidatePath(`/courrier/${mailId}`)
+        return { success: true }
+    } catch (e) {
+        return { success: false, message: "Erreur lors de la transition du workflow" }
+    }
+}
+
+/**
+ * Statistiques rapides pour le tableau de bord courrier
+ */
+export async function getWorkflowStats() {
+    try {
+        const total = await prisma.mail.count()
+        const urgent = await prisma.mail.count({ where: { priority: 'URGENT' } })
+        const pending = await prisma.mail.count({ where: { status: { in: ['NOUVEAU', 'EN_COURS'] } } })
+
+        return { total, urgent, pending }
+    } catch (e) {
+        return { total: 0, urgent: 0, pending: 0 }
+    }
+}

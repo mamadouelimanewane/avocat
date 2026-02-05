@@ -139,6 +139,13 @@ export default function CabinetAcademyPage() {
                 </div>
 
                 <div className="ml-auto flex gap-2">
+                    <a
+                        href="/manuals/LexPremium_Master_Handbook_2026.pdf"
+                        download
+                        className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-sm font-black transition-all flex items-center gap-2 shadow-lg shadow-indigo-600/20"
+                    >
+                        <Download className="w-4 h-4" /> MASTER HANDBOOK PDF
+                    </a>
                     <Link href="/cabinet-academy/certificats" className="px-4 py-2 bg-white border border-slate-200 hover:border-amber-500/50 text-slate-700 hover:text-amber-600 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-sm">
                         <Award className="w-4 h-4" /> Mes Certificats
                     </Link>
@@ -225,6 +232,23 @@ export default function CabinetAcademyPage() {
 
                     {/* Sidebar Droit */}
                     <div className="space-y-6">
+                        {/* Handbook Banner */}
+                        <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <FileText className="w-20 h-20 text-slate-900" />
+                            </div>
+                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-2">Ressource Maître</h3>
+                            <h2 className="text-xl font-black text-slate-900 leading-tight">Le Manuel de Maîtrise 2026</h2>
+                            <p className="text-xs text-slate-500 mt-2 font-medium">Accédez à l'intégralité des secrets de LexPremium Elite en un seul document.</p>
+                            <a
+                                href="/manuals/LexPremium_Master_Handbook_2026.pdf"
+                                download
+                                className="mt-6 w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-black flex items-center justify-center gap-2 hover:bg-black transition-all"
+                            >
+                                <Download className="w-4 h-4" /> TÉLÉCHARGER LE PDF (14MB)
+                            </a>
+                        </div>
+
                         {/* Carte Progression */}
                         <div className="bg-white rounded-[2rem] p-6 text-center border border-slate-200 shadow-sm">
                             <div className="relative w-32 h-32 mx-auto mb-4">

@@ -142,14 +142,14 @@ export default function AgendaPage() {
     return (
         <div className="space-y-6 h-full flex flex-col">
             <Tabs defaultValue="calendar" className="flex-1 flex flex-col">
-                <div className="flex items-center justify-between shrink-0 mb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between shrink-0 mb-6 gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Agenda & Échéances</h1>
                         <p className="text-slate-500 mt-1">Gérez vos rendez-vous et surveillez vos délais procéduraux.</p>
                     </div>
-                    <TabsList className="bg-slate-100 p-1">
-                        <TabsTrigger value="calendar">Vue Calendrier</TabsTrigger>
-                        <TabsTrigger value="deadlines" className="flex items-center gap-2">
+                    <TabsList className="bg-slate-100 p-1 w-full md:w-auto overflow-x-auto">
+                        <TabsTrigger value="calendar" className="flex-1 md:flex-none">Vue Calendrier</TabsTrigger>
+                        <TabsTrigger value="deadlines" className="flex items-center gap-2 flex-1 md:flex-none">
                             Surveillance Délais <Badge variant="secondary" className="bg-red-100 text-red-600 border-none px-1 h-4 text-[10px]">3</Badge>
                         </TabsTrigger>
                     </TabsList>

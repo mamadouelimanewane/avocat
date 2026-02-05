@@ -88,6 +88,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
             title: "GESTION CABINET",
             items: [
                 { name: 'Clients (CRM 360°)', href: '/clients', icon: Users },
+                { name: 'Courrier Dynamique', href: '/courrier', icon: Mail },
                 { name: 'Facturation & Honoraires', href: '/factures', icon: Receipt },
                 { name: 'Diligences (Temps)', href: '/dashboard/temps', icon: Clock },
                 { name: 'Asset Hunter (OSINT)', href: '/asset-hunter', icon: Radar },

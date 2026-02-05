@@ -126,12 +126,12 @@ export default function AccountingPage() {
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Comptabilité Générale</h1>
                     <p className="text-slate-500 mt-1">Plan Comptable SYSCOHADA & États Financiers</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     <Link href="/comptabilite/journaux">
                         <Button variant="secondary" className="bg-amber-100 text-amber-900 hover:bg-amber-200 border border-amber-200">
                             <FileText className="mr-2 h-4 w-4" /> Journaux
@@ -414,7 +414,7 @@ export default function AccountingPage() {
                 </TabsContent>
 
                 <TabsContent value="balance" className="mt-4">
-                    <Card>
+                    <Card className="overflow-x-auto">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -441,7 +441,7 @@ export default function AccountingPage() {
                 </TabsContent>
 
                 <TabsContent value="bilan" className="mt-4">
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* ACTIF */}
                         <Card>
                             <CardHeader className="bg-slate-50 border-b pb-2">

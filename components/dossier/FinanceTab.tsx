@@ -104,7 +104,7 @@ export default function FinanceTab({ dossierId, carpaTransactions = [], expenses
 
             {/* 1. CARPA / Compte Tiers */}
             <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden p-8">
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6">
                     <div>
                         <h3 className="text-2xl font-black text-slate-900 flex items-center gap-3">
                             <div className="h-10 w-10 rounded-2xl bg-indigo-50 flex items-center justify-center">
@@ -114,21 +114,25 @@ export default function FinanceTab({ dossierId, carpaTransactions = [], expenses
                         </h3>
                         <p className="text-sm text-slate-500 mt-1">Historique des fonds détenus pour le compte du client.</p>
                     </div>
-                    <div className="flex gap-3">
-                        <CarpaActionDialog
-                            dossierId={dossierId}
-                            type="RETRAIT"
-                            onSuccess={() => window.location.reload()}
-                        />
-                        <CarpaActionDialog
-                            dossierId={dossierId}
-                            type="DEPOT"
-                            onSuccess={() => window.location.reload()}
-                        />
+                    <div className="flex gap-2 w-full md:w-auto">
+                        <div className="flex-1 md:flex-none">
+                            <CarpaActionDialog
+                                dossierId={dossierId}
+                                type="RETRAIT"
+                                onSuccess={() => window.location.reload()}
+                            />
+                        </div>
+                        <div className="flex-1 md:flex-none">
+                            <CarpaActionDialog
+                                dossierId={dossierId}
+                                type="DEPOT"
+                                onSuccess={() => window.location.reload()}
+                            />
+                        </div>
                     </div>
                 </div>
 
-                <div className="rounded-2xl border border-slate-100 overflow-hidden">
+                <div className="rounded-2xl border border-slate-100 overflow-x-auto">
                     <Table>
                         <TableHeader className="bg-slate-50">
                             <TableRow>
@@ -176,7 +180,7 @@ export default function FinanceTab({ dossierId, carpaTransactions = [], expenses
 
             {/* 2. Débours & Frais */}
             <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden p-8">
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6">
                     <div>
                         <h3 className="text-2xl font-black text-slate-900 flex items-center gap-3">
                             <div className="h-10 w-10 rounded-2xl bg-amber-50 flex items-center justify-center">
@@ -186,12 +190,12 @@ export default function FinanceTab({ dossierId, carpaTransactions = [], expenses
                         </h3>
                         <p className="text-sm text-slate-500 mt-1">Dépenses engagées par le cabinet à refacturer.</p>
                     </div>
-                    <Button className="bg-slate-900 hover:bg-black rounded-xl">
+                    <Button className="bg-slate-900 hover:bg-black rounded-xl w-full md:w-auto">
                         <Plus className="mr-2 h-4 w-4" /> Nouveau Frais
                     </Button>
                 </div>
 
-                <div className="rounded-2xl border border-slate-100 overflow-hidden">
+                <div className="rounded-2xl border border-slate-100 overflow-x-auto">
                     <Table>
                         <TableHeader className="bg-slate-50">
                             <TableRow>

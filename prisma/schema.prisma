@@ -33,6 +33,7 @@ model User {
   documentVersions  DocumentVersion[] @relation("UploadedBy")
   leaveRequests     LeaveRequest[]    @relation("UserLeaveRequest")
   notes             Note[]
+  mailActivities    MailActivity[]
 }
 
 model Note {
@@ -95,6 +96,7 @@ model Client {
   dossiers  Dossier[]
   factures  Facture[]
   communications CommunicationLog[]
+  mails     Mail[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -139,6 +141,7 @@ model Dossier {
   meetings    Meeting[]
   communications CommunicationLog[]
   metadata       String? // Flexible JSON metadata
+  mails          Mail[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -554,4 +557,88 @@ model DirectoryContact {
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// --- Dynamic Mail & Workflow Management ---
+
+model Mail {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  reference   String   @unique
+  type        String   @default("INBOUND") // INBOUND, OUTBOUND
+  category    String   @default("GENERAL") // JUDICIAIRE, ADMINISTRATIF, FACTURATION, PRIVÉ
+  subject     String
+  content     String?
+  sender      String?
+  recipient   String?
+  priority    String   @default("NORMAL") // BASSE, NORMAL, HAUTE, URGENT
+  status      String   @default("NOUVEAU") // NOUVEAU, EN_COURS, ATTENTE_VAL, VALIDE, ARCHIVE
+  
+  receivedAt  DateTime @default(now())
+  dueDate     DateTime?
+  
+  clientId    String?  @db.ObjectId
+  client      Client?  @relation(fields: [clientId], references: [id])
+  
+  dossierId   String?  @db.ObjectId
+  dossier     Dossier? @relation(fields: [dossierId], references: [id])
+  
+  // Workflow tracking
+  workflowId  String?  @db.ObjectId
+  workflow    MailWorkflow? @relation(fields: [workflowId], references: [id])
+  currentStepId String? @db.ObjectId
+  
+  activities  MailActivity[]
+  metadata    String?  // Flexible JSON (AI Tags, Summary, etc.)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MailWorkflow {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  category    String?  // Standardize workflows by mail category
+  
+  steps       MailStep[]
+  mails       Mail[]
+  
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MailStep {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  label       String
+  order       Int
+  description String?
+  color       String?  @default("blue")
+  
+  // Logic
+  requiredRole String? // Role required to process this step
+  estimatedDays Int?   // For SLA tracking
+  
+  workflowId  String   @db.ObjectId
+  workflow    MailWorkflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MailActivity {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  action      String   // RECEPTION, TRANSITION, VALIDATION, COMMENTAIRE
+  comment     String?
+  
+  mailId      String   @db.ObjectId
+  mail        Mail     @relation(fields: [mailId], references: [id], onDelete: Cascade)
+  
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  
+  fromStep    String?
+  toStep      String?
+  
+  createdAt   DateTime @default(now())
 }

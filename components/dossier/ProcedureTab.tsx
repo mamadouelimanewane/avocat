@@ -504,20 +504,20 @@ export default function ProcedureTab({ dossierId, currentStage, procedureType }:
                 <div className="space-y-6">
                     <Card className="border-indigo-100 bg-indigo-50/10 shadow-sm overflow-hidden">
                         <Tabs defaultValue="strategy" className="w-full">
-                            <TabsList className="w-full grid grid-cols-5 rounded-none bg-slate-100/50 p-1">
-                                <TabsTrigger value="strategy" className="gap-1 text-[10px] px-1">
+                            <TabsList className="w-full flex overflow-x-auto no-scrollbar rounded-none bg-slate-100/50 p-1">
+                                <TabsTrigger value="strategy" className="flex-1 gap-1 text-[10px] px-1 whitespace-nowrap min-w-[70px]">
                                     <Sparkles className="h-3 w-3" /> Strat.
                                 </TabsTrigger>
-                                <TabsTrigger value="riposte" className="gap-1 text-[10px] px-1">
+                                <TabsTrigger value="riposte" className="flex-1 gap-1 text-[10px] px-1 whitespace-nowrap min-w-[70px]">
                                     <ShieldAlert className="h-3 w-3" /> Riposte
                                 </TabsTrigger>
-                                <TabsTrigger value="neural" className="gap-1 text-[10px] px-1">
+                                <TabsTrigger value="neural" className="flex-1 gap-1 text-[10px] px-1 whitespace-nowrap min-w-[70px]">
                                     <BrainCircuit className="h-3 w-3" /> Neural
                                 </TabsTrigger>
-                                <TabsTrigger value="hearing" className="gap-1 text-[10px] px-1 font-bold text-indigo-600">
+                                <TabsTrigger value="hearing" className="flex-1 gap-1 text-[10px] px-1 font-bold text-indigo-600 whitespace-nowrap min-w-[70px]">
                                     <Mic className="h-3 w-3" /> Audience
                                 </TabsTrigger>
-                                <TabsTrigger value="client" className="gap-1 text-[10px] px-1">
+                                <TabsTrigger value="client" className="flex-1 gap-1 text-[10px] px-1 whitespace-nowrap min-w-[70px]">
                                     <MessageSquare className="h-3 w-3" /> Client
                                 </TabsTrigger>
                             </TabsList>

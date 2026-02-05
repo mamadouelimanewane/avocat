@@ -73,39 +73,39 @@ export default function LexVisionWarRoom() {
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30">
             {/* --- Top Navigation --- */}
-            <header className="h-20 border-b border-indigo-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between px-8">
-                <div className="flex items-center gap-6">
+            <header className="min-h-[5rem] md:h-20 border-b border-indigo-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 md:py-0 gap-4">
+                <div className="flex items-center gap-4 md:gap-6 w-full md:w-auto">
                     <Link href={`/dossiers/${id}`}>
-                        <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 transition-all">
-                            <ArrowLeft className="h-4 w-4 mr-2" /> Retour Dossier
+                        <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                            <ArrowLeft className="h-4 w-4 md:mr-2" /> <span className="hidden md:inline">Retour Dossier</span>
                         </Button>
                     </Link>
-                    <div className="h-8 w-px bg-slate-800" />
-                    <div>
+                    <div className="h-8 w-px bg-slate-800 hidden md:block" />
+                    <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <Badge className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20 text-[10px] h-5">DOSSIER-{id.substring(0, 6).toUpperCase()}</Badge>
-                            <span className="text-sm font-bold tracking-tight text-slate-300">LEXVISION DIGITAL WAR ROOM</span>
+                            <Badge className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20 text-[8px] md:text-[10px] h-4 md:h-5">DOSSIER-{id.substring(0, 6).toUpperCase()}</Badge>
+                            <span className="text-[10px] md:text-sm font-bold tracking-tight text-slate-300">LEXVISION WAR ROOM</span>
                         </div>
-                        <h1 className="text-xl font-black italic tracking-tighter">STRATÉGIE OFFENSIVE V9.1</h1>
+                        <h1 className="text-sm md:text-xl font-black italic tracking-tighter">STRATÉGIE OFFENSIVE V9.1</h1>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="flex flex-col items-end mr-4">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase">État du Réseau</span>
+                <div className="flex items-center justify-between w-full md:w-auto gap-4">
+                    <div className="flex flex-col items-start md:items-end">
+                        <span className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest">État du Réseau</span>
                         <div className="flex items-center gap-1">
                             <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-xs font-mono text-emerald-500">LEXAI_QUANTUM_LINK_ACTIVE</span>
+                            <span className="text-[9px] md:text-xs font-mono text-emerald-500">QUANTUM_LINK_ACTIVE</span>
                         </div>
                     </div>
-                    <Button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 shadow-[0_0_20px_rgba(79,70,229,0.3)]">
-                        <Maximize2 className="h-4 w-4 mr-2" /> Live Broadcast
+                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 md:px-6 shadow-[0_0_20px_rgba(79,70,229,0.3)] text-xs h-9 md:h-10">
+                        <Maximize2 className="h-3 w-3 md:h-4 md:w-4 md:mr-2" /> <span className="hidden md:inline">Live Broadcast</span>
                     </Button>
                 </div>
             </header>
 
             {/* --- Main Dashboard --- */}
-            <main className="p-8 grid grid-cols-12 gap-8">
+            <main className="p-4 md:p-8 grid grid-cols-12 gap-6 md:gap-8 pb-20">
 
                 {/* --- Left Sidebar: Navigation & Oracle Stats --- */}
                 <aside className="col-span-12 lg:col-span-3 space-y-6">
@@ -139,24 +139,24 @@ export default function LexVisionWarRoom() {
                     </Card>
 
                     {/* Mode Selector */}
-                    <div className="bg-slate-900/40 p-1.5 rounded-2xl border border-slate-800 flex flex-col gap-1">
+                    <div className="bg-slate-900/40 p-1.5 rounded-2xl border border-slate-800 flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible no-scrollbar">
                         <button
                             onClick={() => setActiveTab('STRATEGY')}
-                            className={`flex items-center gap-3 p-4 rounded-xl text-sm font-bold transition-all ${activeTab === 'STRATEGY' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
+                            className={`flex items-center gap-3 p-3 md:p-4 rounded-xl text-[10px] md:text-sm font-bold transition-all shrink-0 whitespace-nowrap ${activeTab === 'STRATEGY' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
                         >
-                            <Network className="h-4 w-4" /> LexDiscovery (Graph)
+                            <Network className="h-4 w-4" /> <span className="hidden sm:inline">LexDiscovery</span><span className="sm:hidden">Graph</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('ORACLE')}
-                            className={`flex items-center gap-3 p-4 rounded-xl text-sm font-bold transition-all ${activeTab === 'ORACLE' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
+                            className={`flex items-center gap-3 p-3 md:p-4 rounded-xl text-[10px] md:text-sm font-bold transition-all shrink-0 whitespace-nowrap ${activeTab === 'ORACLE' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
                         >
-                            <Target className="h-4 w-4" /> Offensive Oracle
+                            <Target className="h-4 w-4" /> Oracle
                         </button>
                         <button
                             onClick={() => setActiveTab('DOJO')}
-                            className={`flex items-center gap-3 p-4 rounded-xl text-sm font-bold transition-all ${activeTab === 'DOJO' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
+                            className={`flex items-center gap-3 p-3 md:p-4 rounded-xl text-[10px] md:text-sm font-bold transition-all shrink-0 whitespace-nowrap ${activeTab === 'DOJO' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-white/5'}`}
                         >
-                            <Sword className="h-4 w-4" /> LexDojo (Sparring)
+                            <Sword className="h-4 w-4" /> <span className="hidden sm:inline">LexDojo (Sparring)</span><span className="sm:hidden">Dojo</span>
                         </button>
                     </div>
 
@@ -191,7 +191,7 @@ export default function LexVisionWarRoom() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
-                                className="h-[750px] relative rounded-3xl overflow-hidden border border-indigo-500/10 bg-slate-900/30 backdrop-blur-xs"
+                                className="min-h-[500px] h-[60vh] lg:h-[750px] relative rounded-3xl overflow-hidden border border-indigo-500/10 bg-slate-900/30 backdrop-blur-xs"
                             >
                                 {/* Background Grid Animation */}
                                 <div className="absolute inset-0 z-0 opacity-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
@@ -366,7 +366,7 @@ export default function LexVisionWarRoom() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 1.05 }}
-                                className="h-[700px] grid grid-cols-12 gap-8"
+                                className="min-h-[600px] h-auto lg:h-[700px] grid grid-cols-12 gap-6 md:gap-8"
                             >
                                 {/* Dojo Simulation Area */}
                                 <Card className="col-span-12 lg:col-span-8 bg-slate-950 border-slate-800 relative flex flex-col overflow-hidden">
@@ -506,7 +506,7 @@ export default function LexVisionWarRoom() {
             </main>
 
             {/* --- Footer Status Bar --- */}
-            <footer className="h-14 border-t border-indigo-500/20 bg-slate-950/90 flex items-center justify-between px-8 text-slate-500 fixed bottom-0 w-full z-50">
+            <footer className="h-12 border-t border-indigo-500/20 bg-slate-950/90 hidden md:flex items-center justify-between px-8 text-slate-500 fixed bottom-0 w-full z-50">
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
                         <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />

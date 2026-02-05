@@ -3,7 +3,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Briefcase, Calendar, Menu, Folder } from "lucide-react"
+import { LayoutDashboard, Briefcase, Calendar, Menu, Folder, Mail } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { MobileSidebar } from "./MobileSidebar"
 
@@ -13,7 +13,7 @@ export function MobileBottomNav() {
     const navItems = [
         { label: "Accueil", href: "/", icon: LayoutDashboard },
         { label: "Dossiers", href: "/dossiers", icon: Briefcase },
-        { label: "Projets", href: "/workflows", icon: Calendar },
+        { label: "Courrier", href: "/courrier", icon: Mail },
         { label: "Fichiers", href: "/documents", icon: Folder },
     ]
 

@@ -328,15 +328,15 @@ Signature numérique: VALIDÉ-#${Math.floor(Math.random() * 100000)}`
             </div>
 
             <Tabs defaultValue="tous" className="w-full" onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-6 mb-4 bg-slate-100/50 p-1">
-                    <TabsTrigger value="tous" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Tous</TabsTrigger>
-                    <TabsTrigger value="jurisprudence" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Jurisprudence</TabsTrigger>
-                    <TabsTrigger value="lois" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Lois & Codes</TabsTrigger>
-                    <TabsTrigger value="arretes" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Arrêtés</TabsTrigger>
-                    <TabsTrigger value="ohada" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">
+                <TabsList className="flex overflow-x-auto no-scrollbar mb-4 bg-slate-100/50 p-1">
+                    <TabsTrigger value="tous" className="flex-1 min-w-[60px] data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Tous</TabsTrigger>
+                    <TabsTrigger value="jurisprudence" className="flex-1 min-w-[100px] data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Jurisprudence</TabsTrigger>
+                    <TabsTrigger value="lois" className="flex-1 min-w-[100px] data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Lois & Codes</TabsTrigger>
+                    <TabsTrigger value="arretes" className="flex-1 min-w-[80px] data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">Arrêtés</TabsTrigger>
+                    <TabsTrigger value="ohada" className="flex-1 min-w-[80px] data-[state=active]:bg-indigo-600 data-[state=active]:text-white hover:text-indigo-600 transition-all">
                         <span className="font-bold">OHADA</span>
                     </TabsTrigger>
-                    <TabsTrigger value="foncier" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white hover:text-emerald-600 transition-all font-bold">FONCIER</TabsTrigger>
+                    <TabsTrigger value="foncier" className="flex-1 min-w-[80px] data-[state=active]:bg-emerald-600 data-[state=active]:text-white hover:text-emerald-600 transition-all font-bold">FONCIER</TabsTrigger>
                 </TabsList>
             </Tabs>
 
@@ -355,7 +355,7 @@ Signature numérique: VALIDÉ-#${Math.floor(Math.random() * 100000)}`
                     filteredResults.map((item) => (
                         <Card key={item.id} className="hover:shadow-md transition-shadow">
                             <CardHeader className="pb-2">
-                                <div className="flex justify-between items-start">
+                                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
                                             {item.status === 'PENDING' ? (
