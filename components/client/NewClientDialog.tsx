@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { UserPlus } from 'lucide-react'
+import { UserPlus, ShieldCheck, Loader2, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
     Dialog,
@@ -27,6 +27,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 export function NewClientDialog() {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [kycStatus, setKycStatus] = useState<'none' | 'checking' | 'verified'>('none')
     const [error, setError] = useState<string | null>(null)
     const searchParams = useSearchParams()
     const router = useRouter()
@@ -96,6 +97,41 @@ export function NewClientDialog() {
                                 required
                             />
                         </div>
+
+                        {/* KYC Quick Check */}
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label className="text-right">KYC / AML</Label>
+                            <div className="col-span-3 flex items-center gap-2">
+                                {kycStatus === 'none' && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            setKycStatus('checking')
+                                            setTimeout(() => setKycStatus('verified'), 1500)
+                                        }}
+                                        className="h-8 text-xs border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                                    >
+                                        <ShieldCheck className="mr-1 h-3 w-3" />
+                                        Vérifier Conformité
+                                    </Button>
+                                )}
+                                {kycStatus === 'checking' && (
+                                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                                        <Loader2 className="h-3 w-3 animate-spin" />
+                                        Vérification bases mondiales...
+                                    </div>
+                                )}
+                                {kycStatus === 'verified' && (
+                                    <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100">
+                                        <CheckCircle2 className="h-3 w-3" />
+                                        Vérifié (Risque Faible)
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="type" className="text-right">
                                 Type

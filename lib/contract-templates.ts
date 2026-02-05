@@ -16,7 +16,7 @@ export interface ContractTemplate {
     id: string
     name: string
     description: string
-    category: 'COMMERCIAL' | 'TRAVAIL' | 'FONCIER' | 'SOCIETES' | 'LITIGES' | 'MINES' | 'FAMILLE'
+    category: 'COMMERCIAL' | 'TRAVAIL' | 'FONCIER' | 'SOCIETES' | 'LITIGES' | 'MINES' | 'FAMILLE' | 'PROCEDURE'
     questions: ContractQuestion[]
     standardClauses: string[]
     advancedFeatures?: string[]
@@ -252,6 +252,79 @@ export const CONTRACT_TEMPLATES: ContractTemplate[] = [
             "Délai d'intervention en cas de panne critique.",
             "Sécurité au travail et habilitations électriques.",
             "Responsabilité décennale sur les équipements."
+        ]
+    },
+    {
+        id: 'pacte-actionnaires-sas',
+        name: 'Pacte d\'Actionnaires (SAS)',
+        description: 'Organisation des relations entre actionnaires d\'une SAS (Sortie conjointe, Préemption, Exclusion) - OHADA.',
+        category: 'SOCIETES',
+        questions: [
+            { id: 'actionnaire_ref_nom', label: 'Actionnaire de Référence (Majoritaire)', type: 'TEXT' },
+            { id: 'investisseur_nom', label: 'Investisseur (Minoritaire)', type: 'TEXT' },
+            { id: 'duree_pacte', label: 'Durée du Pacte (Années)', type: 'NUMBER', placeholder: 'Max 10 ans conseillé' },
+            { id: 'clause_bad_leaver', label: 'Clause Bad Leaver', type: 'BOOLEAN' },
+            { id: 'droit_preemption', label: 'Droit de Préemption', type: 'BOOLEAN' }
+        ],
+        standardClauses: [
+            "Clause de sortie conjointe (Tag-along) pour protéger les minoritaires.",
+            "Clause d'entraînement (Drag-along) pour faciliter la vente totale.",
+            "Droit d'information renforcé.",
+            "Clause de non-débauchage et de confidentialité."
+        ]
+    },
+    {
+        id: 'cession-droits-auteur',
+        name: 'Cession de Droits d\'Auteur',
+        description: 'Cession de propriété intellectuelle sur une œuvre (Logiciel, Logo, Livre).',
+        category: 'COMMERCIAL',
+        questions: [
+            { id: 'auteur_nom', label: 'L\'Auteur (Cédant)', type: 'TEXT' },
+            { id: 'client_nom', label: 'Le Client (Cessionnaire)', type: 'TEXT' },
+            { id: 'description_oeuvre', label: 'Description de l\'Œuvre', type: 'TEXT' },
+            { id: 'etendue_droits', label: 'Droits cédés (Reproduction/Représentation)', type: 'TEXT', placeholder: 'Tout support, monde entier...' },
+            { id: 'remuneration', label: 'Rémunération forfaitaire (FCFA)', type: 'NUMBER' }
+        ],
+        standardClauses: [
+            "Garantie de jouissance paisible et d'originalité.",
+            "Délimitation stricte du périmètre de cession (Lieu, Durée, Support).",
+            "Droit moral inaliénable de l'auteur.",
+            "Indépendance des parties (Pas de lien de subordination)."
+        ]
+    },
+    {
+        id: 'assignation-tgi',
+        name: 'Assignation (TGI)',
+        description: 'Modèle d\'assignation devant le Tribunal de Grande Instance (Sénégal).',
+        category: 'PROCEDURE',
+        questions: [
+            { id: 'demandeur', label: 'Le Demandeur', type: 'TEXT' },
+            { id: 'defendeur', label: 'Le Défendeur', type: 'TEXT' },
+            { id: 'objet_demande', label: 'Objet de la demande', type: 'TEXT', placeholder: 'Ex: Paiement de créance, Dommages-intérêts' },
+            { id: 'tribunal_siege', label: 'Siège du Tribunal', type: 'TEXT', placeholder: 'Dakar, Saint-Louis...' }
+        ],
+        standardClauses: [
+            "Visée de l'exploit d'huissier.",
+            "Exposé des faits et motifs.",
+            "Dispositif (Par ces motifs).",
+            "Élection de domicile en l'étude du Conseil."
+        ]
+    },
+    {
+        id: 'conclusions-reponse',
+        name: 'Conclusions en Réponse',
+        description: 'Réplique à une assignation ou conclusions adverses.',
+        category: 'PROCEDURE',
+        questions: [
+            { id: 'dossier_n', label: 'N° de Dossier / Rôle', type: 'TEXT' },
+            { id: 'conclusions_pour', label: 'Pour (Client)', type: 'TEXT' },
+            { id: 'audience_date', label: 'Date d\'audience', type: 'DATE' }
+        ],
+        standardClauses: [
+            "Rappel de la procédure.",
+            "Discussion juridique point par point.",
+            "Rejet des prétentions adverses.",
+            "Demande reconventionnelle (Optionnel)."
         ]
     }
 ]
