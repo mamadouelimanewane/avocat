@@ -5381,3 +5381,29 @@ export async function getWorkflowStats() {
         return { total: 0, urgent: 0, pending: 0 }
     }
 }
+
+export async function generatePublicLegalAdvice(question: string, topic: string) {
+    try {
+        const systemPrompt = `Tu es LexPublic, un assistant juridique virtuel représenté par un petit enfant africain angélique. 
+        Ton ton doit être extrêmement courtois, doux, protecteur et plein de sagesse. 
+        Tu t'adresses au grand public pour donner des informations juridiques GRATUITES et claires sur le thème : ${topic}.
+        
+        CONSIGNES :
+        1. Sois très poli ("Maître" pour les avocats, "Monsieur/Madame" pour le public, utilise des formules comme "J'ai l'immense honneur de vous éclairer").
+        2. Donne des informations générales basées sur le droit OHADA et Sénégalais.
+        3. Ne donne JAMAIS de conseil juridique ferme (précise que tu es une IA).
+        4. Ton but final est d'aider l'utilisateur à comprendre sa situation tout en l'encourageant gentiment à demander un rappel d'un véritable avocat du cabinet LexPremium pour une analyse certifiée.
+        
+        Réponds avec bienveillance et précision.`
+
+        const response = await generateCompletion(question, [], "DRAFTING", systemPrompt)
+
+        return {
+            success: true,
+            text: response || "Je vous prie de m'excuser, mais ma sagesse rencontre une limite technique. Pourriez-vous reformuler votre demande, s'il vous plaît ?"
+        }
+    } catch (error) {
+        console.error("LexPublic AI Error:", error)
+        return { success: false, message: "Une erreur est survenue lors de ma réflexion." }
+    }
+}

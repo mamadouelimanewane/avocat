@@ -27,6 +27,7 @@ import {
     FileSignature
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { LexPublicChatWidget } from '@/components/public/LexPublicChatWidget';
 
 export default function LandingPage() {
     return (
@@ -297,6 +298,9 @@ export default function LandingPage() {
                     </div>
                 </div>
             </footer>
+
+            {/* 9. PUBLIC CHAT WIDGET */}
+            <LexPublicChatWidget />
         </div>
     );
 }

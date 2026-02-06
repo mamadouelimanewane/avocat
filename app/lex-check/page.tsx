@@ -18,7 +18,8 @@ import {
     ListCheck,
     Languages,
     BadgeCheck,
-    XCircle
+    XCircle,
+    Plus
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -183,8 +184,8 @@ export default function LexisCreatePlusPage() {
                                                 <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-rose-200 hover:bg-rose-50/20 transition-all space-y-4 shadow-sm group-hover:shadow-md">
                                                     <div className="flex justify-between items-start">
                                                         <div className={`h-10 w-10 rounded-2xl flex items-center justify-center border ${issue.type === 'CRITICAL' ? 'bg-rose-100 text-rose-600 border-rose-200' :
-                                                                issue.type === 'WARNING' ? 'bg-amber-100 text-amber-600 border-amber-200' :
-                                                                    'bg-blue-100 text-blue-600 border-blue-200'
+                                                            issue.type === 'WARNING' ? 'bg-amber-100 text-amber-600 border-amber-200' :
+                                                                'bg-blue-100 text-blue-600 border-blue-200'
                                                             }`}>
                                                             {issue.type === 'CRITICAL' ? <XCircle className="h-5 w-5" /> :
                                                                 issue.type === 'WARNING' ? <AlertTriangle className="h-5 w-5" /> :
