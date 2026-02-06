@@ -1,0 +1,75 @@
+{
+  "last_crawl": "2026-01-17 10:29",
+  "new_discoveries": [
+    {
+      "name": "Modèle : Statuts SAS OHADA (Conforme 2024)",
+      "category": "Droit des Sociétés",
+      "date": "2026-01-17",
+      "source": "OHADA Legis"
+    },
+    {
+      "name": "Modèle : Assignation en résolution de bail",
+      "category": "Droit Immobilier",
+      "date": "2026-01-17",
+      "source": "Justice.gouv.sn"
+    },
+    {
+      "name": "Contrat Type : Franchise Internationale (Adaptation Sénégal)",
+      "category": "Contrats Commerciaux",
+      "date": "2026-01-17",
+      "source": "CCI Dakar"
+    },
+    {
+      "name": "Guide : Procédure de Licenciement Économique",
+      "category": "Droit du Travail",
+      "date": "2026-01-17",
+      "source": "Ministère du Travail SN"
+    },
+    {
+      "name": "Jurisprudence : Responsabilité du banquier - CCJA",
+      "category": "Jurisprudence",
+      "date": "2026-01-17",
+      "source": "Recueil CCJA"
+    },
+    {
+      "name": "Modèle : Pacte d'Associés (Modulaire)",
+      "category": "Droit des Sociétés",
+      "date": "2026-01-17",
+      "source": "Sentinelle Crawler"
+    },
+    {
+      "name": "Modèle d'Acte : Assignation en référé (Sénégal) 2026",
+      "category": "Modèles d'Actes",
+      "date": "2026-01-17",
+      "link": "#",
+      "source": "JO Sénégal Scraper"
+    },
+    {
+      "name": "Contrat Type : Bail à usage professionnel (Standard Sénégal)",
+      "category": "Contrats Types",
+      "date": "2026-01-17",
+      "link": "#",
+      "source": "OHADA Portal"
+    },
+    {
+      "name": "Nouveau Modèle : Contrat de Travail (CDI) - OHADA",
+      "category": "Contrats Types",
+      "date": "2026-01-17",
+      "link": "#",
+      "source": "Sentinel Crawler"
+    },
+    {
+      "name": "Jurisprudence : Bail Commercial - CCJA 2023",
+      "category": "Jurisprudence",
+      "date": "2026-01-16",
+      "link": "https://www.ohada.org/jurisprudence/",
+      "source": "Sentinel Crawler"
+    }
+  ],
+  "categories": {
+    "ohada": "Droit OHADA",
+    "senegal": "Lois Sénégal",
+    "models": "Modèles d'Actes",
+    "contracts": "Contrats Types"
+  }
+}
