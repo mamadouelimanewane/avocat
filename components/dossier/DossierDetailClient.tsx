@@ -21,8 +21,6 @@ import {
     Briefcase,
     Radar,
     Handshake,
-    Mic,
-    Bot,
     BrainCircuit,
     Fingerprint,
     Headphones
