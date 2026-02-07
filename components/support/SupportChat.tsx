@@ -45,6 +45,26 @@ export function SupportChat() {
         scrollToBottom()
     }, [messages, isOpen])
 
+    const getResponse = (content: string): string => {
+        const query = content.toLowerCase()
+        if (query.includes("dossier")) {
+            return "Pour créer un nouveau dossier, allez dans la section 'Dossiers' (icône mallette) et cliquez sur le bouton 'Nouveau Dossier' en haut à droite. Remplissez ensuite les informations du client et de la juridiction."
+        }
+        if (query.includes("facture") || query.includes("paiement")) {
+            return "La facturation se gère directement depuis chaque dossier ou via le menu 'Comptabilité'. Vous pouvez générer des factures d'honoraires ou des provisions sur frais en un clic."
+        }
+        if (query.includes("lexis") || query.includes("veille")) {
+            return "Le module Lexis-Veille automatise la récupération des arrêts. Si vous avez un problème de connexion, vérifiez que votre abonnement est actif dans 'Paramètres'."
+        }
+        if (query.includes("export") || query.includes("agenda") || query.includes("données")) {
+            return "Vous pouvez exporter vos données (agenda, dossiers, factures) dans l'onglet 'Administration' > 'Sécurité & Sauvegarde' au format JSON."
+        }
+        if (query.includes("bonjour") || query.includes("salut")) {
+            return "Bonjour Maître ! Comment puis-je vous assister dans la gestion de votre cabinet aujourd'hui ?"
+        }
+        return "Je comprends votre demande concernant '" + content + "'. Un agent spécialisé va prendre le relais pour vous assister précisément. En attendant, consultez le manuel d'utilisation dans la section Documentation."
+    }
+
     const handleSendMessage = async (e?: React.FormEvent) => {
         e?.preventDefault()
         if (!inputValue.trim()) return
@@ -62,13 +82,7 @@ export function SupportChat() {
 
         // Simulate AI/Agent response
         setTimeout(() => {
-            let responseContent = "Je comprends votre demande. Un agent va prendre le relais pour vous assister précisément sur ce point."
-
-            if (userMsg.content.toLowerCase().includes("dossier")) {
-                responseContent = "Pour créer un nouveau dossier, allez dans le menu 'Expertise Avocat' > 'Dossiers' et cliquez sur le bouton '+' en haut à droite."
-            } else if (userMsg.content.toLowerCase().includes("facture")) {
-                responseContent = "La facturation se gère dans le module 'Gestion Cabinet'. Vous pouvez convertir un temps passé en facture en un clic."
-            }
+            const responseContent = getResponse(userMsg.content)
 
             const agentMsg: Message = {
                 id: (Date.now() + 1).toString(),
@@ -78,25 +92,28 @@ export function SupportChat() {
             }
             setMessages(prev => [...prev, agentMsg])
             setIsTyping(false)
-        }, 1500)
+        }, 1200)
     }
 
     const sendFaq = (question: string) => {
+        // UI feedback for selection
         setInputValue(question)
-        // Optionally auto-send:
-        // handleSendMessage() but we need to deal with the event preventDefault logic slightly differently or just set state and call logic.
-        // For simplicity UI feeling:
+
+        // Immediate visual user message
+        const userMsg: Message = {
+            id: Date.now().toString(),
+            role: 'user',
+            content: question,
+            timestamp: new Date()
+        }
+
         setTimeout(() => {
-            const userMsg: Message = {
-                id: Date.now().toString(),
-                role: 'user',
-                content: question,
-                timestamp: new Date()
-            }
             setMessages(prev => [...prev, userMsg])
+            setInputValue("")
             setIsTyping(true)
+
             setTimeout(() => {
-                let responseContent = "Voici la procédure pour : " + question
+                const responseContent = getResponse(question)
                 const agentMsg: Message = {
                     id: (Date.now() + 1).toString(),
                     role: 'agent',
@@ -106,7 +123,7 @@ export function SupportChat() {
                 setMessages(prev => [...prev, agentMsg])
                 setIsTyping(false)
             }, 1000)
-        }, 300)
+        }, 200)
     }
 
     return (
