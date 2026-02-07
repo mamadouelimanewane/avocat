@@ -56,12 +56,9 @@ export default function HomePage() {
             <section className="py-12 px-6">
                 <div className="max-w-7xl mx-auto relative">
                     <div className="absolute inset-0 bg-indigo-500/10 blur-[150px] -z-10 rounded-full" />
-                    <div className="rounded-[3rem] border border-white/10 bg-slate-900/50 p-4 shadow-2xl backdrop-blur-sm overflow-hidden group">
-                        <img
-                            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000"
-                            alt="Interface LexPremium"
-                            className="w-full h-[600px] object-cover rounded-[2.5rem] shadow-inner transform group-hover:scale-[1.01] transition-transform duration-700"
-                        />
+                    <div className="rounded-[3rem] border border-white/10 bg-slate-900/50 p-24 shadow-2xl backdrop-blur-sm overflow-hidden flex flex-col items-center justify-center min-h-[500px]">
+                        <Scale className="h-48 w-48 text-amber-500/20 mb-8 animate-pulse" />
+                        <div className="text-3xl font-black text-white/40 tracking-widest uppercase">LexPremium Excellence</div>
                     </div>
                 </div>
             </section>
@@ -190,7 +187,7 @@ export default function HomePage() {
                             <span className="text-amber-500 font-bold text-xs uppercase tracking-widest mb-4">Solo Prestige</span>
                             <div className="text-4xl font-black text-white mb-6">50.000 <span className="text-xs text-slate-500">F CFA / mois</span></div>
                             <Link href="/tarifs">
-                                <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 rounded-xl px-8">Voir les détails</Button>
+                                <Button className="bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl px-8 border border-white/10">Voir les détails</Button>
                             </Link>
                         </div>
                         <div className="p-10 rounded-[3rem] bg-amber-500/10 border border-amber-500/50 flex flex-col items-center">
@@ -229,8 +226,8 @@ export default function HomePage() {
                             <div className="flex items-center gap-4">
                                 <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-amber-500 to-amber-800" />
                                 <div>
-                                    <div className="text-white font-bold text-lg">Maître Sophie L.</div>
-                                    <div className="text-amber-500 text-sm">Expertise Droit Immobilier</div>
+                                    <div className="text-white font-bold text-lg">Maître Fatou B.</div>
+                                    <div className="text-amber-500 text-sm">Expertise Droit Immobilier & OHADA</div>
                                 </div>
                             </div>
                         </div>
@@ -243,18 +240,13 @@ export default function HomePage() {
                 <div className="max-w-4xl mx-auto text-center p-20 rounded-[4rem] bg-gradient-to-br from-indigo-600 to-indigo-900 border border-white/10 relative overflow-hidden shadow-2xl">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
                     <div className="relative z-10">
-                        <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter">Prêt à Dominer votre <span className="text-amber-500">Marché ?</span></h2>
+                        <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter">Votre Succès, Notre <span className="text-amber-500">Priorité.</span></h2>
                         <p className="text-indigo-100 text-lg md:text-xl font-light mb-12 max-w-2xl mx-auto">
-                            Rejoignez les cabinets les plus prestigieux qui ont déjà fait le saut vers l'excellence numérique avec LexPremium.
+                            Discutez avec nos experts pour découvrir comment LexPremium peut propulser votre cabinet vers de nouveaux sommets.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                            <Link href="/login">
-                                <Button className="h-16 px-12 text-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-2xl shadow-xl shadow-amber-500/20">
-                                    Essayer Gratuitement
-                                </Button>
-                            </Link>
                             <Link href="/contact">
-                                <Button variant="outline" className="h-16 px-10 text-lg border-white/20 text-white hover:bg-white/5 rounded-2xl">
+                                <Button className="h-16 px-12 text-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-2xl shadow-xl shadow-amber-500/20">
                                     Prendre Rendez-vous
                                 </Button>
                             </Link>
