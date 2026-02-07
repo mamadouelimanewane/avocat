@@ -29,6 +29,41 @@ const TopicButton = ({ onClick, icon, label }: { onClick: () => void, icon: stri
     </Button>
 )
 
+// Helper for formatted message content
+const MessageContent = ({ text }: { text: string }) => {
+    const paragraphs = text.split('\n').filter(p => p.trim() !== "");
+    return (
+        <div className="space-y-3">
+            {paragraphs.map((paragraph, idx) => {
+                // Handle basic bold **text** and bullet points
+                let content: any = paragraph;
+
+                // Bullet points
+                const isBullet = paragraph.trim().startsWith('* ');
+                const cleanText = isBullet ? paragraph.trim().substring(2) : paragraph;
+
+                const parts = cleanText.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                        return <strong key={i} className="font-extrabold text-slate-900">{part.slice(2, -2)}</strong>;
+                    }
+                    return part;
+                });
+
+                if (isBullet) {
+                    return (
+                        <div key={idx} className="flex gap-2 pl-2">
+                            <span className="text-cyan-500 font-bold">•</span>
+                            <p className="flex-1">{parts}</p>
+                        </div>
+                    );
+                }
+
+                return <p key={idx} className="leading-relaxed">{parts}</p>;
+            })}
+        </div>
+    );
+}
+
 export function LexPublicChatWidget() {
     const [isOpen, setIsOpen] = useState(false)
     const [step, setStep] = useState<'welcome' | 'qualification' | 'chat' | 'contact'>('welcome')
@@ -70,14 +105,16 @@ export function LexPublicChatWidget() {
             if (response.success) {
                 setMessages(prev => [...prev, { role: 'bot', text: response.text! }])
 
-                // Discretely offer professional help after the advice
+                // Discretely offer professional help after a longer delay, or based on message length
+                const readingTime = Math.min(Math.max(response.text!.length * 30, 5000), 15000);
+
                 setTimeout(() => {
                     setMessages(prev => [...prev, {
                         role: 'bot',
                         text: "Si vous souhaitez transformer ces humbles informations en une défense certifiée, seriez-vous disposé à ce qu'un Avocat du cabinet LexPremium vous recontacte ?"
                     }])
-                    setStep('contact')
-                }, 3000)
+                    // We don't jump to contact step automatically anymore, we show buttons instead
+                }, readingTime)
             } else {
                 setMessages(prev => [...prev, { role: 'bot', text: "Je vous présente mes excuses les plus sincères, mais mon esprit rencontre un obstacle technique. Puis-je vous aider d'une autre manière ?" }])
             }
@@ -175,12 +212,31 @@ export function LexPublicChatWidget() {
                                                     </Avatar>
                                                 )}
                                                 <div className={cn(
-                                                    "p-4 rounded-2xl text-sm leading-relaxed shadow-sm",
+                                                    "p-4 rounded-2xl text-sm shadow-sm",
                                                     msg.role === 'user'
                                                         ? "bg-cyan-600 text-white rounded-tr-none font-medium"
                                                         : "bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium"
                                                 )}>
-                                                    {msg.text}
+                                                    <MessageContent text={msg.text} />
+
+                                                    {/* If it's the specific offer message, show action buttons */}
+                                                    {msg.role === 'bot' && msg.text.includes("seriez-vous disposé à ce qu'un Avocat") && (
+                                                        <div className="mt-4 flex flex-col gap-2">
+                                                            <Button
+                                                                onClick={() => setStep('contact')}
+                                                                className="bg-slate-900 text-white hover:bg-black text-[10px] font-bold h-10 rounded-xl"
+                                                            >
+                                                                OUI, ÊTRE RAPPELE
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                onClick={() => setMessages(prev => [...prev, { role: 'bot', text: "Très bien, je reste à votre entière disposition pour d'autres questions." }])}
+                                                                className="border-slate-200 text-slate-500 text-[10px] font-bold h-10 rounded-xl"
+                                                            >
+                                                                NON, CONTINUER À DISCUTER
+                                                            </Button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
