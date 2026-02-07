@@ -50,20 +50,13 @@ export default function HomePage() {
                         <Sparkles className="h-3 w-3" />
                         L'EXCELLENCE JURIDIQUE À L'ÈRE DE L'IA
                     </div>
-                    <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-[0.85] mb-10">
+                    <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-[0.85] mb-10">
                         LE CABINET <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">NOUVELLE GÉNÉRATION.</span>
                     </h1>
                     <p className="max-w-3xl mx-auto text-slate-400 text-lg md:text-2xl font-light leading-relaxed mb-12">
                         Comptabilité OHADA, Intelligence Artificielle, Finance et Mobilité. LexPremium est l'écosystème complet conçu pour les cabinets d'avocats d'élite.
                     </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                        <Link href="/login">
-                            <Button className="h-16 px-12 text-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-2xl group transition-all shadow-2xl shadow-amber-500/20">
-                                Lancer mon Cabinet Numérique
-                                <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                        </Link>
-                    </div>
+                    {/* Button Removed per user request */}
                 </div>
             </section>
 
@@ -92,40 +85,45 @@ export default function HomePage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all">
-                            <Calculator className="h-12 w-12 text-indigo-400 mb-8" />
-                            <h3 className="text-2xl font-bold text-white mb-4">Comptabilité & Finance</h3>
-                            <p className="text-slate-400 font-light leading-relaxed mb-6">
-                                Gestion intégrale conforme aux normes **OHADA & SYSCOHADA**. Suivi des journaux, CARPA, et bilan de rentabilité automatique.
-                            </p>
-                            <ul className="space-y-3 text-sm text-slate-500">
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Grand Livre & Balance</li>
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Analyse de Trésorerie</li>
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Facturation & Recouvrement</li>
-                            </ul>
-                        </div>
-                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all">
-                            <PenTool className="h-12 w-12 text-amber-500 mb-8" />
-                            <h3 className="text-2xl font-bold text-white mb-4">Aide à la Plaidoirie</h3>
-                            <p className="text-slate-400 font-light leading-relaxed mb-6">
-                                **Génération d'actes intelligente** et outils de rédaction. Chronomètre de plaidoirie pour une maîtrise totale de l'audience.
-                            </p>
-                            <ul className="space-y-3 text-sm text-slate-500">
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Agenda Procédural Smart</li>
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Bible des Modèles & Clauses</li>
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Simulateur de Frais & Actes</li>
-                            </ul>
-                        </div>
-                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all">
+                        {/* 1. GESTION MODERNE DES DOSSIERS */}
+                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all flex flex-col">
                             <Users className="h-12 w-12 text-emerald-500 mb-8" />
-                            <h3 className="text-2xl font-bold text-white mb-4">Portail Client Sécurisé</h3>
+                            <h3 className="text-2xl font-bold text-white mb-4">Gestion Moderne des Dossiers</h3>
                             <p className="text-slate-400 font-light leading-relaxed mb-6">
                                 Offrez à vos clients un **Extranet dédié**. Consultation de l'avancement, dépôt de pièces et paiements sécurisés 24h/24.
                             </p>
-                            <ul className="space-y-3 text-sm text-slate-500">
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Suivi Temps Réel</li>
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Coffre-fort Numérique</li>
-                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Relation Client Optimisée</li>
+                            <ul className="space-y-3 text-sm text-slate-500 mt-auto">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Innovation Client 360°</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Diligences & Temps Automatisés</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Portail Client Interactif</li>
+                            </ul>
+                        </div>
+
+                        {/* 2. AIDE À LA PLAIDOIRIE & IA */}
+                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all flex flex-col">
+                            <PenTool className="h-12 w-12 text-amber-500 mb-8" />
+                            <h3 className="text-2xl font-bold text-white mb-4">Aide à la Plaidoirie & IA</h3>
+                            <p className="text-slate-400 font-light leading-relaxed mb-6">
+                                **Génération d'actes intelligente** et outils de rédaction. Chronomètre de plaidoirie pour une maîtrise totale de l'audience.
+                            </p>
+                            <ul className="space-y-3 text-sm text-slate-500 mt-auto">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> LexAI Co-Counsel & Strategist</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Rédaction Augmentée par IA</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Analyse de Pièces & OSINT</li>
+                            </ul>
+                        </div>
+
+                        {/* 3. FINANCES & COMPTABILITÉ */}
+                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 hover:border-amber-500/20 transition-all flex flex-col">
+                            <Calculator className="h-12 w-12 text-indigo-400 mb-8" />
+                            <h3 className="text-2xl font-bold text-white mb-4">Finances & Comptabilité</h3>
+                            <p className="text-slate-400 font-light leading-relaxed mb-6">
+                                Gestion intégrale conforme aux normes **OHADA & SYSCOHADA**. Suivi des journaux, CARPA, et bilan de rentabilité automatique.
+                            </p>
+                            <ul className="space-y-3 text-sm text-slate-500 mt-auto">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Facturation & CARPA Intégrée</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Recouvrement Massif Automatisé</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-amber-500" /> Analyse de Rentabilité Directe</li>
                             </ul>
                         </div>
                     </div>
