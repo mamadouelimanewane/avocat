@@ -59,6 +59,9 @@ export function SupportChat() {
         if (query.includes("export") || query.includes("agenda") || query.includes("données")) {
             return "Vous pouvez exporter vos données (agenda, dossiers, factures) dans l'onglet 'Administration' > 'Sécurité & Sauvegarde' au format JSON."
         }
+        if (query.includes("portail") || query.includes("client") || query.includes("extranet")) {
+            return "Le portail client est accessible à l'adresse suivante : /portal/login. Vous pouvez y accéder pour que vos clients consultent leurs dossiers et règlent leurs factures."
+        }
         if (query.includes("bonjour") || query.includes("salut")) {
             return "Bonjour Maître ! Comment puis-je vous assister dans la gestion de votre cabinet aujourd'hui ?"
         }
@@ -68,11 +71,12 @@ export function SupportChat() {
             const { generateSupportResponse } = await import('@/app/actions')
             const res = await generateSupportResponse(content)
             if (res.success && res.text) return res.text
+            console.log("AI Support Response (failed or empty):", res)
         } catch (e) {
             console.error("AI Support Fallback Error:", e)
         }
 
-        return "Je comprends votre demande concernant '" + content + "'. Un agent spécialisé va prendre le relais pour vous assister précisément. En attendant, consultez le manuel d'utilisation dans la section Documentation."
+        return "Je comprends votre demande concernant '" + content + "'. Un agent spécialisé va prendre le relais pour vous assister précisément. En attendant, n'hésitez pas à consulter le manuel d'utilisation."
     }
 
     const handleSendMessage = async (e?: React.FormEvent) => {
