@@ -32,12 +32,16 @@ interface LexBotUniverseProps {
 
 type AgentType = "hr" | "contract" | "public" | "lextenso"
 
+import { generateHRAssistance, generateContractAnalysis, generatePublicLegalAdvice, generateDoctrinalResearch } from "@/app/actions"
+import { Loader2 } from "lucide-react"
+
 export function LexBotUniverse({ dossierId, onClose }: LexBotUniverseProps) {
     const [activeAgent, setActiveAgent] = useState<AgentType>("hr")
     const [messages, setMessages] = useState<Array<{ role: 'user' | 'ai', text: string }>>([
         { role: 'ai', text: "Bonjour Maître. Je suis LexHR, votre spécialiste en Droit Social. Comment puis-je vous aider sur ce dossier ?" }
     ])
     const [input, setInput] = useState("")
+    const [isThinking, setIsThinking] = useState(false)
 
     const agents = [
         {
@@ -82,21 +86,38 @@ export function LexBotUniverse({ dossierId, onClose }: LexBotUniverseProps) {
         }
     ]
 
-    const handleSend = () => {
-        if (!input.trim()) return
-        setMessages([...messages, { role: 'user', text: input }])
+    const handleSend = async () => {
+        if (!input.trim() || isThinking) return
+
+        const userMsg = input
+        setMessages(prev => [...prev, { role: 'user', text: userMsg }])
         setInput("")
+        setIsThinking(true)
 
-        // Mock AI Response
-        setTimeout(() => {
-            let response = ""
-            if (activeAgent === 'hr') response = "D'après la convention collective Syntec, le préavis pour ce cadre est de 3 mois. Attention à la clause de dédit-formation."
-            if (activeAgent === 'contract') response = "J'ai détecté une clause abusive à l'article 5. Je suggère de la remplacer par la clause standard 'Tomorro Safe'."
-            if (activeAgent === 'public') response = "Le client semble éligible à l'aide juridictionnelle. J'ai pré-rempli le formulaire Cerfa correspondant."
-            if (activeAgent === 'lextenso') response = "J'ai trouvé 3 articles pertinents dans la Gazette du Palais sur ce point de droit. Voici les résumés..."
+        try {
+            let response: { success: boolean, text?: string, message?: string } = { success: false }
 
-            setMessages(prev => [...prev, { role: 'ai', text: response }])
-        }, 1000)
+            if (activeAgent === 'hr') {
+                response = await generateHRAssistance(userMsg, dossierId)
+            } else if (activeAgent === 'contract') {
+                response = await generateContractAnalysis(userMsg, dossierId)
+            } else if (activeAgent === 'public') {
+                response = await generatePublicLegalAdvice(userMsg, "Général")
+            } else if (activeAgent === 'lextenso') {
+                response = await generateDoctrinalResearch(userMsg)
+            }
+
+            if (response && response.success && response.text) {
+                setMessages(prev => [...prev, { role: 'ai', text: response.text! }])
+            } else {
+                setMessages(prev => [...prev, { role: 'ai', text: "Je suis navré, je n'ai pas pu traiter cette demande pour le moment." }])
+            }
+        } catch (error) {
+            console.error("Agent Error:", error)
+            setMessages(prev => [...prev, { role: 'ai', text: "Une erreur de connexion neuronale est survenue." }])
+        } finally {
+            setIsThinking(false)
+        }
     }
 
     const currentAgent = agents.find(a => a.id === activeAgent) || agents[0]
@@ -182,6 +203,17 @@ export function LexBotUniverse({ dossierId, onClose }: LexBotUniverseProps) {
                                 </div>
                             </div>
                         ))}
+
+                        {isThinking && (
+                            <div className="flex gap-4">
+                                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 border-white", currentAgent.color)}>
+                                    <Loader2 className="h-4 w-4 text-white animate-spin" />
+                                </div>
+                                <span className="text-xs text-slate-400 font-bold self-center animate-pulse">
+                                    {currentAgent.name} réfléchit...
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </ScrollArea>
 
@@ -193,14 +225,16 @@ export function LexBotUniverse({ dossierId, onClose }: LexBotUniverseProps) {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder={`Posez une question à ${currentAgent.name}...`}
+                            disabled={isThinking}
                             className="h-12 rounded-xl bg-slate-50 border-slate-200 focus:border-slate-300 focus:ring-slate-300 font-medium pr-12"
                         />
                         <Button
                             onClick={handleSend}
                             size="icon"
+                            disabled={isThinking || !input.trim()}
                             className={cn("absolute right-2 top-2 h-8 w-8 rounded-lg transition-colors", currentAgent.color)}
                         >
-                            <Send className="h-4 w-4 text-white" />
+                            {isThinking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 text-white" />}
                         </Button>
                     </div>
                     <div className="text-center mt-2">
@@ -213,7 +247,6 @@ export function LexBotUniverse({ dossierId, onClose }: LexBotUniverseProps) {
         </div>
     )
 }
-
 function InfoIcon({ color }: { color: string }) {
     return (
         <svg

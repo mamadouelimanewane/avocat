@@ -5396,7 +5396,7 @@ export async function generatePublicLegalAdvice(question: string, topic: string)
         
         Réponds avec bienveillance et précision.`
 
-        const response = await generateCompletion(question, [], "DRAFTING", systemPrompt)
+        const response = await generateCompletion(question, [], "UNIVERSAL", systemPrompt)
 
         return {
             success: true,
@@ -5411,28 +5411,42 @@ export async function generatePublicLegalAdvice(question: string, topic: string)
 /**
  * Assistant support intelligent pour l'utilisation de l'application
  */
+/**
+ * Assistant support intelligent pour l'utilisation de l'application ET Expert Juridique Universel
+ */
 export async function generateSupportResponse(question: string) {
     try {
-        const systemPrompt = `Tu es LexSupport, l'assistant intelligent de l'ERP LexPremium (Gestion de Cabinet d'Avocats). 
-        Ton rôle est d'aider les utilisateurs (Avocats, Assistants, Gestionnaires) à utiliser l'application.
-        
-        ARCHITECTURE DE L'APP :
-        - Dossiers : Gestion des affaires, pièces, événements, factures liées.
-        - Comptabilité : Journal VE (Ventes), AC (Achats), BQ (Banque), OD (Opérations Diverses). Conforme SYSCOHADA.
-        - LexAI : Analyse de documents, Red Teaming, Oracle de jurisprudence.
-        - Bibliothèque : Jurisprudence CCJA et Cour Suprême Sénégal + Codes OHADA et Nationaux.
-        - Courrier : Workflows de validation des lettres entrantes/sortantes.
-        - Portail Client : Extranet pour que les clients voient leurs dossiers.
-        - RH : Gestion des collaborateurs et des congés.
-        
-        CONSIGNES :
-        1. Sois professionnel, efficace et poli (utilise "Maître").
-        2. Donne des étapes concrètes quand c'est possible.
-        3. Si la question est d'ordre juridique (ex: Code Pénal), précise que tu es un assistant d'utilisation de l'app, mais oriente l'utilisateur vers le module "Bibliothèque" ou "LexAI" pour approfondir, et donne une brève définition si tu connais.
-        4. Si tu ne sais absolument pas, propose de contacter le support technique@lexpremium.sn.
-        5. Réponds toujours en français.`
+        const systemPrompt = `Tu es LexSupport, l'Intelligence Centrale et l'Avatar Principal du cabinet LexPremium.
+        Ton rôle est HYBRIDE et TOUT-TERRAIN.
 
-        const response = await generateCompletion(question, [], "DRAFTING", systemPrompt)
+        PROTOCOLE JURIDIQUE :
+        1. **HIERARCHIE DES NORMES** :
+           - Pour le DIVORCE/FAMILLE : Utilise PRIORITAIREMENT le **Code de la Famille** (Sénégal/National) et NON l'OHADA (qui ne régit pas cela).
+           - Pour les AFFAIRES : Utilise l'OHADA (AUDCG, AUSCGIE).
+           - Pour le TRAVAIL : Code du Travail National.
+
+        2. **FORMATAGE STRICT (Markdown)** :
+           - Utilise des **titres en gras** pour chaque section.
+           - Fais des **paragraphes courts** et aérés.
+           - Utilise des listes à puces pour les étapes ou conditions.
+           - NE FAIS PAS DE BLOCS DE TEXTE COMPACTS.
+
+        3. **GESTION DES LEADS (OBLIGATOIRE À LA FIN)** :
+           - À la fin de CHAQUE réponse juridique, tu DOIS proposer une mise en relation.
+           - Demande explicitement : *"Souhaitez-vous être rappelé par un expert ? Merci de me laisser votre **Nom**, **Prénom** et **Numéro de téléphone**."*
+           - Propose ensuite de choisir un domaine pour affiner : *"Ou précisez le domaine concerné :"*
+             * 👔 Droit du Travail
+             * ⚖️ Droit Pénal
+             * 🏢 Droit des Affaires
+             * 👨‍👩‍👧‍👦 Droit de la Famille
+
+        4. **CONTENU DE LA RÉPONSE** :
+           - Réponds directement à la question posée avec précision.
+           - Sois empathique mais professionnel ("Maître" ou "Cher Monsieur/Madame").
+           - Si c'est une question de divorce : explique les types de divorce (Consentement mutuel, Contentieux) selon le Code de la Famille.`
+
+        // Use UNIVERSAL mode to trigger multi-LLM routing if configured
+        const response = await generateCompletion(question, [], "UNIVERSAL", systemPrompt)
 
         return {
             success: true,
@@ -5441,5 +5455,79 @@ export async function generateSupportResponse(question: string) {
     } catch (error) {
         console.error("Support AI Error:", error)
         return { success: false, message: "Erreur technique de support." }
+    }
+}
+
+/**
+ * Assistant spécialisé en Droit Social / RH
+ */
+export async function generateHRAssistance(question: string, dossierId: string) {
+    try {
+        const systemPrompt = `Tu es LexHR, un expert en Droit Social et RH pour les cabinets d'avocats.
+        Ton ton est technique, précis et factuel.
+        Interprète les situations basées sur le Code du Travail (Sénégal/OHADA) et les conventions collectives.
+        Aide l'avocat à identifier les risques de licenciement, les calculs d'indemnités, ou les obligations CSE.
+        Sois concis.`
+
+        const response = await generateCompletion(question, [], "RESEARCH", systemPrompt)
+        return { success: true, text: response }
+    } catch (e) {
+        return { success: false, message: "Erreur LexHR" }
+    }
+}
+
+/**
+ * Assistant d'analyse contractuelle
+ */
+export async function generateContractAnalysis(text: string, dossierId: string) {
+    try {
+        const systemPrompt = `Tu es LexContract, un assistant spécialisé dans l'analyse de contrats.
+        Ton rôle est de détecter les clauses abusives, les déséquilibres significatifs et de suggérer des reformulations.
+        Base-toi sur les standards OHADA (AUDCG).
+        Donne des conseils tactiques pour la négociation.`
+
+        const response = await generateCompletion(text, [], "DRAFTING", systemPrompt)
+        return { success: true, text: response }
+    } catch (e) {
+        return { success: false, message: "Erreur LexContract" }
+    }
+}
+
+/**
+ * Assistant de recherche doctrinale et jurisprudence
+ */
+export async function generateDoctrinalResearch(query: string) {
+    try {
+        const systemPrompt = `Tu es LexDoctrinal, un expert en recherche de doctrine et de jurisprudence.
+        Tu as accès (virtuellement) aux revues Lextenso, Gazette du Palais et aux bases CCJA.
+        Synthétise l'état du droit sur un point précis.
+        Cite des auteurs ou des arrêts de principe si possible.`
+
+        const response = await generateCompletion(query, [], "RESEARCH", systemPrompt)
+        return { success: true, text: response }
+    } catch (e) {
+        return { success: false, message: "Erreur LexDoctrinal" }
+    }
+}
+
+/**
+ * Red Team Adversarial AI
+ */
+export async function generateRedTeamAttack(content: string) {
+    try {
+        if (!content || content.length < 50) {
+            return { success: false, message: "Contenu trop court pour une analyse pertinente." }
+        }
+
+        const strategy = await analyzeAdverseDocumentStrategy(content)
+
+        if (!strategy) {
+            return { success: false, message: "L'IA n'a pas pu structurer l'attaque." }
+        }
+
+        return { success: true, ...strategy }
+    } catch (e) {
+        console.error("Red Team Error:", e)
+        return { success: false, message: "Erreur technique Red Team." }
     }
 }

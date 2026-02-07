@@ -20,7 +20,14 @@ if (process.env.DEEPSEEK_API_KEY) {
 /**
  * Generate a text response using DeepSeek Chat with RAG context.
  */
+/**
+ * Generate a text response using DeepSeek Chat with RAG context.
+ */
 export async function generateCompletion(prompt: string, contextDocuments: any[], mode: string, customSystemPrompt?: string) {
+    if (mode === 'UNIVERSAL') {
+        return generateUniversalCompletion(prompt, contextDocuments, customSystemPrompt);
+    }
+
     if (!openai) {
         return null; // Fallback to simulation mode if no key
     }
@@ -64,6 +71,90 @@ MODE ACTUEL : ${mode}`;
         console.error("DeepSeek API Error:", error);
         return null;
     }
+}
+
+/**
+ * Universal Multi-LLM Router (Claude, DeepSeek, OpenAI, Grok, Mistral, Gemini)
+ */
+async function generateUniversalCompletion(prompt: string, contextDocuments: any[], systemPrompt?: string) {
+    const contextText = contextDocuments.map((doc, i) =>
+        `[DOC ${i + 1}] ${doc.title}: ${doc.content?.substring(0, 500)}...`
+    ).join('\n');
+
+    const fullPrompt = `${systemPrompt}\n\nCONTEXTE:\n${contextText}\n\nQUESTION:\n${prompt}`;
+
+    // 1. Claude 3 (Anthropic) - Excellent for Reasoning
+    if (process.env.ANTHROPIC_API_KEY) {
+        try {
+            console.log("Routing to Claude 3 Opus/Sonnet...");
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'x-api-key': process.env.ANTHROPIC_API_KEY,
+                    'anthropic-version': '2023-06-01',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: "claude-3-opus-20240229",
+                    max_tokens: 2000,
+                    messages: [{ role: "user", content: fullPrompt }]
+                })
+            });
+            const data = await response.json();
+            if (data.content && data.content[0]) return data.content[0].text;
+        } catch (e) { console.error("Claude Error", e); }
+    }
+
+    // 2. DeepSeek (Specialized Coding/Legal)
+    if (process.env.DEEPSEEK_API_KEY) {
+        console.log("Routing to DeepSeek-V3...");
+        return generateCompletion(prompt, contextDocuments, 'RESEARCH', systemPrompt);
+    }
+
+    // 3. OpenAI (GPT-4o)
+    if (process.env.OPENAI_API_KEY) {
+        console.log("Routing to GPT-4o...");
+        const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+        const completion = await client.chat.completions.create({
+            messages: [{ role: "system", content: systemPrompt || "You are a helpful assistant." }, { role: "user", content: fullPrompt }],
+            model: "gpt-4o",
+        });
+        return completion.choices[0].message.content;
+    }
+
+    // 4. Grok (XAI)
+    if (process.env.GROK_API_KEY) {
+        try {
+            console.log("Routing to Grok-1...");
+            const client = new OpenAI({ apiKey: process.env.GROK_API_KEY, baseURL: "https://api.x.ai/v1" });
+            const completion = await client.chat.completions.create({
+                messages: [{ role: "system", content: systemPrompt || "You are Grok." }, { role: "user", content: fullPrompt }],
+                model: "grok-beta",
+            });
+            return completion.choices[0].message.content;
+        } catch (e) { console.error("Grok Error", e); }
+    }
+
+    // 5. Mistral AI (Le Large)
+    if (process.env.MISTRAL_API_KEY) {
+        try {
+            console.log("Routing to Mistral Large...");
+            const client = new OpenAI({ apiKey: process.env.MISTRAL_API_KEY, baseURL: "https://api.mistral.ai/v1" });
+            const completion = await client.chat.completions.create({
+                messages: [{ role: "system", content: systemPrompt || "Tu es un expert juridique." }, { role: "user", content: fullPrompt }],
+                model: "mistral-large-latest",
+            });
+            return completion.choices[0].message.content;
+        } catch (e) { console.error("Mistral Error", e); }
+    }
+
+    // 6. Google Gemini
+    if (process.env.GEMINI_API_KEY) {
+        // Placeholder for Gemini implementation
+        console.log("Routing to Gemini Pro...");
+    }
+
+    return null; // Fallback
 }
 
 /**

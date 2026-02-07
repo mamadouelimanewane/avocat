@@ -1,0 +1,16 @@
+'ai exécuté la commande de seeding (npx prisma db seed) pour insérer ces comptes dans votre base de données de production (MongoDB Atlas).
+
+Les comptes suivants ont été créés et/ou mis à jour :
+
+Administrateur
+admin@lexpremium.sn / demo123
+Avocat
+avocat@lexpremium.sn / demo123
+Assistant
+assistant@lexpremium.sn / demo123
+Client Démo
+client@exemple.com / demo123
+Vous pouvez maintenant vous connecter avec ces identifiants sur la version déployée : https://avocat-tito.vercel.app/login
+
+Good
+Bad

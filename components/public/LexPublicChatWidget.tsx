@@ -147,11 +147,17 @@ export function LexPublicChatWidget() {
                                         Je suis ici pour écouter vos préoccupations avec toute la bienveillance que vous méritez. Quelle direction souhaitez-vous prendre ?
                                     </p>
                                 </div>
-                                <div className="grid grid-cols-1 w-full gap-3">
-                                    <TopicButton onClick={() => startChat('Droit du Travail')} icon="👔" label="Droit du Travail" />
-                                    <TopicButton onClick={() => startChat('Famille / Succession')} icon="🏠" label="Famille & Succession" />
-                                    <TopicButton onClick={() => startChat('Foncier / Immobilier')} icon="🏗️" label="Foncier & Immobilier" />
-                                    <TopicButton onClick={() => startChat('Droit des Affaires')} icon="🏢" label="Droit des Affaires" />
+                                <div className="grid grid-cols-2 w-full gap-3">
+                                    <TopicButton onClick={() => startChat('Droit du Travail')} icon="👔" label="Travail" />
+                                    <TopicButton onClick={() => startChat('Famille / Succession')} icon="🏠" label="Famille" />
+                                    <TopicButton onClick={() => startChat('Foncier / Immobilier')} icon="🏗️" label="Immobilier" />
+                                    <TopicButton onClick={() => startChat('Droit des Affaires')} icon="🏢" label="Affaires" />
+
+                                    {/* NOUVELLES CATEGORIES */}
+                                    <TopicButton onClick={() => startChat('Droit Pénal')} icon="⚖️" label="Pénal" />
+                                    <TopicButton onClick={() => startChat('Fiscalité')} icon="💰" label="Fiscalité" />
+                                    <TopicButton onClick={() => startChat('Droit Administratif')} icon="🏛️" label="Administratif" />
+                                    <TopicButton onClick={() => startChat('Autre Demande')} icon="🌐" label="Autre / Incertain" />
                                 </div>
                             </div>
                         )}
