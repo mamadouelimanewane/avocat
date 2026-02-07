@@ -37,8 +37,8 @@ export function LexPublicChatWidget() {
     const [isTyping, setIsTyping] = useState(false)
     const [selectedTopic, setSelectedTopic] = useState("")
 
-    // Angelic Child Avatar URL (High quality placeholder)
-    const avatarUrl = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400"
+    // Elegant African Woman Avatar URL
+    const avatarUrl = "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400"
 
     // Scrolls to bottom
     const scrollRef = useRef<HTMLDivElement>(null)
