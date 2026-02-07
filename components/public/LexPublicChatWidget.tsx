@@ -129,18 +129,23 @@ export function LexPublicChatWidget() {
         <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4 font-sans">
             {/* Toggle Button */}
             {!isOpen && (
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="h-20 w-20 rounded-full bg-white shadow-[0_10px_40px_rgba(0,0,0,0.1)] border-4 border-cyan-500 transition-all hover:scale-110 flex items-center justify-center overflow-hidden group relative p-0"
-                >
-                    <img
-                        src={avatarUrl}
-                        alt="Angelic Guide"
-                        className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all"
-                    />
-                    <div className="absolute inset-0 bg-cyan-500/10 group-hover:bg-transparent" />
-                    <span className="absolute -top-1 -right-1 bg-cyan-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">AIDE</span>
-                </button>
+                <div className="flex items-center gap-4 cursor-pointer group" onClick={() => setIsOpen(true)}>
+                    <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-white/20 animate-in slide-in-from-right-4 fade-in duration-700 hidden md:block">
+                        <p className="text-sm font-black text-slate-800 tracking-tight">Avez-vous besoin d'aide ?</p>
+                        <p className="text-[10px] text-cyan-600 font-bold uppercase tracking-widest mt-0.5">LexPublic est en ligne</p>
+                    </div>
+                    <button
+                        className="h-20 w-20 rounded-full bg-white shadow-[0_10px_40px_rgba(0,0,0,0.1)] border-4 border-cyan-500 transition-all group-hover:scale-110 flex items-center justify-center overflow-hidden relative p-0"
+                    >
+                        <img
+                            src={avatarUrl}
+                            alt="Angelic Guide"
+                            className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all"
+                        />
+                        <div className="absolute inset-0 bg-cyan-500/10 group-hover:bg-transparent" />
+                        <span className="absolute -top-1 -right-1 bg-cyan-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">AIDE</span>
+                    </button>
+                </div>
             )}
 
             {/* Chat Window */}
