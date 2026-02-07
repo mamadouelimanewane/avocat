@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     ShieldAlert,
     Swords,
@@ -8,7 +8,7 @@ import {
     Scale,
     Gavel,
     Target,
-    AlertTriangle,
+    TriangleAlert,
     CheckCircle2,
     ShieldCheck,
     History,
@@ -20,7 +20,7 @@ import {
     TrendingDown,
     Activity
 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -33,9 +33,14 @@ const VULNERABILITIES = [
 ]
 
 export default function RedTeamPage() {
+    const [mounted, setMounted] = useState(false)
     const [isSimulating, setIsSimulating] = useState(false)
     const [simProgress, setSimProgress] = useState(0)
     const [showDebrief, setShowDebrief] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const runAttackSimulation = () => {
         setIsSimulating(true)
@@ -54,8 +59,10 @@ export default function RedTeamPage() {
         }, 100)
     }
 
+    if (!mounted) return null
+
     return (
-        <div className="p-8 space-y-8 bg-[#0a0a0a] min-h-screen text-slate-100 italic">
+        <div className="space-y-8 bg-[#0a0a0a] min-h-[calc(100vh-theme(spacing.32))] text-slate-100 rounded-[3rem] p-8 md:p-12 italic">
 
             {/* Header: Tactical Warfare Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -96,18 +103,18 @@ export default function RedTeamPage() {
                                 <Button variant="outline" className="h-16 justify-start border-rose-600/20 bg-rose-600/5 hover:bg-rose-600/10 rounded-2xl p-6 group transition-all">
                                     <div className="flex gap-4 items-center">
                                         <ShieldAlert className="h-6 w-6 text-rose-600" />
-                                        <div className="text-left">
-                                            <p className="text-xs font-black text-white uppercase tracking-tight">TOTAL WARFARE</p>
-                                            <p className="text-[10px] text-rose-400 font-bold italic">Analyse impitoyable de toutes les failles.</p>
-                                        </div>
+                                        <span className="text-left flex flex-col items-start">
+                                            <span className="text-xs font-black text-white uppercase tracking-tight block">TOTAL WARFARE</span>
+                                            <span className="text-[10px] text-rose-400 font-bold italic block">Analyse impitoyable de toutes les failles.</span>
+                                        </span>
                                     </div>
                                 </Button>
                                 <Button variant="outline" className="h-16 justify-start border-white/10 bg-white/5 text-slate-400 hover:bg-white/10 rounded-2xl p-6 opacity-40">
                                     <Scale className="h-6 w-6" />
-                                    <div className="ml-4 text-left">
-                                        <p className="text-xs font-black uppercase">Standard Balance</p>
-                                        <p className="text-[10px] italic">Vérification de cohérence équilibrée.</p>
-                                    </div>
+                                    <span className="ml-4 text-left flex flex-col items-start">
+                                        <span className="text-xs font-black uppercase block">Standard Balance</span>
+                                        <span className="text-[10px] italic block">Vérification de cohérence équilibrée.</span>
+                                    </span>
                                 </Button>
                             </div>
                         </div>
@@ -118,7 +125,7 @@ export default function RedTeamPage() {
                             className="w-full h-18 bg-rose-700 text-white rounded-[1.5rem] font-black text-sm shadow-[0_20px_40px_rgba(190,18,60,0.3)] uppercase tracking-[0.2em] flex gap-4 hover:bg-rose-600 transition-all border-b-4 border-rose-900 active:border-b-0 active:translate-y-1"
                         >
                             {isSimulating ? (
-                                <><div className="h-6 w-6 border-2 border-white/30 border-t-white rounded-full animate-spin" /> GÉNÉRATION DE L&apos;ASSAUT...</>
+                                <><span className="h-6 w-6 border-2 border-white/30 border-t-white rounded-full animate-spin block" /> GÉNÉRATION DE L&apos;ASSAUT...</>
                             ) : (
                                 <><Zap className="h-6 w-6 fill-white" /> DÉCHAÎNER LA RED TEAM</>
                             )}
@@ -182,7 +189,7 @@ export default function RedTeamPage() {
                                 {/* Details Vulnerabilities */}
                                 <Card className="bg-white rounded-[3rem] p-10 text-slate-950 space-y-8 shadow-2xl">
                                     <h3 className="text-xl font-black uppercase tracking-tight flex items-center gap-3">
-                                        <AlertTriangle className="h-6 w-6 text-rose-600" />
+                                        <TriangleAlert className="h-6 w-6 text-rose-600" />
                                         Points de Brèche détectés
                                     </h3>
                                     <div className="space-y-4">
@@ -253,13 +260,6 @@ export default function RedTeamPage() {
 
             </div>
 
-            <style jsx global>{`
-                @keyframes scan {
-                    0% { transform: translateY(-100%); opacity: 0; }
-                    50% { opacity: 1; }
-                    100% { transform: translateY(100%); opacity: 0; }
-                }
-            `}</style>
         </div>
     )
 }

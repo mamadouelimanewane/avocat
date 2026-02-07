@@ -1,17 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import { 
-    Search, 
-    FileText, 
-    Mail, 
-    Smartphone, 
-    MapPin, 
-    Siren, 
-    Eye, 
-    CheckCircle2, 
+import {
+    Search,
+    FileText,
+    Mail,
+    Smartphone,
+    MapPin,
+    Siren,
+    Eye,
+    CheckCircle2,
     AlertTriangle,
-    XAndY,
+    TriangleAlert,
     Fingerprint,
     Unlock,
     ScanLine,
@@ -294,10 +294,10 @@ export default function SherlockCasePage() {
 
     const submitInvestigation = () => {
         if (!activeScenario) return
-        
+
         const correctIds = activeScenario.correctEvidenceIds
         const isMatch = selectedEvidence.length === correctIds.length && selectedEvidence.every(id => correctIds.includes(id))
-        
+
         if (isMatch) {
             setStatus('solved')
         } else {
@@ -312,7 +312,7 @@ export default function SherlockCasePage() {
                 <div className="max-w-6xl mx-auto space-y-12">
                     <div className="text-center space-y-6 animate-in slide-in-from-top-10 duration-700">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-500 font-bold uppercase tracking-widest text-sm mb-4">
-                             <ScanLine className="w-4 h-4" /> Sherlock Investigation
+                            <ScanLine className="w-4 h-4" /> Sherlock Investigation
                         </div>
                         <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-4">
                             Bureau des <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Enquêtes</span>
@@ -324,8 +324,8 @@ export default function SherlockCasePage() {
 
                     <div className="grid md:grid-cols-3 gap-8">
                         {SCENARIO_DB.map((scenario) => (
-                            <Card 
-                                key={scenario.id} 
+                            <Card
+                                key={scenario.id}
                                 className="bg-slate-900 border-white/5 overflow-hidden group hover:border-amber-500/50 transition-all cursor-pointer hover:-translate-y-2 duration-300"
                                 onClick={() => startScenario(scenario)}
                             >
@@ -362,14 +362,14 @@ export default function SherlockCasePage() {
 
     // --- GAME SCREEN (Reusing existing layout with dynamic data) ---
     return (
-        <div className="min-h-screen bg-slate-950 p-6 font-sans text-slate-100 flex flex-col animate-in fade-in duration-500">
-            
+        <div key={activeScenario.id} className="min-h-screen bg-slate-950 p-6 font-sans text-slate-100 flex flex-col animate-in fade-in duration-500">
+
             {/* Header */}
             <div className="flex justify-between items-end mb-8 border-b border-white/10 pb-6">
                 <div className="space-y-2">
-                    <Button 
-                        variant="ghost" 
-                        className="pl-0 text-slate-500 hover:text-white mb-2" 
+                    <Button
+                        variant="ghost"
+                        className="pl-0 text-slate-500 hover:text-white mb-2"
                         onClick={() => setActiveScenario(null)}
                     >
                         ← Retour aux Dossiers
@@ -390,7 +390,7 @@ export default function SherlockCasePage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1">
-                
+
                 {/* EVIDENCE BOARD */}
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex justify-between items-center">
@@ -398,7 +398,7 @@ export default function SherlockCasePage() {
                             <Search className="w-6 h-6 text-amber-500" />
                             Pièces à Conviction ({activeScenario.evidence.length})
                         </h2>
-                        
+
                         {/* Status Message */}
                         {status === 'solved' && (
                             <div className="bg-emerald-500/10 border border-emerald-500/50 text-emerald-500 px-4 py-2 rounded-lg font-black text-sm animate-in zoom-in flex items-center gap-2">
@@ -414,12 +414,12 @@ export default function SherlockCasePage() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                         {activeScenario.evidence.map((doc) => (
-                            <Card 
-                                key={doc.id} 
+                            <Card
+                                key={doc.id}
                                 className={cn(
                                     "cursor-pointer group relative overflow-hidden transition-all duration-300 border-2",
-                                    selectedEvidence.includes(doc.id) 
-                                        ? "bg-amber-500/10 border-amber-500/80 shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)]" 
+                                    selectedEvidence.includes(doc.id)
+                                        ? "bg-amber-500/10 border-amber-500/80 shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)]"
                                         : "bg-slate-900/50 border-white/5 hover:border-white/20 hover:bg-slate-900"
                                 )}
                                 onClick={() => toggleEvidence(doc.id)}
@@ -436,11 +436,11 @@ export default function SherlockCasePage() {
 
                                 <CardContent className="p-6 space-y-4">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className={cn("p-2 rounded-lg", 
-                                            doc.type === 'bank' ? "bg-emerald-500/20 text-emerald-500" : 
-                                            doc.type === 'email' ? "bg-blue-500/20 text-blue-500" :
-                                            doc.type === 'legal' ? "bg-violet-500/20 text-violet-500" :
-                                            "bg-slate-500/20 text-slate-400"
+                                        <div className={cn("p-2 rounded-lg",
+                                            doc.type === 'bank' ? "bg-emerald-500/20 text-emerald-500" :
+                                                doc.type === 'email' ? "bg-blue-500/20 text-blue-500" :
+                                                    doc.type === 'legal' ? "bg-violet-500/20 text-violet-500" :
+                                                        "bg-slate-500/20 text-slate-400"
                                         )}>
                                             {doc.type === 'bank' && <Fingerprint className="w-5 h-5" />}
                                             {doc.type === 'email' && <Mail className="w-5 h-5" />}
@@ -449,7 +449,7 @@ export default function SherlockCasePage() {
                                         </div>
                                         <h3 className="font-bold text-slate-200 line-clamp-1">{doc.title}</h3>
                                     </div>
-                                    
+
                                     <p className="text-sm font-mono text-slate-400 bg-black/40 p-3 rounded-lg border-l-2 border-slate-700 min-h-[5rem]">
                                         {doc.content}
                                     </p>
@@ -461,7 +461,7 @@ export default function SherlockCasePage() {
 
                 {/* ANALYSIS TERMINAL */}
                 <div className="space-y-6 flex flex-col">
-                     <h2 className="text-xl font-black flex items-center gap-3">
+                    <h2 className="text-xl font-black flex items-center gap-3">
                         <ScanLine className="w-6 h-6 text-emerald-500" />
                         Terminal Nexus
                     </h2>
@@ -470,7 +470,7 @@ export default function SherlockCasePage() {
                         {/* CRT Effect Overlay */}
                         <div className="absolute inset-0 bg-[url('/scanlines.png')] opacity-10 pointer-events-none z-20"></div>
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-900/10 pointer-events-none z-10"></div>
-                        
+
                         <div className="relative z-30 space-y-4 h-full flex flex-col">
                             <div className="text-emerald-500/80 text-xs mb-4 border-b border-emerald-900/50 pb-2 flex justify-between">
                                 <span>SYSTEM READY</span>
@@ -478,12 +478,12 @@ export default function SherlockCasePage() {
                             </div>
 
                             <div className="flex-1 space-y-4 overflow-y-auto">
-                                <p className="text-slate-400">> Initialisation du module d'analyse...</p>
-                                <p className="text-slate-400">> Chargement du dossier {activeScenario.ref}...</p>
-                                
+                                <p className="text-slate-400">&gt; Initialisation du module d'analyse...</p>
+                                <p className="text-slate-400">&gt; Chargement du dossier {activeScenario.ref}...</p>
+
                                 {selectedEvidence.length > 0 && (
                                     <div className="space-y-2">
-                                        <p className="text-white">> Éléments sélectionnés :</p>
+                                        <p className="text-white">&gt; Éléments sélectionnés :</p>
                                         {selectedEvidence.map(id => (
                                             <p key={id} className="text-amber-500 ml-4 flex items-center">
                                                 <span className="w-2 h-2 bg-amber-500 mr-2"></span>
@@ -495,30 +495,30 @@ export default function SherlockCasePage() {
 
                                 {status === 'solved' && (
                                     <div className="mt-8 p-4 bg-emerald-900/20 border border-emerald-500/30 rounded-lg animate-in fade-in slide-in-from-bottom-5">
-                                        <p className="text-emerald-400 font-bold mb-2">>> ANALYSE JURIDIQUE COMPLÈTE <<</p>
+                                        <p className="text-emerald-400 font-bold mb-2">&gt;&gt; ANALYSE JURIDIQUE COMPLÈTE &lt;&lt;</p>
                                         <p className="text-emerald-200/80 leading-relaxed">
                                             {activeScenario.conclusion}
                                         </p>
                                     </div>
                                 )}
-                                
+
                                 {status === 'failed' && (
-                                     <div className="mt-8 p-4 bg-rose-900/20 border border-rose-500/30 rounded-lg animate-in fade-in">
-                                         <p className="text-rose-400 font-bold">>> ERREUR D'ANALYSE <<</p>
-                                         <p className="text-rose-200/80">
-                                             {activeScenario.hint}
-                                         </p>
-                                     </div>
+                                    <div className="mt-8 p-4 bg-rose-900/20 border border-rose-500/30 rounded-lg animate-in fade-in">
+                                        <p className="text-rose-400 font-bold">&gt;&gt; ERREUR D'ANALYSE &lt;&lt;</p>
+                                        <p className="text-rose-200/80">
+                                            {activeScenario.hint}
+                                        </p>
+                                    </div>
                                 )}
                             </div>
 
-                            <Button 
+                            <Button
                                 onClick={submitInvestigation}
                                 disabled={selectedEvidence.length === 0 || status === 'solved'}
                                 className={cn(
                                     "w-full h-14 font-black tracking-widest text-lg rounded-xl transition-all",
-                                    status === 'solved' 
-                                        ? "bg-emerald-600 text-white cursor-default" 
+                                    status === 'solved'
+                                        ? "bg-emerald-600 text-white cursor-default"
                                         : "bg-emerald-600 hover:bg-emerald-500 text-slate-950 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"
                                 )}
                             >

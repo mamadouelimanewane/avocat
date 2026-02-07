@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     ShieldCheck,
     Fingerprint,
@@ -8,7 +8,7 @@ import {
     Lock,
     Scale,
     Landmark,
-    AlertTriangle,
+    TriangleAlert,
     CheckCircle2,
     Search,
     UserCheck,
@@ -19,7 +19,7 @@ import {
     History,
     FileCheck2 as FileCheck
 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -33,8 +33,13 @@ const KYC_CHECKS = [
 ]
 
 export default function CarpaKycPage() {
+    const [mounted, setMounted] = useState(false)
     const [scanActive, setScanActive] = useState(false)
     const [isVerified, setIsVerified] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const startBiometricScan = () => {
         setScanActive(true)
@@ -44,8 +49,10 @@ export default function CarpaKycPage() {
         }, 3000)
     }
 
+    if (!mounted) return null
+
     return (
-        <div className="p-8 space-y-8 bg-[#020617] min-h-screen text-slate-100">
+        <div className="p-8 space-y-8 bg-[#020617] min-h-screen text-slate-100 rounded-[3rem]">
 
             {/* Security Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -154,7 +161,7 @@ export default function CarpaKycPage() {
 
                             <Card className="mt-8 bg-amber-50 border-amber-100 p-6 rounded-2xl border-dashed">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+                                    <TriangleAlert className="h-4 w-4 text-amber-600" />
                                     <h4 className="text-xs font-black uppercase text-amber-700 tracking-widest">Alerte LC-BFT</h4>
                                 </div>
                                 <p className="text-[10px] text-amber-600 font-bold leading-relaxed">
@@ -217,14 +224,6 @@ export default function CarpaKycPage() {
                 </div>
 
             </div>
-
-            <style jsx global>{`
-                @keyframes scan {
-                    0% { top: 0; }
-                    50% { top: 100%; }
-                    100% { top: 0; }
-                }
-            `}</style>
         </div>
     )
 }

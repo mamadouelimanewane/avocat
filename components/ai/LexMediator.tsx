@@ -205,7 +205,7 @@ export function LexMediator({ dossierId, onClose }: LexMediatorProps) {
                         </TabsContent>
                     </div>
                 </ScrollArea>
+            </Tabs>
         </div>
-        </div >
     )
 }

@@ -44,10 +44,15 @@ const DETECTED_CONNECTIONS = [
 ]
 
 export default function AssetHunterIntelligencePage() {
+    const [mounted, setMounted] = useState(false)
     const [isScanning, setIsScanning] = useState(false)
     const [scanProgress, setScanProgress] = useState(0)
     const [currentSource, setCurrentSource] = useState("")
     const [showIntelligence, setShowIntelligence] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const startDeepInvestigation = () => {
         setIsScanning(true)
@@ -74,8 +79,10 @@ export default function AssetHunterIntelligencePage() {
         }, 60)
     }
 
+    if (!mounted) return null
+
     return (
-        <div className="p-8 space-y-8 bg-[#020617] min-h-screen text-slate-100 selection:bg-emerald-500/30">
+        <div className="p-8 space-y-8 bg-[#020617] min-h-screen text-slate-100 selection:bg-emerald-500/30 rounded-[3rem]">
 
             {/* Intelligence Header - Mossad Style */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 border-b border-white/5 pb-8">
@@ -395,19 +402,6 @@ export default function AssetHunterIntelligencePage() {
 
             </div>
 
-            <style jsx global>{`
-                @keyframes scan-line {
-                    0% { top: 0; }
-                    100% { top: 100%; }
-                }
-                .animate-spin-slow {
-                    animation: spin 8s linear infinite;
-                }
-                @keyframes spin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-            `}</style>
         </div>
     )
 }
