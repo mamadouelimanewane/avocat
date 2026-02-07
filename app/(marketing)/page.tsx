@@ -27,16 +27,8 @@ import {
     FileSignature
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 export default function HomePage() {
-    const cookieStore = cookies();
-    const isLoggedIn = !!cookieStore.get('auth_token')?.value;
-
-    if (isLoggedIn) {
-        redirect('/dashboard');
-    }
     return (
         <>
             {/* HERO SECTION */}
