@@ -107,6 +107,27 @@ export function NewDossierDialog({ clients, preSelectedClientId }: { clients: Cl
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="procedureType" className="text-right">
+                                Domaine
+                            </Label>
+                            <div className="col-span-3">
+                                <Select name="procedureType" defaultValue="CIVIL">
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="CIVIL">Droit Civil & Famille</SelectItem>
+                                        <SelectItem value="COMMERCIAL">Droit Commercial & OHADA</SelectItem>
+                                        <SelectItem value="PENAL">Droit Pénal</SelectItem>
+                                        <SelectItem value="ADMINISTRATIF">Droit Administratif</SelectItem>
+                                        <SelectItem value="IMMOBILIER">Droit Immobilier</SelectItem>
+                                        <SelectItem value="SOCIAL">Droit du Travail</SelectItem>
+                                        <SelectItem value="AUTRE">Autres</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="client" className="text-right">
                                 Client
                             </Label>

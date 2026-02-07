@@ -73,6 +73,7 @@ export function EditDossierDialog({ dossier }: { dossier: any }) {
                                 <SelectItem value="COMMERCIAL">Commercial</SelectItem>
                                 <SelectItem value="SOCIAL">Social</SelectItem>
                                 <SelectItem value="ADMINISTRATIF">Administratif</SelectItem>
+                                <SelectItem value="AUTRE">Autres</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

@@ -101,6 +101,7 @@ const CreateDossierSchema = z.object({
     title: z.string().min(3, { message: "Le titre doit faire au moins 3 caractères" }),
     clientId: z.string().min(1, { message: "Veuillez sélectionner un client" }),
     reference: z.string().min(3, { message: "La référence est requise" }),
+    procedureType: z.string().optional(),
 })
 
 
@@ -332,6 +333,7 @@ export async function createDossier(prevState: any, formData: FormData) {
         title: formData.get('title') as string,
         clientId: formData.get('clientId') as string,
         reference: formData.get('reference') as string,
+        procedureType: formData.get('procedureType') as string,
     }
 
     const validatedFields = CreateDossierSchema.safeParse(rawFormData)
@@ -343,7 +345,7 @@ export async function createDossier(prevState: any, formData: FormData) {
         }
     }
 
-    const { title, clientId, reference } = validatedFields.data
+    const { title, clientId, reference, procedureType } = validatedFields.data
 
     try {
         const newDossier = await prisma.dossier.create({
@@ -351,6 +353,7 @@ export async function createDossier(prevState: any, formData: FormData) {
                 title,
                 reference,
                 clientId,
+                procedureType: procedureType || 'CIVIL',
                 status: 'OUVERT',
             },
         })

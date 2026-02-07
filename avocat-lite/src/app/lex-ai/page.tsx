@@ -9,7 +9,9 @@ import {
     Scale,
     Zap,
     Loader2,
-    ShieldCheck
+    ShieldCheck,
+    Gavel,
+    Building
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -31,6 +33,24 @@ const suggestions = [
         text: "Quels sont les délais d'appel pour un jugement rendu par défaut ?",
         icon: Zap,
         color: "text-orange-500",
+    },
+    {
+        title: "Droit Pénal",
+        text: "Quelles sont les peines encourues pour abus de confiance au Sénégal ?",
+        icon: Gavel,
+        color: "text-red-500",
+    },
+    {
+        title: "Droit Administratif",
+        text: "Comment contester un arrêté préfectoral devant le tribunal administratif ?",
+        icon: Building,
+        color: "text-purple-500",
+    },
+    {
+        title: "Autres Demandes",
+        text: "Pouvez-vous m'aider à analyser ce contrat et identifier les clauses risquées ?",
+        icon: Sparkles,
+        color: "text-amber-500",
     }
 ]
 

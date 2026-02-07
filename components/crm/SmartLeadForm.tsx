@@ -137,8 +137,10 @@ export function SmartLeadForm() {
                                 <SelectItem value="CIVIL">Droit Civil & Famille</SelectItem>
                                 <SelectItem value="COMMERCIAL">Droit Commercial & OHADA</SelectItem>
                                 <SelectItem value="PENAL">Droit Pénal</SelectItem>
+                                <SelectItem value="ADMINISTRATIF">Droit Administratif</SelectItem>
                                 <SelectItem value="IMMOBILIER">Droit Immobilier</SelectItem>
                                 <SelectItem value="SOCIAL">Droit du Travail</SelectItem>
+                                <SelectItem value="AUTRE">Autres</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
