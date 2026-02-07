@@ -27,35 +27,19 @@ import {
     FileSignature
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { LexPublicChatWidget } from '@/components/public/LexPublicChatWidget';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-export default function LandingPage() {
+export default function HomePage() {
+    const cookieStore = cookies();
+    const isLoggedIn = !!cookieStore.get('auth_token')?.value;
+
+    if (isLoggedIn) {
+        redirect('/dashboard');
+    }
     return (
-        <div className="flex flex-col min-h-screen bg-[#020617] text-slate-200 overflow-x-hidden">
-            {/* 1. NAVIGATION */}
-            <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-xl tracking-tighter text-white">
-                    <Scale className="h-6 w-6 text-amber-500" />
-                    <span>LEX<span className="text-amber-500">PREMIUM</span></span>
-                </div>
-                <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-                    <a href="#features" className="hover:text-white transition-colors">Expertise</a>
-                    <a href="#ia" className="hover:text-white transition-colors">IA & Outils</a>
-                    <a href="#pricing" className="hover:text-white transition-colors">Plans CFA</a>
-                </div>
-                <div className="flex items-center gap-4">
-                    <Link href="/login">
-                        <Button variant="ghost" className="text-slate-300 hover:text-white">Accès Cabinet</Button>
-                    </Link>
-                    <Link href="/login">
-                        <Button className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 border-none shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                            Essai Gratuit
-                        </Button>
-                    </Link>
-                </div>
-            </nav>
-
-            {/* 2. HERO SECTION */}
+        <>
+            {/* HERO SECTION */}
             <section className="relative pt-48 pb-32 px-6 overflow-hidden text-center">
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 -z-10 w-[800px] h-[800px] bg-indigo-600/10 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2" />
@@ -83,21 +67,21 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* 3. PRODUCT PREVIEW SECTION */}
+            {/* PRODUCT PREVIEW SECTION */}
             <section className="py-12 px-6">
                 <div className="max-w-7xl mx-auto relative">
                     <div className="absolute inset-0 bg-indigo-500/10 blur-[150px] -z-10 rounded-full" />
                     <div className="rounded-[3rem] border border-white/10 bg-slate-900/50 p-4 shadow-2xl backdrop-blur-sm overflow-hidden group">
                         <img
-                            src="https://lex-premium-assets.s3.amazonaws.com/lexpremium_product_preview.png"
+                            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000"
                             alt="Interface LexPremium"
-                            className="w-full h-auto rounded-[2.5rem] shadow-inner transform group-hover:scale-[1.01] transition-transform duration-700"
+                            className="w-full h-[600px] object-cover rounded-[2.5rem] shadow-inner transform group-hover:scale-[1.01] transition-transform duration-700"
                         />
                     </div>
                 </div>
             </section>
 
-            {/* 4. KEY MODULES SECTION */}
+            {/* KEY MODULES SECTION */}
             <section id="features" className="py-32 px-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-20">
@@ -148,7 +132,7 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* 5. IA & INTELLIGENCE SECTION */}
+            {/* IA & INTELLIGENCE SECTION */}
             <section id="ia" className="py-24 px-6 relative overflow-hidden bg-slate-950/50">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-20">
                     <div className="flex-1">
@@ -204,50 +188,33 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* 6. PRICING SECTION */}
+            {/* PRICING PREVIEW */}
             <section id="pricing" className="py-32 px-6">
-                <div className="max-w-5xl mx-auto">
-                    <div className="text-center mb-20 text-white">
-                        <h2 className="text-5xl font-black mb-4">Tarification Locale.</h2>
-                        <p className="text-slate-500 text-xl font-light italic">L'excellence accessible à chaque Cabinet.</p>
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl md:text-6xl font-black text-white mb-6">Tarification Claire.</h2>
+                        <p className="text-slate-500 text-lg font-light">L'excellence accessible, quel que soit votre stade de croissance.</p>
                     </div>
-
-                    <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-                        <div className="p-12 rounded-[4rem] bg-slate-900/40 border border-white/5 hover:border-white/20 transition-all flex flex-col items-center text-center">
-                            <div className="text-indigo-400 font-black tracking-widest text-xs mb-6 uppercase">Individuel Prestige</div>
-                            <div className="text-5xl font-black text-white mb-2">50.000 <span className="text-xl font-light text-slate-500 uppercase">F CFA</span></div>
-                            <div className="text-slate-500 mb-12 italic">par mois, sans engagement</div>
-                            <ul className="space-y-5 mb-12 text-left w-full text-slate-400">
-                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Dossiers & Clients Illimités</li>
-                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Assistant IA (Mode Standard)</li>
-                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Comptabilité OHADA Basique</li>
-                                <li className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-5 w-5 text-indigo-500" /> Facturation & Recouvrement</li>
-                            </ul>
-                            <Link href="/login" className="w-full">
-                                <Button variant="outline" className="w-full h-16 rounded-[2rem] border-white/10 text-white text-lg">Choisir Solo</Button>
+                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        <div className="p-10 rounded-[3rem] bg-slate-900/50 border border-white/5 flex flex-col items-center">
+                            <span className="text-amber-500 font-bold text-xs uppercase tracking-widest mb-4">Solo Prestige</span>
+                            <div className="text-4xl font-black text-white mb-6">50.000 <span className="text-xs text-slate-500">F CFA / mois</span></div>
+                            <Link href="/tarifs">
+                                <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 rounded-xl px-8">Voir les détails</Button>
                             </Link>
                         </div>
-
-                        <div className="p-12 rounded-[4rem] bg-indigo-600/10 border-2 border-amber-500/50 flex flex-col items-center text-center relative shadow-2xl shadow-amber-500/10">
-                            <div className="absolute top-8 right-12 bg-amber-500 text-slate-950 px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase">Elite</div>
-                            <div className="text-amber-500 font-black tracking-widest text-xs mb-6 uppercase">Cabinet Associé</div>
-                            <div className="text-5xl font-black text-white mb-2">100.000 <span className="text-xl font-light text-amber-500/50 uppercase">F CFA</span></div>
-                            <div className="text-amber-200/50 mb-12 italic">Jusqu'à 10 collaborateurs</div>
-                            <ul className="space-y-5 mb-12 text-left w-full text-slate-300">
-                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> IA Illimitée & Red Teaming</li>
-                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Portail Client Extranet Inclus</li>
-                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Finance Stratégique & Budgets</li>
-                                <li className="flex items-center gap-3 text-sm font-bold text-white"><CheckCircle2 className="h-5 w-5 text-amber-500" /> Support Premium 24/7</li>
-                            </ul>
-                            <Link href="/login" className="w-full">
-                                <Button className="w-full h-16 rounded-[2rem] bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-lg shadow-2xl shadow-amber-500/20">Lancer le Cabinet</Button>
+                        <div className="p-10 rounded-[3rem] bg-amber-500/10 border border-amber-500/50 flex flex-col items-center">
+                            <span className="text-amber-500 font-bold text-xs uppercase tracking-widest mb-4">Elite Cabinet</span>
+                            <div className="text-4xl font-black text-white mb-6">100.000 <span className="text-xs text-slate-500">F CFA / mois</span></div>
+                            <Link href="/tarifs">
+                                <Button className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl px-8">Voir les détails</Button>
                             </Link>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* 7. TESTIMONIALS */}
+            {/* TESTIMONIALS */}
             <section className="py-24 px-6 bg-slate-950/30">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-2 gap-8">
@@ -281,26 +248,30 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* 8. FOOTER */}
-            <footer className="py-20 px-6 border-t border-white/5">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
-                    <div className="flex items-center gap-2 font-bold text-2xl tracking-tighter text-white">
-                        <Scale className="h-8 w-8 text-amber-500" />
-                        <span>LEX<span className="text-amber-500">PREMIUM</span></span>
-                    </div>
-                    <div className="flex gap-12 text-slate-500 text-sm">
-                        <a href="#features" className="hover:text-white">Expertise</a>
-                        <a href="#ia" className="hover:text-white">LexAI</a>
-                        <a href="#pricing" className="hover:text-white">Tarifs CFA</a>
-                    </div>
-                    <div className="text-slate-600 text-[10px] tracking-widest uppercase font-black">
-                        &copy; 2026 LexPremium. L'excellence au service de la justice OHADA.
+            {/* FINAL CTA */}
+            <section className="py-32 px-6">
+                <div className="max-w-4xl mx-auto text-center p-20 rounded-[4rem] bg-gradient-to-br from-indigo-600 to-indigo-900 border border-white/10 relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+                    <div className="relative z-10">
+                        <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter">Prêt à Dominer votre <span className="text-amber-500">Marché ?</span></h2>
+                        <p className="text-indigo-100 text-lg md:text-xl font-light mb-12 max-w-2xl mx-auto">
+                            Rejoignez les cabinets les plus prestigieux qui ont déjà fait le saut vers l'excellence numérique avec LexPremium.
+                        </p>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                            <Link href="/login">
+                                <Button className="h-16 px-12 text-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-2xl shadow-xl shadow-amber-500/20">
+                                    Essayer Gratuitement
+                                </Button>
+                            </Link>
+                            <Link href="/contact">
+                                <Button variant="outline" className="h-16 px-10 text-lg border-white/20 text-white hover:bg-white/5 rounded-2xl">
+                                    Prendre Rendez-vous
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
-            </footer>
-
-            {/* 9. PUBLIC CHAT WIDGET */}
-            <LexPublicChatWidget />
-        </div>
+            </section>
+        </>
     );
 }

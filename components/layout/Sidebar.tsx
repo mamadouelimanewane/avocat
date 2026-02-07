@@ -118,7 +118,7 @@ export function Sidebar({ className, onNavigate }: { className?: string; onNavig
         {
             title: "NEXUS INTELLIGENCE",
             items: [
-                { name: 'LexAI Co-Counsel', href: '/lex-ai', icon: Bot },
+                { name: 'LexAI Co-Counsel', href: '/ai/chat', icon: Bot },
                 { name: 'LexAudio Drafter', href: '/lex-audio', icon: Mic },
                 { name: 'Legal Bridge (Trad)', href: '/legal-bridge', icon: Languages },
                 { name: 'Scanner Adverse IA', href: '/scanner-adverse', icon: FileSearch },

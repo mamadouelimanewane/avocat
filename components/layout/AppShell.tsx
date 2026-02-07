@@ -24,9 +24,10 @@ export function AppShell({
     // - If it's the root '/' AND the user is NOT logged in, then it's standalone (marketing).
     // - IF it's the root '/' AND the user IS logged in, we want full Sidebar/Header (dashboard).
     const isLoginPage = pathname?.startsWith('/portal') || pathname?.startsWith('/login') || pathname?.startsWith('/register');
-    const isMarketingAtRoot = pathname === '/' && !isLoggedIn;
+    const marketingRoutes = ['/', '/expertise', '/lex-ai', '/tarifs', '/contact', '/about'];
+    const isMarketingPage = marketingRoutes.includes(pathname || '') && !isLoggedIn;
 
-    const isStandalone = isLoginPage || isMarketingAtRoot;
+    const isStandalone = isLoginPage || isMarketingPage;
 
     if (isStandalone) {
         return (
