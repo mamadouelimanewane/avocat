@@ -45,7 +45,7 @@ export function SupportChat() {
         scrollToBottom()
     }, [messages, isOpen])
 
-    const getResponse = (content: string): string => {
+    const getResponse = async (content: string): Promise<string> => {
         const query = content.toLowerCase()
         if (query.includes("dossier")) {
             return "Pour créer un nouveau dossier, allez dans la section 'Dossiers' (icône mallette) et cliquez sur le bouton 'Nouveau Dossier' en haut à droite. Remplissez ensuite les informations du client et de la juridiction."
@@ -62,6 +62,16 @@ export function SupportChat() {
         if (query.includes("bonjour") || query.includes("salut")) {
             return "Bonjour Maître ! Comment puis-je vous assister dans la gestion de votre cabinet aujourd'hui ?"
         }
+
+        // --- FALLBACK TO AI ---
+        try {
+            const { generateSupportResponse } = await import('@/app/actions')
+            const res = await generateSupportResponse(content)
+            if (res.success && res.text) return res.text
+        } catch (e) {
+            console.error("AI Support Fallback Error:", e)
+        }
+
         return "Je comprends votre demande concernant '" + content + "'. Un agent spécialisé va prendre le relais pour vous assister précisément. En attendant, consultez le manuel d'utilisation dans la section Documentation."
     }
 
@@ -81,21 +91,19 @@ export function SupportChat() {
         setIsTyping(true)
 
         // Simulate AI/Agent response
-        setTimeout(() => {
-            const responseContent = getResponse(userMsg.content)
+        const responseContent = await getResponse(userMsg.content)
 
-            const agentMsg: Message = {
-                id: (Date.now() + 1).toString(),
-                role: 'agent',
-                content: responseContent,
-                timestamp: new Date()
-            }
-            setMessages(prev => [...prev, agentMsg])
-            setIsTyping(false)
-        }, 1200)
+        const agentMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'agent',
+            content: responseContent,
+            timestamp: new Date()
+        }
+        setMessages(prev => [...prev, agentMsg])
+        setIsTyping(false)
     }
 
-    const sendFaq = (question: string) => {
+    const sendFaq = async (question: string) => {
         // UI feedback for selection
         setInputValue(question)
 
@@ -107,23 +115,19 @@ export function SupportChat() {
             timestamp: new Date()
         }
 
-        setTimeout(() => {
-            setMessages(prev => [...prev, userMsg])
-            setInputValue("")
-            setIsTyping(true)
+        setMessages(prev => [...prev, userMsg])
+        setInputValue("")
+        setIsTyping(true)
 
-            setTimeout(() => {
-                const responseContent = getResponse(question)
-                const agentMsg: Message = {
-                    id: (Date.now() + 1).toString(),
-                    role: 'agent',
-                    content: responseContent,
-                    timestamp: new Date()
-                }
-                setMessages(prev => [...prev, agentMsg])
-                setIsTyping(false)
-            }, 1000)
-        }, 200)
+        const responseContent = await getResponse(question)
+        const agentMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'agent',
+            content: responseContent,
+            timestamp: new Date()
+        }
+        setMessages(prev => [...prev, agentMsg])
+        setIsTyping(false)
     }
 
     return (

@@ -5407,3 +5407,38 @@ export async function generatePublicLegalAdvice(question: string, topic: string)
         return { success: false, message: "Une erreur est survenue lors de ma réflexion." }
     }
 }
+
+/**
+ * Assistant support intelligent pour l'utilisation de l'application
+ */
+export async function generateSupportResponse(question: string) {
+    try {
+        const systemPrompt = `Tu es LexSupport, l'assistant intelligent de l'ERP LexPremium (Gestion de Cabinet d'Avocats). 
+        Ton rôle est d'aider les utilisateurs (Avocats, Assistants, Gestionnaires) à utiliser l'application.
+        
+        ARCHITECTURE DE L'APP :
+        - Dossiers : Gestion des affaires, pièces, événements, factures liées.
+        - Comptabilité : Journal VE (Ventes), AC (Achats), BQ (Banque), OD (Opérations Diverses). Conforme SYSCOHADA.
+        - LexAI : Analyse de documents, Red Teaming, Oracle de jurisprudence.
+        - Bibliothèque : Jurisprudence CCJA et Cour Suprême Sénégal.
+        - Courrier : Workflows de validation des lettres entrantes/sortantes.
+        - Portail Client : Extranet pour que les clients voient leurs dossiers.
+        - RH : Gestion des collaborateurs et des congés.
+        
+        CONSIGNES :
+        1. Sois professionnel, efficace et poli (utilise "Maître").
+        2. Donne des étapes concrètes quand c'est possible.
+        3. Si tu ne sais pas, propose de contacter le support technique@lexpremium.sn.
+        4. Réponds toujours en français.`
+
+        const response = await generateCompletion(question, [], "DRAFTING", systemPrompt)
+
+        return {
+            success: true,
+            text: response || "Je suis désolé Maître, je n'ai pas pu générer de réponse. Un agent va vous aider sous peu."
+        }
+    } catch (error) {
+        console.error("Support AI Error:", error)
+        return { success: false, message: "Erreur technique de support." }
+    }
+}
