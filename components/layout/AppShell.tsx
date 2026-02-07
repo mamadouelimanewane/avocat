@@ -25,13 +25,13 @@ export function AppShell({
     // - IF it's the root '/' AND the user IS logged in, we want full Sidebar/Header (dashboard).
     const isLoginPage = pathname?.startsWith('/portal') || pathname?.startsWith('/login') || pathname?.startsWith('/register');
     const marketingRoutes = ['/', '/expertise', '/lex-ai', '/tarifs', '/contact', '/about'];
-    const isMarketingPage = marketingRoutes.includes(pathname || '') && !isLoggedIn;
+    const isMarketingPage = marketingRoutes.includes(pathname || '');
 
     const isStandalone = isLoginPage || isMarketingPage;
 
     if (isStandalone) {
         return (
-            <div className="min-h-screen bg-slate-50">
+            <div className="min-h-screen">
                 {children}
             </div>
         )
