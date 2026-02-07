@@ -20,13 +20,13 @@ if (process.env.DEEPSEEK_API_KEY) {
 /**
  * Generate a text response using DeepSeek Chat with RAG context.
  */
-export async function generateCompletion(prompt: string, contextDocuments: any[], mode: string) {
+export async function generateCompletion(prompt: string, contextDocuments: any[], mode: string, customSystemPrompt?: string) {
     if (!openai) {
         return null; // Fallback to simulation mode if no key
     }
 
     try {
-        const systemPrompt = `Tu es LexAI, un assistant juridique "Senior" expert en droit OHADA et Sénégalais.
+        const defaultSystemPrompt = `Tu es LexAI, un assistant juridique "Senior" expert en droit OHADA et Sénégalais.
 
 PROTOCOLE DE RÉPONSE (HIÉRARCHIE DES SOURCES) :
 1. PRIORITÉ ABSOLUE : DOCUMENTS INTERNES (RAG)
@@ -39,6 +39,8 @@ PROTOCOLE DE RÉPONSE (HIÉRARCHIE DES SOURCES) :
    - Cite des articles de loi ou des arrêts publics connus.
 
 MODE ACTUEL : ${mode}`;
+
+        const systemPrompt = customSystemPrompt || defaultSystemPrompt;
 
         const contextText = contextDocuments.length > 0
             ? contextDocuments.map((doc, i) =>

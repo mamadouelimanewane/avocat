@@ -49,7 +49,7 @@ export default async function RootLayout({
                         {children}
                     </AppShell>
                     <Toaster />
-                    <SupportChat />
+                    {isLoggedIn && <SupportChat />}
                 </ThemeProvider>
             </body>
         </html>

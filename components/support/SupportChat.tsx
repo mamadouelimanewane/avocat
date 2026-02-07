@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { generateSupportResponse } from "@/app/actions"
 
 type Message = {
     id: string
@@ -68,10 +69,10 @@ export function SupportChat() {
 
         // --- FALLBACK TO AI ---
         try {
-            const { generateSupportResponse } = await import('@/app/actions')
+            // Using the imported server action
             const res = await generateSupportResponse(content)
-            if (res.success && res.text) return res.text
-            console.log("AI Support Response (failed or empty):", res)
+            if (res && res.success && res.text) return res.text
+            console.error("AI Support Response issue:", res)
         } catch (e) {
             console.error("AI Support Fallback Error:", e)
         }
@@ -94,17 +95,22 @@ export function SupportChat() {
         setInputValue("")
         setIsTyping(true)
 
-        // Simulate AI/Agent response
-        const responseContent = await getResponse(userMsg.content)
+        try {
+            // Simulate AI/Agent response
+            const responseContent = await getResponse(userMsg.content)
 
-        const agentMsg: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'agent',
-            content: responseContent,
-            timestamp: new Date()
+            const agentMsg: Message = {
+                id: (Date.now() + 1).toString(),
+                role: 'agent',
+                content: responseContent,
+                timestamp: new Date()
+            }
+            setMessages(prev => [...prev, agentMsg])
+        } catch (error) {
+            console.error("Chat Error:", error)
+        } finally {
+            setIsTyping(false)
         }
-        setMessages(prev => [...prev, agentMsg])
-        setIsTyping(false)
     }
 
     const sendFaq = async (question: string) => {

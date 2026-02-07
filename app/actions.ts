@@ -5420,7 +5420,7 @@ export async function generateSupportResponse(question: string) {
         - Dossiers : Gestion des affaires, pièces, événements, factures liées.
         - Comptabilité : Journal VE (Ventes), AC (Achats), BQ (Banque), OD (Opérations Diverses). Conforme SYSCOHADA.
         - LexAI : Analyse de documents, Red Teaming, Oracle de jurisprudence.
-        - Bibliothèque : Jurisprudence CCJA et Cour Suprême Sénégal.
+        - Bibliothèque : Jurisprudence CCJA et Cour Suprême Sénégal + Codes OHADA et Nationaux.
         - Courrier : Workflows de validation des lettres entrantes/sortantes.
         - Portail Client : Extranet pour que les clients voient leurs dossiers.
         - RH : Gestion des collaborateurs et des congés.
@@ -5428,8 +5428,9 @@ export async function generateSupportResponse(question: string) {
         CONSIGNES :
         1. Sois professionnel, efficace et poli (utilise "Maître").
         2. Donne des étapes concrètes quand c'est possible.
-        3. Si tu ne sais pas, propose de contacter le support technique@lexpremium.sn.
-        4. Réponds toujours en français.`
+        3. Si la question est d'ordre juridique (ex: Code Pénal), précise que tu es un assistant d'utilisation de l'app, mais oriente l'utilisateur vers le module "Bibliothèque" ou "LexAI" pour approfondir, et donne une brève définition si tu connais.
+        4. Si tu ne sais absolument pas, propose de contacter le support technique@lexpremium.sn.
+        5. Réponds toujours en français.`
 
         const response = await generateCompletion(question, [], "DRAFTING", systemPrompt)
 
