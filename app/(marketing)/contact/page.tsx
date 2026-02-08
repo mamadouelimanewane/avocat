@@ -27,7 +27,8 @@ export default function ContactPage() {
                                 </div>
                                 <div>
                                     <h4 className="text-white font-bold text-lg mb-1">Téléphone</h4>
-                                    <p className="text-slate-400">+221 33 800 00 00</p>
+                                    <p className="text-slate-400">+221 77 752 92 88 (Mobile)</p>
+                                    <p className="text-slate-400">33 848 16 47 (Fixe)</p>
                                     <p className="text-slate-400 text-sm italic">Du Lundi au Vendredi, 9h-18h</p>
                                 </div>
                             </div>
@@ -37,7 +38,7 @@ export default function ContactPage() {
                                 </div>
                                 <div>
                                     <h4 className="text-white font-bold text-lg mb-1">Email</h4>
-                                    <p className="text-slate-400">contact@lexpremium.sn</p>
+                                    <p className="text-slate-400">mamadouelimane@gmail.com</p>
                                     <p className="text-slate-400 text-sm italic">Réponse sous 24h</p>
                                 </div>
                             </div>
@@ -47,7 +48,7 @@ export default function ContactPage() {
                                 </div>
                                 <div>
                                     <h4 className="text-white font-bold text-lg mb-1">Siège</h4>
-                                    <p className="text-slate-400">Avenue Cheikh Anta Diop,</p>
+                                    <p className="text-slate-400">157 Maristes 2</p>
                                     <p className="text-slate-400">Dakar, Sénégal</p>
                                 </div>
                             </div>
