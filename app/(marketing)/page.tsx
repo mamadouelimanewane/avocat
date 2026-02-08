@@ -46,7 +46,7 @@ export default function HomePage() {
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">VOUS PLAIDEZ,</span><br /> NOUS GÉRONS.
                     </h1>
                     <p className="max-w-3xl mx-auto text-slate-400 text-lg md:text-2xl font-light leading-relaxed mb-12">
-                        Concentrez-vous sur votre art, la plaidoirie et la stratégie juridique. LexPremium gère vos dossiers, votre comptabilité OHADA, vos clients et votre croissance. L'écosystème complet pour les cabinets d'élite.
+                        Concentrez-vous sur votre art, la plaidoirie et la stratégie juridique. LexPremium gère vos dossiers, votre comptabilité OHADA, vos clients et votre croissance. Propulsé par l'Intelligence Artificielle et les innovations qui redéfinissent le métier.
                     </p>
                     {/* Button Removed per user request */}
                 </div>
