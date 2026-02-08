@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
-import { SupportChat } from '@/components/support/SupportChat';
 
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
@@ -49,7 +48,6 @@ export default async function RootLayout({
                         {children}
                     </AppShell>
                     <Toaster />
-                    {isLoggedIn && <SupportChat />}
                 </ThemeProvider>
             </body>
         </html>

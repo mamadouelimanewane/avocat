@@ -7,6 +7,7 @@ import { Header } from '@/components/layout/Header'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { LexAIAssistant } from '@/components/ai/LexAIAssistant'
 import { VoiceAssistant } from '@/components/ai/VoiceAssistant'
+import { SupportChat } from '@/components/support/SupportChat'
 
 export function AppShell({
     children,
@@ -37,6 +38,7 @@ export function AppShell({
         )
     }
 
+    // Backoffice layout (authenticated, non-marketing pages)
     return (
         <>
             <Sidebar className="hidden md:flex fixed left-0 top-0 z-50" />
@@ -48,6 +50,7 @@ export function AppShell({
                 <div className="relative z-[100]">
                     <LexAIAssistant />
                     <VoiceAssistant />
+                    {isLoggedIn && <SupportChat />}
                 </div>
                 <MobileBottomNav />
             </div>
