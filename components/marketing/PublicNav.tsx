@@ -43,7 +43,7 @@ export function PublicNav() {
             <div className="flex items-center gap-4">
                 <Link href="/login">
                     <Button className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 border-none shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                        Accès Cabinet
+                        Connexion
                     </Button>
                 </Link>
             </div>

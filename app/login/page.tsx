@@ -2,6 +2,7 @@
 "use client"
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useFormState, useFormStatus } from 'react-dom'
 import { loginStaff } from '@/app/actions'
 import { Button } from '@/components/ui/button'
@@ -47,17 +48,22 @@ export default function LoginPage() {
                         </div>
                     </div>
                     <CardTitle className="text-2xl font-bold text-slate-900">Cabinet LexPremium</CardTitle>
-                    <CardDescription>Espace Personnel / Collaborateurs</CardDescription>
+                    <CardDescription className="flex flex-col gap-1">
+                        <span>Espace Personnel / Collaborateurs</span>
+                        <Link href="/portal/login" className="text-amber-600 hover:text-amber-700 font-medium text-xs underline decoration-amber-200 underline-offset-4">
+                            Vous êtes client ? Accédez à votre portail ici
+                        </Link>
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form action={formAction} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email" className="text-slate-700">Email professionnel</Label>
+                            <Label htmlFor="email" className="text-slate-700">Identifiant / Email</Label>
                             <Input
                                 id="email"
                                 name="email"
                                 type="email"
-                                placeholder="maitre@lexpremium.sn"
+                                placeholder="votre@email.com"
                                 required
                                 className="bg-white text-slate-900 border-slate-300 focus:border-slate-900 focus:ring-slate-900"
                             />
