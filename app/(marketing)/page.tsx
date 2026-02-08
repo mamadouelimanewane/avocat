@@ -43,10 +43,10 @@ export default function HomePage() {
                         L'EXCELLENCE JURIDIQUE À L'ÈRE DE L'IA
                     </div>
                     <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-[0.85] mb-10">
-                        LE CABINET <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">NOUVELLE GÉNÉRATION.</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">VOUS PLAIDEZ,</span><br /> NOUS GÉRONS.
                     </h1>
                     <p className="max-w-3xl mx-auto text-slate-400 text-lg md:text-2xl font-light leading-relaxed mb-12">
-                        Plaidoirie, Gestion de Dossiers, Relation Client. Propulsés par l'Intelligence Artificielle, la Comptabilité OHADA et la Finance stratégique. LexPremium est l'écosystème complet conçu pour les cabinets d'avocats d'élite.
+                        Concentrez-vous sur votre art, la plaidoirie et la stratégie juridique. LexPremium gère vos dossiers, votre comptabilité OHADA, vos clients et votre croissance. L'écosystème complet pour les cabinets d'élite.
                     </p>
                     {/* Button Removed per user request */}
                 </div>
