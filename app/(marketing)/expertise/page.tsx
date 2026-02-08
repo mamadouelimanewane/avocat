@@ -1,5 +1,5 @@
 
-"use client"
+
 
 import { CheckCircle2, ShieldCheck, Zap, Globe, BarChart3, Users, Building, Gavel, Scale } from 'lucide-react';
 

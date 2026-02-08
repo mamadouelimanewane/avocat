@@ -1,5 +1,5 @@
 
-"use client"
+
 
 import { ShieldCheck, Target, Users, Scale, Award, Globe } from 'lucide-react';
 

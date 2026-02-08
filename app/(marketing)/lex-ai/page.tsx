@@ -1,5 +1,5 @@
 
-"use client"
+
 
 import { Cpu, FileSignature, Activity, Zap, ShieldCheck, Sparkles, Brain, Network, MessageSquare, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -1,5 +1,5 @@
 
-"use client"
+
 
 import { PublicNav } from '@/components/marketing/PublicNav';
 import { PublicFooter } from '@/components/marketing/PublicFooter';
