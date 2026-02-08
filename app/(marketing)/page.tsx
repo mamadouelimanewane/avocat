@@ -46,7 +46,7 @@ export default function HomePage() {
                         LE CABINET <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">NOUVELLE GÉNÉRATION.</span>
                     </h1>
                     <p className="max-w-3xl mx-auto text-slate-400 text-lg md:text-2xl font-light leading-relaxed mb-12">
-                        Comptabilité OHADA, Intelligence Artificielle, Finance et Mobilité. LexPremium est l'écosystème complet conçu pour les cabinets d'avocats d'élite.
+                        Plaidoirie, Gestion de Dossiers, Relation Client. Propulsés par l'Intelligence Artificielle, la Comptabilité OHADA et la Finance stratégique. LexPremium est l'écosystème complet conçu pour les cabinets d'avocats d'élite.
                     </p>
                     {/* Button Removed per user request */}
                 </div>
