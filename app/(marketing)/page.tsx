@@ -26,9 +26,19 @@ import {
     Activity,
     FileSignature
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { verifySessionToken } from '@/lib/session';
 
-export default function HomePage() {
+export default async function HomePage() {
+    const cookieStore = cookies();
+    const token = cookieStore.get('auth_token')?.value;
+    const userId = verifySessionToken(token);
+
+    if (userId) {
+        redirect('/dashboard');
+    }
+
     return (
         <>
             {/* HERO SECTION */}

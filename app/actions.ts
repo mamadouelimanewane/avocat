@@ -13,13 +13,22 @@ import { join } from 'path'
 import mammoth from 'mammoth'
 import { createWorker } from 'tesseract.js'
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
+
+import { signSessionToken, verifySessionToken } from '@/lib/session'
+
+// Helper to get secured user ID easily
+export async function getSessionUser() {
+    const cookieStore = await cookies()
+    return verifySessionToken(cookieStore.get('auth_token')?.value)
+}
 
 // --- NOTES MANAGEMENT ---
 
 export async function createNote(data: any) {
     try {
         const cookieStore = await cookies()
-        const userId = cookieStore.get('auth_token')?.value
+        const userId = verifySessionToken(cookieStore.get('auth_token')?.value)
         if (!userId) return { success: false, message: "Non connecté" }
 
         await prisma.note.create({
@@ -45,7 +54,7 @@ export async function createNote(data: any) {
 export async function getUserNotes() {
     try {
         const cookieStore = await cookies()
-        const userId = cookieStore.get('auth_token')?.value
+        const userId = verifySessionToken(cookieStore.get('auth_token')?.value)
         if (!userId) return []
 
         return await prisma.note.findMany({
@@ -63,7 +72,7 @@ export async function getUserNotes() {
 export async function deleteNote(noteId: string) {
     try {
         const cookieStore = await cookies()
-        const userId = cookieStore.get('auth_token')?.value
+        const userId = verifySessionToken(cookieStore.get('auth_token')?.value)
         if (!userId) return { success: false, message: "Non connecté" }
 
         await prisma.note.delete({
@@ -79,7 +88,7 @@ export async function deleteNote(noteId: string) {
 export async function updateNote(noteId: string, data: any) {
     try {
         const cookieStore = await cookies()
-        const userId = cookieStore.get('auth_token')?.value
+        const userId = verifySessionToken(cookieStore.get('auth_token')?.value)
         if (!userId) return { success: false }
 
         await prisma.note.update({
@@ -117,8 +126,8 @@ export async function uploadDocument(formData: FormData) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
-        // Ensure uploads directory exists
-        const uploadDir = join(process.cwd(), 'public', 'uploads')
+        // [SECURITY] Store in private directory outside web root
+        const uploadDir = join(process.cwd(), 'private', 'uploads')
         try {
             await mkdir(uploadDir, { recursive: true })
         } catch (e) {
@@ -128,7 +137,9 @@ export async function uploadDocument(formData: FormData) {
         // Unique filename
         const uniqueName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
         const filePath = join(uploadDir, uniqueName)
-        const webPath = `/uploads/${uniqueName}`
+
+        // Web Path now points to secure API route
+        const webPath = `/api/secure-files/${uniqueName}`
 
         await writeFile(filePath, buffer)
 
@@ -665,6 +676,9 @@ export async function getUsers() {
 
 export async function createUser(data: any) {
     try {
+        // [SECURITY] Hash password before storage
+        const hashedPassword = await bcrypt.hash(data.password || 'password123', 10);
+
         await prisma.user.create({
             data: {
                 name: data.name,
@@ -672,7 +686,7 @@ export async function createUser(data: any) {
                 role: data.role, // legacy
                 roleId: data.roleId, // dynamic
                 hourlyRate: parseFloat(data.hourlyRate || '200'),
-                password: data.password || 'password123', // Use provided password or fallback
+                password: hashedPassword,
                 active: true
             }
         })
@@ -729,7 +743,7 @@ export async function updateUser(prevState: any, formData: FormData) {
 export async function updateUserPasswordAdmin(userId: string, newPassword: string) {
     try {
         const cookieStore = await cookies()
-        const adminId = cookieStore.get('auth_token')?.value
+        const adminId = verifySessionToken(cookieStore.get('auth_token')?.value)
         if (!adminId) return { success: false, message: "Non connecté" }
 
         // Security check: Verify the requester is an ADMIN
@@ -742,9 +756,12 @@ export async function updateUserPasswordAdmin(userId: string, newPassword: strin
             return { success: false, message: "Accès refusé. Privilèges insuffisants." }
         }
 
+        // [SECURITY] Hash password before update
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
         await prisma.user.update({
             where: { id: userId },
-            data: { password: newPassword }
+            data: { password: hashedPassword }
         })
 
         return { success: true, message: "Mot de passe réinitialisé avec succès." }
@@ -3436,19 +3453,19 @@ export async function loginStaff(prevState: any, formData: FormData) {
 
         let isPasswordValid = false
 
-        // 1. Master Password / Demo
-        if (password === "demo123") {
-            isPasswordValid = true
-        }
-        // 2. Check User Password
-        else if (user && user.password) {
-            // A. Check Legacy Plain Text
-            if (user.password === password) {
+        if (user && user.password) {
+            // A. Check Bcrypt Hash (Standard)
+            isPasswordValid = await bcrypt.compare(password, user.password)
+
+            // B. Lazy Migration for Legacy Plain Text
+            if (!isPasswordValid && user.password === password) {
+                console.log(`[SECURITY] Migrating plain-text password for user ${user.email}`)
+                const hashedPassword = await bcrypt.hash(password, 10)
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { password: hashedPassword }
+                })
                 isPasswordValid = true
-            }
-            // B. Check Bcrypt Hash
-            else {
-                isPasswordValid = await bcrypt.compare(password, user.password)
             }
         }
 
@@ -3460,7 +3477,7 @@ export async function loginStaff(prevState: any, formData: FormData) {
             return { success: false, message: "Mot de passe incorrect." }
         }
 
-        if (user && !user.active && password !== "demo123") {
+        if (user && !user.active) {
             return { success: false, message: "Compte inactif." }
         }
 
@@ -3468,11 +3485,15 @@ export async function loginStaff(prevState: any, formData: FormData) {
         const userId = user?.id || 'demo-user-id'
         const role = user?.role || 'ADMIN'
 
+        // [SECURITY] Sign the session token
+        const signedToken = signSessionToken(userId)
+
         // Expiration: 7 jours
         const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
         const cookieStore = await cookies()
-        cookieStore.set('auth_token', userId, {
+
+        cookieStore.set('auth_token', signedToken, {
             secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
             path: '/',
@@ -3498,20 +3519,29 @@ export async function updateUserPassword(prevState: any, formData: FormData) {
 
     try {
         const cookieStore = await cookies()
-        const userId = cookieStore.get('auth_token')?.value
+        const userId = verifySessionToken(cookieStore.get('auth_token')?.value)
         if (!userId) return { success: false, message: "Non connecté" }
 
         const user = await prisma.user.findUnique({ where: { id: userId } })
 
         if (!user) return { success: false, message: "Utilisateur introuvable" }
 
-        if (user.password && user.password !== currentPassword) {
+        // Verify with Bcrypt or Fallback
+        let isCurrentValid = await bcrypt.compare(currentPassword, user.password || '')
+        if (!isCurrentValid && user.password === currentPassword) {
+            isCurrentValid = true
+        }
+
+        if (!isCurrentValid) {
             return { success: false, message: "Mot de passe actuel incorrect" }
         }
 
+        // [SECURITY] Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
         await prisma.user.update({
             where: { id: userId },
-            data: { password: newPassword }
+            data: { password: hashedPassword }
         })
 
         return { success: true, message: "Mot de passe mis à jour avec succès" }
@@ -3545,12 +3575,13 @@ export async function loginClient(prevState: any, formData: FormData) {
             return { success: false, message: "Client non trouvé." }
         }
 
-        // Check Access Code
-        // Allow "1234" as a master backlog code if accessCode is missing, else enforce DB code
-        if (client.accessCode && code !== client.accessCode) {
+        // [SECURITY] Strict Access Code Check
+        if (!client.accessCode) {
+            return { success: false, message: "Ce compte client n'a pas de code d'accès configuré. Contactez le cabinet." }
+        }
+
+        if (code !== client.accessCode) {
             return { success: false, message: "Code d'accès invalide." }
-        } else if (!client.accessCode && code !== '1234') {
-            return { success: false, message: "Code d'accès invalide (Défaut: 1234)." }
         }
 
         // Set Cookie
@@ -5283,7 +5314,7 @@ export async function getMailWorkflows() {
  */
 export async function createMail(data: any) {
     try {
-        const userId = cookies().get('auth_token')?.value
+        const userId = await getSessionUser()
         if (!userId) return { success: false, message: "Non connecté" }
 
         // Trouver la première étape du workflow choisi
@@ -5331,7 +5362,7 @@ export async function createMail(data: any) {
  */
 export async function transitionMail(mailId: string, nextStepId: string, comment?: string) {
     try {
-        const userId = cookies().get('auth_token')?.value
+        const userId = await getSessionUser()
         if (!userId) return { success: false, message: "Non connecté" }
 
         const mail = await prisma.mail.findUnique({

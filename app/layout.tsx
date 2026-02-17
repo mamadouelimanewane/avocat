@@ -17,6 +17,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
+import { verifySessionToken } from '@/lib/session';
 
 export default async function RootLayout({
     children,
@@ -24,7 +25,8 @@ export default async function RootLayout({
     children: React.ReactNode;
 }) {
     const cookieStore = cookies();
-    const userId = cookieStore.get('auth_token')?.value;
+    const token = cookieStore.get('auth_token')?.value;
+    const userId = verifySessionToken(token);
     const isLoggedIn = !!userId;
 
     let user = null;

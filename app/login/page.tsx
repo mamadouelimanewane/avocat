@@ -30,7 +30,7 @@ export default function LoginPage() {
 
     if (state.success) {
         // Redirect client-side to enforce full reload/navigation
-        window.location.href = '/'
+        window.location.href = '/dashboard'
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center animate-pulse">Connexion réussie, redirection...</div>
