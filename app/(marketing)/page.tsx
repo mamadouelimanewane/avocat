@@ -26,9 +26,12 @@ import {
     Activity,
     FileSignature
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifySessionToken } from '@/lib/session';
+
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
     const cookieStore = cookies();
